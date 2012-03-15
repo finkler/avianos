@@ -1,0 +1,37 @@
+.TH CHMOD 1
+.SH NAME
+chmod \- change the file modes
+.SH SYNOPSIS
+.I chmod
+[
+.B -R
+]
+.I mode
+.IR file ...
+.SH DESCRIPTION
+The
+.I chmod
+utility changes any or all of the file mode bits of the file named
+by each
+.I file
+operand in the way specified by the
+.I mode
+operand. Only a process whose effective user ID matches the user ID
+of the file, or a process with appropriate privileges, is permitted
+to change the file mode bits of a file. Upon successfully changing
+the file mode bits of a file, the
+.I chmod
+utility marks for update the last file status change timestamp of
+the file.
+.PP
+The following option is supported:
+.TP
+.B -R
+Recursively change file mode bits. For each
+.I file
+operand that names a directory,
+.I chmod
+changes the file mode bits of the directory and all files in the
+file hierarchy below it.
+.SH SEE ALSO
+ls(1)

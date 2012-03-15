@@ -1,0 +1,123 @@
+BUGS
+  - ???
+  
+FEATURES
+  - utf8 support !!!
+	- du.c/chown.c/etc. -H and -L flag implementation.
+	- strings.c skip elf header?
+  - login.c utmp(x) support?
+  - login.c lastlog support? ( http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=%2Fcom.ibm.aix.files%2Fdoc%2Faixfiles%2Flastlog.htm )
+  - syslogd.c modifiable output files?
+  - keymap.c "COMPOSE" support?
+  - mount.c fstab support?
+  
+  - remove stty "lprintf"!
+
+PORTS
+  - chkeymap / fonts / etc.
+  - ls
+  - tail
+  - getmode
+  - id
+  - uevd
+  - acpid
+  - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
+  - mkgrp / rmgrp
+  - sh
+
+---------  
+  - network
+  - ssh
+
+---------
+	- at
+	- awk
+	- batch
+	- bc
+	- chgrp
+	- chown
+	- comm
+	- cp
+	- crontab
+	- csplit
+	- cut
+	- date
+	- dd
+	- df
+	- diff
+	- du
+	- echo
+	- ed
+	- env
+	- expand
+	- expr
+	- file
+	- find
+	- fold
+	- gencat
+	- getconf
+	- grep
+	- hash
+	- head
+	- iconv
+	- id
+	- join
+	- ln
+	- locale
+	- localedef
+	- logger
+	- logname
+	- lp
+	- ls
+	- m4
+	- mailx
+	- man
+	- mesg
+	- mkdir
+	- mkfifo
+	- mv
+	- nice
+	- nohup
+	- od
+	- paste
+	- patch
+	- pathchk
+	- pax
+	- pr
+	- printf
+	- ps
+	- renice
+	- rm
+	- rmdir
+	- sed
+	- sh
+	- sleep
+	- sort
+	- split
+	- strings
+	- stty
+	- tabs
+	- tail
+	- tee
+	- test
+	- time
+	- touch
+	- tput
+	- tr
+	- tsort
+	- tty
+	- uname
+	- unexpand
+	- uniq
+	- uudecode
+	- uuencode
+	- wc
+	- who
+	- write
+	- xargs
+
+SUPPORT FS
+	- ext2
+	- iso9660 / udf
+	- swap
+	- vfat

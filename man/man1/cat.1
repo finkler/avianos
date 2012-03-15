@@ -1,0 +1,31 @@
+.TH CAT 1
+.SH NAME
+cat \- concatenate and print files
+.SH SYNOPSIS
+.I cat
+[
+.B -u
+] [
+.IR file ...
+]
+.SH DESCRIPTION
+The
+.I cat
+utility reads files in sequence and writes their contents to the
+standard output in the same sequence. If no
+.I file
+operands are specified, the standard input is used. If a
+.I file
+is '-', the cat utility reads from the standard input at that point
+in the sequence. The
+.I cat
+utility does not close and reopen standard input when it is
+referenced in this way, but accepts multiple occurrences of '-' as a
+.I file
+operand.
+.PP
+The following option is supported:
+.TP
+.B -u
+Write bytes from the input file to the standard output without
+delay as each is read.

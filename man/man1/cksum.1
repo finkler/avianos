@@ -1,0 +1,18 @@
+.TH CKSUM 1
+.SH NAME
+cksum \- write file checksums and sizes
+.SH SYNOPSIS
+.B cksum
+[
+.IR file ...
+]
+.SH DESCRIPTION
+The
+.I cksum
+utility calculates and writes to standard output a cyclic redundancy
+check (CRC) for each input file, and also writes to standard output
+the number of octets in each file. The CRC used is based on the
+polynomial used for CRC error checking in the ISO/IEC 8802-3:1996
+standard (Ethernet). If no
+.I file
+operands are specified, the standard input is used.

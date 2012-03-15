@@ -1,0 +1,39 @@
+.TH WC 1
+.SH NAME
+wc \- word, line, and byte or character count
+.SH SYNOPSIS
+.I wc
+[
+.BR -c | -m
+] [
+.B -lw
+] [
+.I file...
+]
+.SH DESCRIPTION
+The
+.I wc
+utility reads one or more input files and, by default, writes the number of <newline> characters, words, and bytes contained in each input file to the standard output. The utility also writes a total count for all named files, if more than one input file is specified.
+The
+.I wc
+utility considers a
+.I word
+to be a non-zero-length string of characters delimited by white space.
+.PP
+The following options are supported:
+.TP
+.B -c
+Write to the standard output the number of bytes in each input file.
+.TP
+.B -l
+Write to the standard output the number of <newline> characters in each input file.
+.TP
+.B -m
+Write to the standard output the number of characters in each input file.
+.TP
+.B -w
+Write to the standard output the number of words in each input file.
+.PP
+When any option is specified, wc reports only the information requested by the specified options.
+.SH SEE ALSO
+cksum(1)
