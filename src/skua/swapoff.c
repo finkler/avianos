@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/swap.h>
 

@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <u.h>
 
 int
 main(int argc, char *argv[]) {
@@ -11,7 +9,7 @@ main(int argc, char *argv[]) {
     nflag = 1;
 
   for(i = 1+nflag; i < argc; i++) {
-    fprint(stdout, argv[i]);
+    print(argv[i]);
     if(i < argc-1)
       print(" ");
   }

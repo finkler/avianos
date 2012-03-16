@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <regex.h>
 
@@ -31,7 +32,7 @@ addpattern(char *s) {
 void
 grep(FILE *in, char *s, int pname) {
   char *buf;
-  int i, j, n;
+  int i, j;
   Pattern *r;
 
   j = 0;
@@ -39,21 +40,18 @@ grep(FILE *in, char *s, int pname) {
     for(r = c; r; r = r->next)
       if((Fflag && ((xflag && !strcmp(buf, r->exp.fix)) ||
         strstr(buf, r->exp.fix))) ||
-        !regexec(&r->exp.reg, buf, 0, nil, 0)) {
-        free(buf);
+        !regexec(&r->exp.reg, buf, 0, nil, 0))
         break;
-      }
-    free(buf);
     if((vflag && r) || (!vflag && !r))
       continue;
-    if(!rval)
+    if(rval == 0)
       rval = 1;
     if(cflag) {
       j++;
       continue;
     }
     if(lflag) {
-      printf("%s\n", s);
+      println(s);
       break;
     }
     if(qflag)
@@ -81,26 +79,24 @@ void
 parsefile(char *path) {
   char *buf;
   FILE *f;
-  size_t n;
 
   f = fopen(path, "r");
   if(f == nil)
     fatal(2, "can't open %s: %m", path);
-  while((buf = fgetln(f))) {
+  while((buf = fgetln(f)))
     addpattern(buf);
-    free(buf);
-  }
   fclose(f);
 }
 
 void
 parselist(char *s) {
-  size_t n;
+  uint n;
   char *p;
 
   if(s[0] == '\n')
     s++;
-  if((n = strlen(s)) > 0 && s[n-1] == '\n')
+  n = strlen(s);
+  if(n > 0 && s[n-1] == '\n')
     s[n-1] = '\0';
   while((p = strrchr(s, '\n'))) {
     *p++ = '\0';

@@ -1,5 +1,5 @@
+#include <u.h>
 #include <avian.h>
-#include <fcntl.h>
 #include <signal.h>
 #include <sys/reboot.h>
 #include <sys/stat.h>
@@ -68,7 +68,7 @@ spawntty(void) {
 
 void
 usage(void) {
-  fprint("usage: init\n", stderr);
+  fprint(stderr, "usage: init\n");
   exit(1);
 }
 
@@ -79,7 +79,8 @@ main(int argc, char *argv[]) {
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
+  }ARGEND
+  
   if(argc > 0)
     usage();
   if(getuid() || getpid() != 1)

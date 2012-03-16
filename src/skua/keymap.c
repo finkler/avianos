@@ -1,5 +1,5 @@
+#include <u.h>
 #include <avian.h>
-#include <fcntl.h>
 #include <linux/keyboard.h>
 #include <sys/ioctl.h>
 #include <sys/kd.h>
@@ -7,18 +7,17 @@
 #define CONS    "/dev/console"
 #define STR_LEN 512
 
-ushort keytab[MAX_NR_KEYMAPS][NR_KEYS];
-char functab[MAX_NR_FUNC][STR_LEN];
-struct kbdiacrs diactab;
 int fd;
+char functab[MAX_NR_FUNC][STR_LEN];
+ushort keytab[MAX_NR_KEYMAPS][NR_KEYS];
 
 char *
 escapestr(char *s) {
-  char buf[STR_LEN], *p;
+  char buf[STR_LEN+1], *p;
   int i;
 
   i = 0;
-  for(p = s; *p; p++) {
+  for(p = s; *p && i < STR_LEN; p++) {
     if(*p == '\\')
       buf[i++] = (char)strtol(++p, &p, 8);
     if(*p)
@@ -31,7 +30,9 @@ escapestr(char *s) {
 
 void
 setdiacs(void) {
-  if(ioctl(fd, KDSKBDIACR, &diactab))
+  static struct kbdiacrs kd;
+  
+  if(ioctl(fd, KDSKBDIACR, &kd))
     fatal(1, "ioctl: %m");
 }
 
@@ -82,7 +83,7 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  char buf[LINE_MAX], *e;
+  char *buf, *e;
   FILE *f;
   int i, j, n;
   int mod, st;
@@ -99,10 +100,7 @@ main(int argc, char *argv[]) {
   f = fopen(argv[0], "r");
   if(f == nil)
     fatal(1, "can't open %s: %m", argv[0]);
-  while(fgets(buf, LINE_MAX, f)) {
-    n = strlen(buf);
-    if(n > 0 && buf[n-1] == '\n')
-      buf[n-1] = '\0';
+  while((buf = fgetln(f))) {
     if(!strncmp(buf, "COMMENT", 7))
       continue;
     if(!strcmp(buf, "END")) {

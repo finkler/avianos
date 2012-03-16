@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/ioctl.h>
 
@@ -9,5 +10,5 @@ textwidth(void) {
 
   if(ioctl(1, TIOCGWINSZ, &w))
     return TEXTWIDTH;
-  return w.ws_col < TEXTWIDTH ? w.ws_col : TEXTWIDTH;
+  return min(w.ws_col, TEXTWIDTH);
 }

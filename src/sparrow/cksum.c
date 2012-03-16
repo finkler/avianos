@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 int rval;
@@ -6,7 +7,7 @@ void
 sum(FILE *in, char *s) {
   uchar buf[8192];
   uint32 digest;
-  size_t n, oct;
+  uint n, oct;
 
   digest = oct = 0;
   while((n = fread(buf, 1, sizeof buf, in)) > 0) {

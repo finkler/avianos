@@ -1,10 +1,11 @@
+#include <u.h>
 #include <avian.h>
 #include <errno.h>
 #include <sys/resource.h>
 
 void
 usage(void) {
-  fprint("usage: nice [-n increment] utility [argument...]\n", stderr);
+  fprint(stderr, "usage: nice [-n increment] utility [argument...]\n");
   exit(1);
 }
 
@@ -20,6 +21,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc == 0)
     usage();
   errno = 0;

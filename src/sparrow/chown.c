@@ -1,16 +1,15 @@
+#include <u.h>
 #include <avian.h>
 #include <grp.h>
 #include <ftw.h>
 #include <pwd.h>
 
-gid_t gid;
-int rval;
-uid_t uid;
+int gid, uid, rval;
 
 void
 usage(void) {
   fprint(stderr, "usage: chown [-h] owner[:group] file...\n"
-                 "       chown -R [-H|-L|-P] owner[:group] file...\n");
+    "       chown -R [-H|-L|-P] owner[:group] file...\n");
   exit(1);
 }
 
@@ -53,7 +52,7 @@ main(int argc, char *argv[]) {
   
   if(argc < 2)
     usage();
-  gid = (gid_t)-1;
+  gid = -1;
   rval = 0;
   p = strchr(argv[0], ':');
   if(p != nil) {

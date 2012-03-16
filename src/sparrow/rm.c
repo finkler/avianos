@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <errno.h>
 #include <ftw.h>
@@ -14,11 +15,8 @@ ask(const char *s) {
   if(!fflag && ((access(s, W_OK) && isatty(0)) || iflag)) {
     fprintf(stderr, "rm: remove %s?[n]: ", s);
     ans = fgetln(stdin);
-    if(*ans != 'y' && *ans != 'Y') {
-      free(ans);
+    if(*ans != 'y' && *ans != 'Y')
       return 0;
-    }
-    free(ans);
   }
   return 1;
 }
@@ -72,20 +70,20 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     p = basename(cleanname(argv[i]));
     if(!strcmp(p, ".") || !strcmp(p, ".."))
-      goto failed;
+      goto Failed;
     if(lstat(argv[i], &sb))
-      goto failed;
+      goto Failed;
     if(S_ISDIR(sb.st_mode)) {
       if(!rflag) {
         errno = EISDIR;
-        goto failed;
+        goto Failed;
       }
       if(nftw(argv[i], rmtree, 20, FTW_DEPTH | FTW_PHYS))
-        goto failed;
+        goto Failed;
     } else if(ask(argv[i]) && unlink(argv[i]))
-        goto failed;
+        goto Failed;
     continue;
-  failed:
+  Failed:
     if(!fflag)
       alert(errno ? "can't remove %s: %m" :
         "can't remove %s", argv[i]);

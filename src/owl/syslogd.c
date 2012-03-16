@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <signal.h>
 #include <syslog.h>
@@ -31,9 +32,9 @@ logkmsg(void) {
   out = fopen(KMSG_OFILE, "w");
   if(out == nil)
     _exit(1);
-  while(!feof(in)) {
+  for(;;) {
     n = st = 0;
-    while((c = fgetc(in)) && n < MSG_LEN) {
+    while((c = fgetc(in)) != EOF && n < MSG_LEN) {
       if(st == 0) {
         if(c == '>')
           st = 1;
@@ -44,9 +45,11 @@ logkmsg(void) {
         break;
     }
     buf[n] = '\0';
-    if(fprint(out, buf) < 0)
+    if(fprint(out, buf) == EOF)
       break;
   }
+  if(ferror(in))
+    alert("error reading %s: %m", KMSG_IFILE);
   _exit(1);
 }
 
@@ -55,7 +58,7 @@ run(void) {
   char buf[MSG_LEN+1];
   int fd, n;
   struct sockaddr_un in;
-  socklen_t len;
+  uint len;
 
   fd = socket(PF_UNIX, SOCK_DGRAM, 0);
   if(fd < 0)
@@ -76,11 +79,11 @@ run(void) {
 
 void
 srvmessage(char *buf) {
-  int prio;
+  uint prio;
   char *p;
 
   p = strchr(buf, '>');
-  if(p == nil || sscanf(buf, "<%d>", &prio) != 1)
+  if(p == nil || sscanf(buf, "<%u>", &prio) != 1)
     return;
   p++;
   switch(LOG_PRI(prio)) {
@@ -122,7 +125,7 @@ main(int argc, char *argv[]) {
   if(getuid())
     fatal(1, "permission denied");
   if(forkdaemon())
-    fatal(1, "can't start process: %m");
+    fatal(1, "can't run process: %m");
   if(!kflag)
     logkmsg();
   err = fopen(ERR_FILE, "a");

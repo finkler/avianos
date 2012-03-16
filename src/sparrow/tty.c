@@ -1,8 +1,9 @@
+#include <u.h>
 #include <avian.h>
 
 void
 usage(void) {
-  fprint("usage: tty\n", stderr);
+  fprint(stderr, "usage: tty\n");
   exit(1);
 }
 
@@ -14,9 +15,11 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc != 0)
     usage();
-  if(!(p = ttyname(0))) {
+  p = ttyname(0);
+  if(p == nil) {
     println("not a tty");
     exit(1);
   }

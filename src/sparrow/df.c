@@ -1,7 +1,8 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/statvfs.h>
 
-#define  PATH_MOUNTS  "/proc/mounts"
+#define PATH_MOUNTS "/proc/mounts"
 
 typedef struct FSInfo FSInfo;
 struct FSInfo {
@@ -11,7 +12,8 @@ struct FSInfo {
   FSInfo *next;
 };
 
-int blksiz, rval;
+long blksiz
+int rval;
 FSInfo *fsinf;
 
 void
@@ -39,7 +41,6 @@ parsemounts(void) {
   while((buf = fgetln(f))) {
     tm = malloc(sizeof(FSInfo));
     sscanf(buf, "%s %s", tm->name, tm->path);
-    free(buf);
     if(statvfs(tm->path, &tm->sb) || tm->sb.f_blocks == 0) {
       free(tm);
       continue;
@@ -72,13 +73,13 @@ main(int argc, char *argv[]) {
   case 'P':
     break;
   default:
-    fprint("usage: df [-kP] [file...]\n", stderr);
+    fprint(stderr, "usage: df [-kP] [file...]\n");
     exit(1);
   }ARGEND 
   
   rval = 0;
   parsemounts();
-  printf("%-12s %5d-blocks %12s %12s  Capacity  Mounted on\n",
+  printf("%-12s %5u-blocks %12s %12s  Capacity  Mounted on\n",
     "Filesystem", blksiz, "Used", "Available");
   if(argc == 0)
     for(r = fsinf; r; r = r->next)

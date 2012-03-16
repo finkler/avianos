@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <ftw.h>
 
@@ -6,7 +7,7 @@ ulong total, subtotal;
 
 void
 usage(void) {
-  fprint("usage: du [-a|-s] [-kx] [-H|-L] [file...]\n", stderr);
+  fprint(stderr, "usage: du [-a|-s] [-kx] [-H|-L] [file...]\n");
   exit(1);
 }
 
@@ -18,13 +19,13 @@ walk(const char *fpath, const struct stat *sb, int tflag,
   switch(tflag) {
   case FTW_DP:
     if(!sflag && ftwbuf->level) {
-      siz = (sb->st_size + subtotal + (blksiz - 1)) / blksiz;
+      siz = (sb->st_size+subtotal+(blksiz-1))/blksiz;
       printf("%-7lu %s\n", siz, fpath);
     }
     subtotal = 0;
     total += sb->st_size;
     if(!ftwbuf->level) {
-      siz = (total + (blksiz - 1)) / blksiz;
+      siz = (total+(blksiz-1))/blksiz;
       printf("%-7lu %s\n", siz, fpath);
       total = 0;
     }
@@ -32,7 +33,7 @@ walk(const char *fpath, const struct stat *sb, int tflag,
   case FTW_SL:
   case FTW_F:
     if(aflag || !ftwbuf->level) {
-      siz = (sb->st_size + (blksiz - 1)) / blksiz;
+      siz = (sb->st_size+(blksiz-1))/blksiz;
       printf("%-7lu %s\n", siz, fpath);
     }
     subtotal += sb->st_size;

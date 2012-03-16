@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 int cflag, lflag, wflag;
@@ -55,16 +56,18 @@ main(int argc, char *argv[]) {
     wflag = 1;
     break;
   default:
-    fprint("usage: wc [-c|-m] [-lw] [file...]\n", stderr);
+    fprint(stderr, "usage: wc [-c|-m] [-lw] [file...]\n");
     exit(1);
   }ARGEND 
+  
   if(!(cflag + lflag + wflag))
     cflag = lflag = wflag = 1;
   rval = 0;
   if(argc == 0)
     wc(stdin, "<stdin>");
   for(i = 0; i < argc; i++) {
-    if(!(f = fopen(argv[i], "r"))) {
+    f = fopen(argv[i], "r");
+    if(f == nil) {
       alert("can't open %s: %m", argv[i]);
       rval = 1;
       continue;

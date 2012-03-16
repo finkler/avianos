@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <time.h>
 
@@ -10,7 +11,7 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   char buf[512], *fmt;
-  time_t now;
+  long now;
   int uflag;
 
   uflag = 0;

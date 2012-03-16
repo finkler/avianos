@@ -1,12 +1,12 @@
+#include <u.h>
 #include <avian.h>
-#include <fcntl.h>
 #include <time.h>
 #include <utmpx.h>
 #include <sys/stat.h>
 
 void
 usage(void) {
-  fprint("usage: who [-mTu]\n", stderr);
+  fprint(stderr, "usage: who [-mTu]\n");
   exit(1);
 }
 
@@ -14,7 +14,7 @@ int
 main(int argc, char *argv[]) {
   char buf[32], c;
   int fd, mflag, Tflag, uflag;
-  time_t ltm;
+  long ltm;
   char path[PATH_MAX], *tty;
   struct stat sb;
   struct utmpx *utx;
@@ -35,29 +35,34 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc != 0)
     usage();
   setutxent();
   while((utx = getutxent())) {
-    if(utx->ut_type != USER_PROCESS || (mflag && strcmp(tty, utx->ut_line)))
+    if(utx->ut_type != USER_PROCESS ||
+      (mflag && strcmp(tty, utx->ut_line)))
       continue;
     ltm = utx->ut_tv.tv_sec;
     strftime(buf, sizeof buf, "%b %e %H:%M", localtime(&ltm));
     if(Tflag || uflag) {
       sprintf(path, "/dev/%s", utx->ut_line);
-      if((fd = open(path, O_RDONLY)) < 0 || fstat(fd, &sb))
+      fd = open(path, O_RDONLY);
+      if(fd < 0 || fstat(fd, &sb))
         c = '?';
       else if(!isatty(fd))
         c = ' ';
       else if(sb.st_mode & S_IWOTH)
         c = '+';
-      else c = '-';
+      else
+        c = '-';
     }
-    printf("%s\t%c %s\t%s", utx->ut_user, Tflag ? c : 0, utx->ut_line, buf);
+    printf("%s\t%c %s\t%s", utx->ut_user, Tflag ?
+      c : 0, utx->ut_line, buf);
     if(uflag)
       printf("\t%ld", c == '?' ? 0 :
         time(nil)-sb.st_atim.tv_sec);
-    print('\n');
+    print("\n");
   }
   endutxent();
 }

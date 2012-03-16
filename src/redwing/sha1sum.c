@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <hash.h>
 
@@ -7,7 +8,7 @@ void
 sum(FILE *in, char *s) {
   uchar buf[8192];
   char *p;
-  int n;
+  uint n;
   SHA1Digest *digest;
 
   digest = nil;
@@ -34,7 +35,7 @@ main(int argc, char *argv[]) {
 
   ARGBEGIN(""){
   default:
-    fprint("usage: sha1sum [file...]\n", stderr);
+    fprint(stderr, "usage: sha1sum [file...]\n");
     exit(1);
   }ARGEND
   

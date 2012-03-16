@@ -1,33 +1,37 @@
+#include <u.h>
 #include <avian.h>
-#include <fcntl.h>
 #include <sys/stat.h>
 
 int rval;
 
 void
 binaryp(char *s1, char *op, char *s2) {
-  int i1, i2;
+  char *e1, *e2;
+  long l1, l2;
 
   if(!strcmp(op, "=")) {
     rval = strcmp(s1, s2);
   } else if(!strcmp(op, "!=")) {
     rval = !strcmp(s1, s2);
   } else {
-    i1 = atoi(s1);
-    i2 = atoi(s2);
+    l1 = strtol(s1, &e1, 0);      
+    l2 = strtol(s2, &e2, 0);
+    if(*e1 != '\0' || *e2 != '\0')
+      fatal(2, "%s: not a number", *e1 ? s1 : s2);
     if(!strcmp(op, "-eq")) {
-      rval = i1 != i2;
+      rval = l1 != l2;
     } else if(!strcmp(op, "-ne")) {
-      rval = i1 == i2;
+      rval = l1 == l2;
     } else if(!strcmp(op, "-gt")) {
-      rval = i1 <= i2;
+      rval = l1 <= l2;
     } else if(!strcmp(op, "-ge")) {
-      rval = i1 < i2;
+      rval = l1 < l2;
     } else if(!strcmp(op, "-lt")) {
-      rval = i1 >= i2;
+      rval = l1 >= l2;
     } else if(!strcmp(op, "-le")) {
-      rval = i1 > i2;
-    } else fatal(2, "invalid operator %s", op);
+      rval = l1 > l2;
+    } else
+      fatal(2, "invalid operator %s", op);
   }
 }
 
@@ -36,42 +40,42 @@ unaryp(char *op, char *s) {
   int fd;
   struct stat sb;
 
-  if(!strcmp(op, "-b")) {
+  if(!strcmp(op, "-b"))
     rval = stat(s, &sb) || !S_ISBLK(sb.st_mode);
-  } else if(!strcmp(op, "-c")) {
+  else if(!strcmp(op, "-c"))
     rval = stat(s, &sb) || !S_ISCHR(sb.st_mode);
-  } else if(!strcmp(op, "-d")) {
+  else if(!strcmp(op, "-d"))
     rval = stat(s, &sb) || !S_ISDIR(sb.st_mode);
-  } else if(!strcmp(op, "-e")) {
+  else if(!strcmp(op, "-e"))
     rval = access(s, F_OK);
-  } else if(!strcmp(op, "-f")) {
+  else if(!strcmp(op, "-f"))
     rval = stat(s, &sb) || !S_ISREG(sb.st_mode);
-  } else if(!strcmp(op, "-g")) {
+  else if(!strcmp(op, "-g"))
     rval = stat(s, &sb) || !(sb.st_mode & S_ISGID);
-  } else if(!strcmp(op, "-h") || !strcmp(op, "-L")) {
+  else if(!strcmp(op, "-h") || !strcmp(op, "-L"))
     rval = lstat(s, &sb) || !S_ISLNK(sb.st_mode);
-  } else if(!strcmp(op, "-n")) {
+  else if(!strcmp(op, "-n"))
     rval = strlen(s) == 0;
-  } else if(!strcmp(op, "-p")) {
+  else if(!strcmp(op, "-p"))
     rval = stat(s, &sb) || !S_ISFIFO(sb.st_mode);
-  } else if(!strcmp(op, "-r")) {
+  else if(!strcmp(op, "-r"))
     rval = access(s, R_OK);
-  } else if(!strcmp(op, "-S")) {
+  else if(!strcmp(op, "-S"))
     rval = stat(s, &sb) || !S_ISSOCK(sb.st_mode);
-  } else if(!strcmp(op, "-s")) {
+  else if(!strcmp(op, "-s"))
     rval = stat(s, &sb) || sb.st_size == 0;
-  } else if(!strcmp(op, "-t")) {
+  else if(!strcmp(op, "-t"))
     rval = (fd = open(s, O_RDONLY, 0)) < 0 || !isatty(fd);
-  } else if(!strcmp(op, "-u")) {
-    rval = stat(s, &sb)
-      !(sb.st_mode & S_ISUID);
-  } else if(!strcmp(op, "-w")) {
+  else if(!strcmp(op, "-u"))
+    rval = stat(s, &sb) || !(sb.st_mode & S_ISUID);
+  else if(!strcmp(op, "-w"))
     rval = access(s, W_OK);
-  } else if(!strcmp(op, "-x")) {
+  else if(!strcmp(op, "-x"))
     rval = access(s, X_OK);
-  } else if(!strcmp(op, "-z")) {
+  else if(!strcmp(op, "-z"))
     rval = stat(s, &sb) || sb.st_size > 0;
-  } else fatal(2, "invalid operator %s", op);
+  else
+    fatal(2, "invalid operator %s", op);
 }
 
 int
@@ -97,7 +101,8 @@ main(int argc, char *argv[]) {
     rval = argv[0][0] == '\0';
   } else if(argc == 0) {
     rval = 1;
-  } else fatal(2, "argument list too long");
+  } else
+    fatal(2, "argument list too long");
   rval = rval ? 1 : 0;
   exit(rval^not);
 }

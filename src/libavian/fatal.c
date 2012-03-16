@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 static void vlog(char *, va_list);

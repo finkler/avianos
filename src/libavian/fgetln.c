@@ -1,30 +1,15 @@
+#include <u.h>
 #include <avian.h>
-
-#define INCR 128
 
 char *
 fgetln(FILE *stream) {
-  char *buf, c;
-  int cap, len;
+  static char line[LINE_MAX];
+  int n;
   
-  cap = INCR;
-  len = 0;
-  buf = malloc(cap);
-  if(buf == nil)
+  if(fgets(line, LINE_MAX, stream) == nil)
     return nil;
-  for(;;) {
-    c = fgetc(stream);
-    if(c == EOF || c == '\n')
-      break;
-    if(len == cap) {
-      cap += INCR;
-      buf = realloc(buf, cap);
-    }
-    buf[len++] = c;
-  }
-  buf[len] = '\0';
-  if(len > 0 && !ferror(stream))
-    return buf;
-  free(buf);
-  return nil;
+  n = strlen(line);
+  if(n > 0 && line[n-1] == '\n')
+    line[n-1] = '\0';
+  return line;
 }

@@ -1,16 +1,17 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/stat.h>
 
 void
 usage(void) {
-  fprint("usage: mkfifo [-m mode] file...\n", stderr);
+  fprint(stderr, "usage: mkfifo [-m mode] file...\n");
   exit(1);
 }
 
 int
 main(int argc, char *argv[]) {
   int i, rval;
-  mode_t m;
+  uint m;
 
   m = S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
   ARGBEGIN("m:"){
@@ -20,6 +21,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc < 1)
     usage();
   for(i = 0; i < argc; i++)

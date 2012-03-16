@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/mount.h>
 
@@ -9,48 +10,51 @@ typedef struct {
 char *data, *type;
 int flags;
 Map m[] = {
-  { "bind", MS_BIND },
-  { "defaults", 0 },
-  //{ "dirsync", MS_DIRSYNC },
-  { "mandlock", MS_MANDLOCK },
-  { "move", MS_MOVE }, 
-  { "noatime", MS_NOATIME },
-  { "nodev", MS_NODEV }, 
-  { "nodiratime", MS_NODIRATIME },
-  { "noexec", MS_NOEXEC },
-  { "nosuid", MS_NOSUID },
-  { "ro", MS_RDONLY },
-  //{ "relatime", MS_RELATIME }, 
-  { "remount", MS_REMOUNT }, 
-  { "silent", MS_SILENT }, 
-  //{ "strictatime", MS_STRICTATIME }, 
-  { "sync", MS_SYNCHRONOUS }, 
-  { nil, 0 }
+  {"bind",        MS_BIND},
+  {"defaults",    0},
+  {"dirsync",     MS_DIRSYNC},
+  {"mandlock",    MS_MANDLOCK},
+  {"move",        MS_MOVE}, 
+  {"noatime",     MS_NOATIME},
+  {"nodev",       MS_NODEV}, 
+  {"nodiratime",  MS_NODIRATIME},
+  {"noexec",      MS_NOEXEC},
+  {"nosuid",      MS_NOSUID},
+  {"ro",          MS_RDONLY},
+  {"relatime",    MS_RELATIME}, 
+  {"remount",     MS_REMOUNT}, 
+  {"silent",      MS_SILENT}, 
+  {"strictatime", MS_STRICTATIME}, 
+  {"sync",        MS_SYNCHRONOUS}, 
+  {nil, 0}
 };
 
 void
 parseopts(char *s) {
-  int i;
-  char *p;
+  char *key, *p;
+  Map *r;
 
-  data = calloc(strlen(s)+1, 1);
-  p = strtok(s, ",");
+  data = malloc(strlen(s)+1);
+  *data = '\0';
+  p = data;
+  key = strtok(s, ",");
   for(;;) {
-    for(i = 0; m[i].s; i++)
-      if(!strcmp(m[i].s, p)) {
-        flags |= m[i].v;
+    for(r = m; r->s; r++)
+      if(!strcmp(r->s, key)) {
+        flags |= r->v;
         break;
       }
-    if(!m[i].s) {
-      if(*data)
-        strcat(data, ",");
-      strcat(data, p);
+    if(r->s != nil) {
+      if(*data != '\0')
+        *p++ = ',';
+      strcpy(p, key);
+      p += strlen(p);
     }
-    p = strtok(nil, ",");
-    if(p == nil)
+    key = strtok(nil, ",");
+    if(key == nil)
       break;
   }
-  if(*data == 0) {
+  if(*data == '\0') {
     free(data);
     data = nil;
   }

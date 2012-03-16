@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <ftw.h>
 #include <sys/stat.h>

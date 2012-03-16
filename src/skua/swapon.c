@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/swap.h>
 
@@ -15,11 +16,11 @@ main(int argc, char *argv[]) {
   flags = prio = 0;
   ARGBEGIN("dp:"){
   case 'd':
-    //flags |= SWAP_FLAG_DISCARD;
+    flags |= SWAP_FLAG_DISCARD;
     break;
   case 'p':
     prio = atoi(optarg);
-    flags |= SWAP_FLAG_PREFER | ((prio << SWAP_FLAG_PRIO_SHIFT) &
+    flags |= SWAP_FLAG_PREFER|((prio<<SWAP_FLAG_PRIO_SHIFT)&
       SWAP_FLAG_PRIO_MASK);
     break;
   default:

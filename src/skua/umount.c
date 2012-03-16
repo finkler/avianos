@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/mount.h>
 
@@ -14,16 +15,16 @@ main(int argc, char *argv[]) {
   flags = 0;
   ARGBEGIN("dfLm"){
   case 'd':
-    //flags |= MNT_DETACH;
+    flags |= MNT_DETACH;
     break;
   case 'f':
     flags |= MNT_FORCE;
     break;
   case 'L':
-    //flags |= UMOUNT_NOFOLLOW;
+    flags |= UMOUNT_NOFOLLOW;
     break;
   case 'm':
-    //flags |= MNT_EXPIRE;
+    flags |= MNT_EXPIRE;
     break;
   default:
     usage();

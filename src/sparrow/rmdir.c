@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <libgen.h>
 
@@ -8,7 +9,7 @@ cmp(const void *v1, const void *v2) {
 
 void
 usage(void) {
-  fprint("usage: rmdir [-p] dir...\n", stderr);
+  fprint(stderr, "usage: rmdir [-p] dir...\n");
   exit(1);
 }
 
@@ -25,6 +26,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc < 1)
     usage();
   rval = 0;

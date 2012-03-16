@@ -30,7 +30,8 @@ void
 initarr(void) {
   if(byte)
     chr = malloc(n);
-  else line = malloc(n*sizeof(char *));
+  else
+    line = malloc(n*sizeof(char *));
 }
 
 void
@@ -39,7 +40,8 @@ printarr(void) {
 
   if(byte)
     println(chr);
-  else for(i = 0; i < n; i++)
+  else
+    for(i = 0; i < n; i++)
       println(line[i]);
 }
 
@@ -64,7 +66,8 @@ void
 setarr(int i, char *p) {
   if(byte)
     chr[i] = *p;
-  else line[i] = strdup(p);
+  else
+    line[i] = strdup(p);
 }
 
 void

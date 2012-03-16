@@ -1,16 +1,17 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/utsname.h>
 
-#define SYSNAME 0x01
+#define SYSNAME  0x01
 #define NODENAME 0x02
-#define RELEASE 0x04
-#define VERSION 0x08
-#define MACHINE 0x10
-#define ALL 0x1f
+#define RELEASE  0x04
+#define VERSION  0x08
+#define MACHINE  0x10
+#define ALL      0x1f
 
 void
 usage(void) {
-  fprint("usage: uname [-amnrsv]\n", stderr);
+  fprint(stderr, "usage: uname [-amnrsv]\n");
   exit(1);
 }
 
@@ -42,6 +43,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc != 0)
     usage();
   if(uname(&u))
@@ -49,27 +51,27 @@ main(int argc, char *argv[]) {
   sp = 0;
   if(!mask || mask & SYSNAME) {
     sp++;
-    fprint(u.sysname, stdout);
+    print(u.sysname);
   }
   if(mask & NODENAME) {
     if(sp++)
-      print(' ');
-    fprint(u.nodename, stdout);
+      print(" ");
+    print(u.nodename);
   }
   if(mask & RELEASE) {
     if(sp++)
-      print(' ');
-    fprint(u.release, stdout);
+      print(" ");
+    print(u.release);
   }
   if(mask & VERSION) {
     if(sp++)
-      print(' ');
-    fprint(u.version, stdout);
+      print(" ");
+    print(u.version);
   }
   if(mask & MACHINE) {
     if(sp++)
-      print(' ');
-    fprint(u.machine, stdout);
+      print(" ");
+    print(u.machine);
   }
-  print('\n');
+  print("\n");
 }

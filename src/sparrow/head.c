@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 int rval;
@@ -8,7 +9,6 @@ head(FILE *in, char *s, int lines) {
 
   while(lines > 0 && (buf = fgetln(in))) {
     println(buf);
-    free(buf);
     lines--;
   }
   if(ferror(in)) {

@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 char fmt[4];
@@ -46,14 +47,17 @@ main(int argc, char *argv[]) {
     sprintf(fmt, "%%%c ", *optarg);
     break;
   default:
-    fprint("usage: strings [-a] [-t format] [-n number]  [file...]\n", stderr);
+    fprint(stderr,
+      "usage: strings [-a] [-t format] [-n number]  [file...]\n");
     exit(1);
   }ARGEND 
+  
   rval = 0;
   if(argc == 0)
     strings(stdin, "<stdin>");
   for(i = 0; i < argc; i++) {
-    if(!(f = fopen(argv[i], "r"))) {
+    f = fopen(argv[i], "r");
+    if(f == nil) {
       alert("can't open %s: %m", argv[i]);
       rval = 1;
       continue;

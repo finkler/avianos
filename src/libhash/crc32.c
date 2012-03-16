@@ -1,3 +1,4 @@
+#include <u.h>
 #include <hash.h>
 
 uint32 IEEEtab[] = {

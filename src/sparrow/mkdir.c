@@ -1,9 +1,10 @@
+#include <u.h>
 #include <avian.h>
 #include <errno.h>
 #include <sys/stat.h>
 
 int
-mkpath(char *path, mode_t mode) {
+mkpath(char *path, uint mode) {
   char buf[PATH_MAX];
   int i;
 
@@ -29,14 +30,14 @@ mkpath(char *path, mode_t mode) {
 
 void
 usage(void) {
-  fprint("usage: mkdir [-p] [-m mode] dir...\n", stderr);
+  fprint(stderr, "usage: mkdir [-p] [-m mode] dir...\n");
   exit(1);
 }
 
 int
 main(int argc, char *argv[]) {
   int i, pflag, rval;
-  mode_t m;
+  uint m;
 
   m = S_IRWXU|S_IRWXG|S_IRWXO;
   pflag = 0;
@@ -50,6 +51,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc < 1)
     usage();
   rval = 0;

@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <pwd.h>
 #include <sechash.h>
@@ -23,7 +24,6 @@ auth(char *user) {
   pwd = getpwnam(user);
   if(pwd == nil)
     fatal(1, "unknown user %s", user);
-  free(user);
   sp = getspnam(pwd->pw_name);
   if(sp != nil) {
     pass = readcons("password", nil, 1);
@@ -31,7 +31,6 @@ auth(char *user) {
     p = sha1pickle(digest);
     if(strcmp(sp->sp_pwdp, p))
       fatal(1, "wrong password");
-    free(pass);
     free(digest);
     free(p);
   }
@@ -49,7 +48,7 @@ setup(void) {
   setgid(pwd->pw_gid);
   setuid(pwd->pw_uid);
   if(chdir(pwd->pw_dir)) {
-    alert("can't change to directory %s: %m", pwd->pw_dir);
+    alert("can't change directory %s: %m", pwd->pw_dir);
     if(chdir("/"))
       exit(1);
   }
@@ -57,7 +56,7 @@ setup(void) {
 
 void
 usage(void) {
-  fprint("usage: login [user]\n", stderr);
+  fprint(stderr, "usage: login [user]\n");
   exit(1);
 }
 
@@ -67,6 +66,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc > 1)
     usage();
   if(!isatty(0))
@@ -74,7 +74,7 @@ main(int argc, char *argv[]) {
   setpriority(PRIO_PROCESS, 0, 0);
   signal(SIGQUIT, SIG_IGN);
   signal(SIGINT, SIG_IGN);
-  auth(argc ? strdup(argv[0]) : nil);
+  auth(argv[0]);
   signal(SIGQUIT, SIG_DFL);
   signal(SIGINT, SIG_DFL);
   signal(SIGTSTP, SIG_IGN);

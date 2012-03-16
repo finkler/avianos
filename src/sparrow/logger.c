@@ -1,33 +1,36 @@
+#include <u.h>
 #include <avian.h>
 #include <syslog.h>
 
 void
 usage(void) {
-  fprint("usage: logger string...\n", stderr);
+  fprint(stderr, "usage: logger string...\n");
   exit(1);
 }
 
 int
 main(int argc, char *argv[]) {
-  char *buf;
-  int i, n;
+  char *buf, *p;
+  int i, len;
 
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
+  }ARGEND
+  
   if(argc < 1)
     usage();
-  for(i = n = 0; i < argc; i++)
-    n += strlen(argv[i]) + 1;
-  buf = malloc(n);
+  len = 1;
   for(i = 0; i < argc; i++)
-    if(i == 0) {
-      strcpy(buf, argv[i]);
-    } else {
-      strcat(buf, " ");
-      strcat(buf, argv[i]);
-    }
+    len += strlen(argv[i])+1;
+  buf = malloc(len);
+  p = buf;
+  for(i = 0; i < argc; i++) {
+    if(i > 0)
+      *p++ = ' ';
+    strcpy(p, argv[i])
+    p += strlen(p);
+  }
   openlog(getlogin(), 0, LOG_USER);
   syslog(LOG_NOTICE, "%s", buf);
   closelog();

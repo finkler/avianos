@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 char *
@@ -13,8 +14,9 @@ suffix(int n, int len) {
 
 void
 usage(void) {
-  fprint("usage: split [-l line_count] [-a suffix_length] [file[suffix]]\n"
-        "       split -b n[k|m] [-a suffix_length] [file[suffix]]\n", stderr);
+  fprint(stderr, "usage: split [-l line_count] [-a suffix_length] "
+    "[file[suffix]]\n"
+    "       split -b n[k|m] [-a suffix_length] [file[suffix]]\n");
   exit(1);
 }
 
@@ -48,6 +50,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc > 2)
     usage();
   if(argc > 1)
@@ -59,7 +62,8 @@ main(int argc, char *argv[]) {
     fatal(1, "suffix too long");
   for(i = 0; !feof(stdin); i++) {
     sprintf(buf, "%s%s", stem, suffix(i, slen));
-    if(!(f = fopen(buf, "w+")))
+    f = fopen(buf, "w+");
+    if(f == nil)
       fatal(1, "can't open %s: %m", buf);
     while((c = fgetc(stdin)) != EOF) {
       if(fputc(c, f) != c)

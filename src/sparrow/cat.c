@@ -5,7 +5,7 @@ int rval;
 void
 cat(FILE *in, char *s) {
   char buf[8192];
-  size_t n;
+  uint n;
 
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     if(fwrite(buf, 1, n, stdout) != n) {

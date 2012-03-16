@@ -1,10 +1,11 @@
+#include <u.h>
 #include <avian.h>
 
 int num, off;
 
 char *
 skip(char *s) {
-  size_t n;
+  uint n;
   int i;
 
   n = strlen(s);
@@ -30,7 +31,7 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  char buf[2][LINE_MAX+1];
+  char *buf[2][LINE_MAX+1];
   int cflag, dflag, uflag;
   int n;
 
@@ -75,12 +76,12 @@ main(int argc, char *argv[]) {
     if(!(n > 1 && uflag)) {
       if(cflag)
         printf("%4d ", n);
-      printf("%s\n", buf[0]);
+      println(buf[0]);
     }
     if(!(n > 1 && dflag)) {
       if(cflag)
-        printf("    1 ");
-      printf("%s\n", buf[1]);
+        print("    1 ");
+      println(buf[1]);
     }
   }
 }

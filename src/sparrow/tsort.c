@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 
 #define INCR  100
@@ -48,7 +49,7 @@ parsefile(char *s) {
 
   E = nil;
   delim = " \t\n";
-  while((buf = fgets(stdin))) {
+  while((buf = fgetln(stdin))) {
     p1 = strtok(buf, delim);
     p2 = strtok(nil, delim);
     while(p1 && p2) {
@@ -58,7 +59,6 @@ parsefile(char *s) {
     }
     if(p1 && !p2)
       fatal(1, "odd number of items");
-    free(buf);
   }
   if(ferror(stdin))
     fatal(1, "error reading %s: %m", s);
@@ -90,7 +90,9 @@ removeedge(char *s) {
       free(r2->u);
       free(r2->v);
       free(r2);
-    } else r1 = r1->next;
+    } else {
+      r1 = r1->next;
+    }
   if(E && !strcmp(E->u, p)) {
     r1 = E->next;
     free(E->u);

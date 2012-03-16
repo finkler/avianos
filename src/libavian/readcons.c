@@ -1,28 +1,47 @@
+#include <u.h>
 #include <avian.h>
 #include <termios.h>
 
-char *
-readcons(char *p, char *def, int secret) {
-  char *buf;
+int
+echo(int fd, int toggle) {
   struct termios tc;
+  int was;
+  
+  if(tcgetattr(fd, &tc) < 0)
+    return -1;
+  was = tc.c_lflag&ECHO;
+  tc.c_lflag &= ~ECHO;
+  tc.c_lflag |= toogle;
+  if(tcsetattr(0, TCSANOW, &tc) < 0)
+    return -1;
+  return was;
+}
 
-  if(!isatty(0) || !isatty(2))
+char *
+readcons(char *prompt, char *def, int secret) {
+  char *line;
+  int set;
+  FILE *tty;
+
+  tty = fopen("/dev/tty", "r+");
+  if(tty == nil)
     return nil;
-  if(def && *def)
-    fprintf(stderr, "%s[%s]: ", p, def);
+  if(def != nil)
+    fprintf(tty, "%s[%s]: ", prompt, def);
   else
-    fprintf(stderr, "%s: ", p);
-  fflush(stderr);
+    fprintf(tty, "%s: ", prompt);
+  fflush(tty);
+  set = -1;
   if(secret) {
-    tcgetattr(0, &tc);
-    tc.c_lflag &= ~ECHO;
-    tcsetattr(0, TCSAFLUSH, &tc);
+    set = echo(fileno(tty), 0);
+    if(set == -1)
+      return nil;
   }
-  buf = fgetln(stdin);
+  line = fgetln(tty);
   if(secret) {
-    tc.c_lflag |= ECHO;
-    tcsetattr(0, TCSAFLUSH, &tc);
-    fprint(stderr, "\n");
+    echo(fileno(tty), set);
+    fprint(tty, "\n");
   }
-  return buf;
+  fclose(tty);
+  return line;
 }

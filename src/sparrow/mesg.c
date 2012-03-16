@@ -1,9 +1,10 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/stat.h>
 
 void
 usage(void) {
-  fprint("usage: mesg [y|n]\n", stderr);
+  fprint(stderr, "usage: mesg [y|n]\n");
   exit(1);
 }
 
@@ -18,7 +19,9 @@ main(int argc, char *argv[]) {
   }ARGEND 
   if(argc > 1)
     usage();
-  if(!(tty = ttyname(0)))
+  
+  tty = ttyname(0);
+  if(tty == nil)
     fatal(1, "ttyname: %m");
   if(stat(tty, &sb))
     fatal(1, "stat %s: %m", tty);

@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/stat.h>
 
@@ -9,11 +10,11 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int c[2], i, lflag;
-  int rval, sflag;
+  int c[2], i, rval;
+  int lflag, sflag;
   FILE *f[2];
   struct stat sb[2];
-  off_t byte, line;
+  vlong byte, line;
 
   lflag = sflag = 0;
   ARGBEGIN("ls"){
@@ -64,10 +65,10 @@ main(int argc, char *argv[]) {
       if(sflag)
         exit(1);
       if(lflag) {
-        printf("%llu %o %o\n", byte, c[0], c[1]);
+        printf("%lld %o %o\n", byte, c[0], c[1]);
         rval = 1;
       } else {
-        printf("%s %s differ: char %llu, line %llu\n",
+        printf("%s %s differ: char %lld, line %lld\n",
           argv[0], argv[1], byte, line);
         exit(1);
       }

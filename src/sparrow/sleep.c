@@ -1,9 +1,10 @@
+#include <u.h>
 #include <avian.h>
 #include <signal.h>
 
 void
 usage(void) {
-  fprint("usage: sleep time\n", stderr);
+  fprint(stderr, "usage: sleep time\n");
   exit(1);
 }
 
@@ -13,6 +14,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc != 1)
     usage();
   signal(SIGALRM, SIG_IGN);

@@ -1,4 +1,4 @@
-#include <avian.h>
+#include <u.h>
 #include <hash.h>
 
 #define LOR32(shift,x)\
@@ -55,15 +55,15 @@ pad(SHA1Digest *state) {
 
 void
 process(SHA1Digest *state) {
-  uint32_t A, B, C, D, E, K[4], W[80];
-  uint32_t temp;
+  uint32 A, B, C, D, E, K[4], W[80];
+  uint32 temp;
   int i;
 
   for(i = 0; i < 16; i++) {
-    W[i] = ((uint32_t)state->msg[i*4]) << 24;
-    W[i] |= ((uint32_t)state->msg[i*4+1]) << 16;
-    W[i] |= ((uint32_t)state->msg[i*4+2]) << 8;
-    W[i] |= ((uint32_t)state->msg[i*4+3]);
+    W[i] = ((uint32)state->msg[i*4]) << 24;
+    W[i] |= ((uint32)state->msg[i*4+1]) << 16;
+    W[i] |= ((uint32)state->msg[i*4+2]) << 8;
+    W[i] |= ((uint32)state->msg[i*4+3]);
   }
   for(i = 16; i < 80; i++)
     W[i] = LOR32(1, W[i-3]^W[i-8]^W[i-14]^W[i-16]);
@@ -143,8 +143,8 @@ sha1(uchar *data, int len, SHA1Digest *state) {
 
 char *
 sha1pickle(SHA1Digest *state) {
-  char *p;
   SHA1Digest d;
+  char *p;
   
   memcpy(&d, state, sizeof(SHA1Digest));
   pad(&d);

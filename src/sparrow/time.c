@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <errno.h>
 #include <sys/times.h>
@@ -6,7 +7,7 @@
 
 void
 usage(void) {
-  fprint("usage: time [-p] utility [argument...]\n", stderr);
+  fprint(stderr, "usage: time [-p] utility [argument...]\n");
   exit(1);
 }
 
@@ -14,7 +15,7 @@ int
 main(int argc, char *argv[]) {
   double clk_tck;
   int pflag, rval;
-  clock_t st_time, en_time;
+  ulong st_time, en_time;
   struct tms st_cpu, en_cpu;
 
   pflag = 0;
@@ -25,6 +26,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND 
+  
   if(argc < 1)
     usage();
   st_time = times(&st_cpu);
@@ -37,6 +39,9 @@ main(int argc, char *argv[]) {
   en_time = times(&en_cpu);
   clk_tck = sysconf(_SC_CLK_TCK);
   fprintf(stderr, pflag ? "real %9.2f\nuser %9.2f\nsys %9.2f\n" :
-    "%9.2f real %9.2f user %9.2f sys\n", (double)(en_time-st_time)/clk_tck, (double)en_cpu.tms_cutime/clk_tck, (double)en_cpu.tms_cstime/clk_tck);
+    "%9.2f real %9.2f user %9.2f sys\n",
+    (double)(en_time-st_time)/clk_tck,
+    (double)en_cpu.tms_cutime/clk_tck,
+    (double)en_cpu.tms_cstime/clk_tck);
   exit(WEXITSTATUS(rval));
 }

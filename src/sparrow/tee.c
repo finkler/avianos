@@ -1,3 +1,4 @@
+#include <u.h>
 #include <avian.h>
 #include <signal.h>
 
@@ -6,7 +7,7 @@
 int
 main(int argc, char *argv[]) {
   int aflag, i, n, rval;
-  char buf[LINE_MAX];
+  char *buf;
   FILE *f[FILE_MAX];
 
   aflag = 0;
@@ -18,19 +19,24 @@ main(int argc, char *argv[]) {
     signal(SIGINT, SIG_IGN);
     break;
   default:
-    fprint("usage: tee [-ai] [file...]\n", stderr);
+    fprint(stderr, "usage: tee [-ai] [file...]\n");
     exit(1);
   }ARGEND 
+  
   rval = 0;
-  for(n = 0; n < argc && n < FILE_MAX-1; n++)
-    if(!(f[n] = fopen(argv[n], aflag ? "a" : "w"))) {
+  n = 0;
+  for(i = 0; i < argc && n < FILE_MAX-1; i++) {
+    f[n++] = fopen(argv[i], aflag ? "a" : "w");
+    if(f[n] == nil) {
       alert("can't open %s: %m", argv[n]);
       rval = 1;
+      n--;
     }
+  }
   f[n++] = stdout;
-  while(fgets(buf, LINE_MAX, stdin))
+  while((buf = fgetln(stdin)))
     for(i = 0; i < n; i++) {
-      fprint(buf, f[i]);
+      fprintln(f[i], buf);
       if(ferror(f[i])) {
         alert("error writing %s: %m", argv[i]);
         rval = 1;
