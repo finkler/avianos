@@ -11,7 +11,7 @@ elif [ $# -gt 1 ]; then
   exit 1
 fi
 
-logname $user &>/dev/null
+id $user &>/dev/null
 if [ $? -eq 1 ]; then
   echo "passwd: unknown user $user" 1>&2
   exit 1

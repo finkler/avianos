@@ -85,8 +85,8 @@ int
 main(int argc, char *argv[]) {
   char *buf, *e;
   FILE *f;
-  int i, j, n;
-  int mod, st;
+  int i, j;
+  int mod, start;
   ushort val;
 
   ARGBEGIN(""){
@@ -96,17 +96,17 @@ main(int argc, char *argv[]) {
   
   if(argc != 1)
     usage();
-  i = j = mod = st = 0;
   f = fopen(argv[0], "r");
   if(f == nil)
     fatal(1, "can't open %s: %m", argv[0]);
+  i = j = mod = start = 0;
   while((buf = fgetln(f))) {
     if(!strncmp(buf, "COMMENT", 7))
       continue;
     if(!strcmp(buf, "END")) {
-      if(!st)
+      if(!start)
         fatal(1, "syntax error: missing BEGIN");
-      st = 0;
+      start = 0;
       if(i > 0)
         while(i < NR_KEYS)
           keytab[mod][i++] = K_HOLE;
@@ -114,21 +114,21 @@ main(int argc, char *argv[]) {
     }
     if(!strcmp(buf, "BEGIN")) {
       i = 0;
-      if(st)
+      if(start)
         fatal(1, "syntax error: missing END");
-      st = 1;
+      start = 1;
       continue;
     }
-    if(st == 1) {
+    if(start == 1) {
       if(strncmp(buf, "MODIFIER ", 9))
         fatal(1, "syntax error: missing MODIFIER");
       mod = strtol(buf+9, &e, 10);
       if(*e != 0 || mod >= MAX_NR_KEYMAPS)
         fatal(1, "syntax error: invalid modifier %s", buf+9);
-      st++;
+      start++;
       continue;
     }
-    if(st) {
+    if(start) {
       if(!strcmp(buf, "UNDEF")) {
         val = K_HOLE;
       } else if(!strncmp(buf, "STRING ", 7)) {
@@ -151,9 +151,9 @@ main(int argc, char *argv[]) {
   if(ferror(f))
     fatal(1, "error reading %s: %m", argv[0]);
   fclose(f);
-  if(st)
+  if(start)
     fatal(1, "syntax error: missing END");
-  fd = open(CONS, O_RDONLY);
+  fd = open(CONS, O_WRONLY);
   if(fd < 0)
     fatal(1, "can't open %s: %m", CONS);
   setdiacs();

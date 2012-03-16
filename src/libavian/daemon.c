@@ -8,7 +8,7 @@
 
 static void __exitdaemon(void);
 
-static char *path[PATH_MAX];
+static char path[PATH_MAX];
 
 int
 forkdaemon(void) {
@@ -31,7 +31,7 @@ forkdaemon(void) {
   freopen("/dev/null", "w", stdout);
   freopen("/dev/null", "r+", stderr);
   snprintf(path, PATH_MAX, "%s/%s.pid",
-    _RUNPATH, argv0);
+    RUNPATH, argv0);
   fd = creat(path, 0644);
   if(fd < 0) {
     if(errno == EEXIST)

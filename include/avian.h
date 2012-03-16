@@ -18,7 +18,7 @@ extern char *argv0;
 
 /* Error handling */
 void alert(char *, ...);
-void fatal(int, char *, ...);´
+void fatal(int, char *, ...);
 
 /* Console I/O */
 char *cleanname(char *);
