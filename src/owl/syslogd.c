@@ -62,12 +62,12 @@ run(void) {
 
   fd = socket(PF_UNIX, SOCK_DGRAM, 0);
   if(fd < 0)
-		fatal(1, "can't open socket: %m");
-	in.sun_family = AF_UNIX;
+    fatal(1, "can't open socket: %m");
+  in.sun_family = AF_UNIX;
   strcpy(in.sun_path, "/dev/log");
   len = sizeof in.sun_family + strlen(in.sun_path);
   if(bind(fd, (struct sockaddr *)&in, len))
-		fatal(1, "can't connect socket /dev/log: %m");
+    fatal(1, "can't connect socket /dev/log: %m");
   while((n = recvfrom(fd, buf, MSG_LEN, 0, nil, nil)) > 0) {
     if(buf[n-1] == '\n')
       n--;

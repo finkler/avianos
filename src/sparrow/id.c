@@ -58,11 +58,11 @@ findgroups(char *s) {
 
 void
 usage(void) {
-	fprint(stderr, "usage: id [user]\n"
+  fprint(stderr, "usage: id [user]\n"
     "       id -G [-n] [user]\n"
     "       id -g [-nr] [user]\n"
     "       id -u [-nr] [user]\n");
-	exit(1);
+  exit(1);
 }
 
 int
@@ -73,27 +73,27 @@ main(int argc, char *argv[]) {
   int i, j;
   
   Gflag = gflag = nflag = rflag = uflag = 0;
-	ARGBEGIN("Ggnru"){
-	case 'G':
+  ARGBEGIN("Ggnru"){
+  case 'G':
     Gflag = 1;
-		break;
-	case 'g':
+    break;
+  case 'g':
     gflag = 1;
-		break;
-	case 'n':
+    break;
+  case 'n':
     nflag = 1;
-		break;
-	case 'r':
+    break;
+  case 'r':
     rflag = 1;
-		break;
-	case 'u':
+    break;
+  case 'u':
      uflag = 1;
     break;
-	default:
-		usage();
-	}ARGEND
+  default:
+    usage();
+  }ARGEND
 
-	if(argc > 1 || (Gflag+gflag+uflag) > 1 || (Gflag+rflag) > 1 ||
+  if(argc > 1 || (Gflag+gflag+uflag) > 1 || (Gflag+rflag) > 1 ||
     (!(Gflag+gflag+uflag) && (nflag+rflag)))
     usage();
   if(argc == 1) {

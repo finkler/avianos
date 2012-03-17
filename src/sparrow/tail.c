@@ -53,8 +53,8 @@ readinput(void) {
 
 void
 usage(void) {
-	fprint(stderr, "usage: tail [-f] [-c number|-n number] [file]\n");
-	exit(1);
+  fprint(stderr, "usage: tail [-f] [-c number|-n number] [file]\n");
+  exit(1);
 }
 
 int
@@ -62,33 +62,33 @@ main(int argc, char *argv[]) {
   int fflag, i, head, n;
   char *p;
 
-	for(i = 1; i < argc && strcmp(argv[i], "--"); i++)
-		if(argv[i][0] == '+' && !isdigit(argv[i][1]))
-			argv[i][0] = '-';
-	byte = fflag = head = 0;
+  for(i = 1; i < argc && strcmp(argv[i], "--"); i++)
+    if(argv[i][0] == '+' && !isdigit(argv[i][1]))
+      argv[i][0] = '-';
+  byte = fflag = head = 0;
   len = 10;
-	ARGBEGIN("c:fn:"){
-	case 'c':
+  ARGBEGIN("c:fn:"){
+  case 'c':
     byte = 1;
   case 'n':
-		switch(*optarg) {
-		case '+':
-			head = 1;
-		case '-':
-			optarg++;
-		}
+    switch(*optarg) {
+    case '+':
+      head = 1;
+    case '-':
+      optarg++;
+    }
     len = atoi(optarg);
-		break;
-	case 'f':
-		fflag = 1;
-		break;
-	default:
-		usage();
-	}ARGEND 
+    break;
+  case 'f':
+    fflag = 1;
+    break;
+  default:
+    usage();
+  }ARGEND 
   
-	if(argc > 1)
-		usage();
-	if(argc == 1 && !freopen(argv[0], "r", stdin))
+  if(argc > 1)
+    usage();
+  if(argc == 1 && !freopen(argv[0], "r", stdin))
     fatal(1, "can't open %s: %m", argv[0]);
   buf = malloc(len*sizeof(Buffer));
   for(n = 0; (p = readinput()); n++) {
