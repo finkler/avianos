@@ -110,10 +110,10 @@ main(int argc, char *argv[]) {
     egid = getegid();
     rgid = getgid();
     if(euid != ruid) {
-      pwd = getpwuid(ruid);
+      pwd = getpwuid(euid);
       if(pwd == nil)
-        fatal(1, "unknown user id %d", ruid);
-      rusr = strdup(pwd->pw_name);
+        fatal(1, "unknown user id %d", euid);
+      eusr = strdup(pwd->pw_name);
     }
   }
   if(uflag) {
@@ -136,7 +136,7 @@ main(int argc, char *argv[]) {
     exit(0);
     /* not reached */
   }
-  grps = findgroups(eusr);
+  grps = findgroups(rusr);
   if(Gflag) {
     for(r = grps; r->name; r++) {
       if(r != grps)

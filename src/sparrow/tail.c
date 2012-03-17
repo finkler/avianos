@@ -1,92 +1,72 @@
+#include <u.h>
 #include <avian.h>
 #include <sys/stat.h>
 
-int byte, n;
-char *chr, **line;
+typedef union {
+  char c;
+  char *s;
+} Buffer;
+
+int byte, len;
+Buffer *buf;
 
 void
 follow(char *s) {
   int c;
   struct stat sb;
 
-  if(fstat(0, &sb) || (!S_ISREG(sb.st_mode) && !S_ISFIFO(sb.st_mode)))
-    fatal(1, "can't follow %s", s);
+  if(fstat(0, &sb))
+    fatal(1, "can't follow %s: %m", s ? s : "<stdin>");
+  if((!S_ISREG(sb.st_mode) && !S_ISFIFO(sb.st_mode)) ||
+    (S_ISFIFO(sb.st_mode) && s == nil))
+    fatal(1, "can't follow %s: not supported", s ? s : "<stdin>");
   for(;;) {
-    sleep(1);
-    while((c = fgetc(stdin)) != EOF)
+    sleep(3);
+    while((c = fgetc(stdin)) != EOF) {
       if(fputc(c, stdout) == EOF)
         fatal(1, "error writing <stdout>: %m");
+    }
     if(ferror(stdin))
       fatal(1, "error reading %s: %m", s);
+    fflush(stdout);
   }
-}
-
-char *
-getarr(int i) {
-  return(byte ? &chr[i] : line[i]);
-}
-
-void
-initarr(void) {
-  if(byte)
-    chr = malloc(n);
-  else
-    line = malloc(n*sizeof(char *));
-}
-
-void
-printarr(void) {
-  int i;
-
-  if(byte)
-    println(chr);
-  else
-    for(i = 0; i < n; i++)
-      println(line[i]);
 }
 
 char *
 readinput(void) {
-  static char buf[LINE_MAX];
-  char c;
-  int i;
+  static char c, line[LINE_MAX+1];
+  int n;
 
-  for(i = 0; i < LINE_MAX-1; i++) {
+  n = 0;
+  while(n < LINE_MAX) {
     if(fread(&c, 1, 1, stdin) < 1)
       return nil;
-    buf[i] = c;
-    if(byte || c == '\n')
+    if(byte)
+      return &c;
+    line[n++] = c;
+    if(c == '\n')
       break;
   }
-  buf[++i] = '\0';
-  return buf;
-}
-
-void
-setarr(int i, char *p) {
-  if(byte)
-    chr[i] = *p;
-  else
-    line[i] = strdup(p);
+  line[n] = '\0';
+  return line;
 }
 
 void
 usage(void) {
-	fprint("usage: tail [-f] [-c number|-n number] [file]\n", stderr);
+	fprint(stderr, "usage: tail [-f] [-c number|-n number] [file]\n");
 	exit(1);
 }
 
 int
 main(int argc, char *argv[]) {
-  int i, head, j;
-  int fflag;
+  int fflag, i, head, n;
   char *p;
 
 	for(i = 1; i < argc && strcmp(argv[i], "--"); i++)
 		if(argv[i][0] == '+' && !isdigit(argv[i][1]))
 			argv[i][0] = '-';
 	byte = fflag = head = 0;
-  n = 10;
+  len = 10;
 	ARGBEGIN("c:fn:"){
 	case 'c':
     byte = 1;
@@ -97,7 +77,7 @@ main(int argc, char *argv[]) {
 		case '-':
 			optarg++;
 		}
-    n = atoi(optarg);
+    len = atoi(optarg);
 		break;
 	case 'f':
 		fflag = 1;
@@ -105,26 +85,31 @@ main(int argc, char *argv[]) {
 	default:
 		usage();
 	}ARGEND 
+  
 	if(argc > 1)
 		usage();
 	if(argc == 1 && !freopen(argv[0], "r", stdin))
     fatal(1, "can't open %s: %m", argv[0]);
-  initarr();
-  i = 0;
-  while((p = readinput())) {
-    if(i == n) {
+  buf = malloc(len*sizeof(Buffer));
+  for(n = 0; (p = readinput()); n++) {
+    if(n == len) {
       if(head)
         break;
-      if(!byte)
-        free(getarr(0));
-      for(j = 0; j < n-1; j++)
-        setarr(j, getarr(j+1));
-      setarr(j, p);
-    } else {
-      setarr(i++, p);
+      if(byte == 0)
+        free(buf[0].s);
+      for(n = 0; n < len-1; n++)
+        buf[n] = buf[n+1];
     }
+    if(byte)
+      buf[n].c = *p;
+    else
+      buf[n].s = strdup(p);
   }
-  printarr();
+  for(i = 0; i < n; i++)
+    if(byte)
+      printf("%c", buf[i].c);
+    else
+      print(buf[i].s);
   if(fflag)
-    follow(argc ? argv[0] : "<stdin>");
+    follow(argv[0]);
 }
