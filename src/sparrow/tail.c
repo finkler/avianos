@@ -11,15 +11,15 @@ int byte, len;
 Buffer *buf;
 
 void
-follow(char *s) {
+follow(char *s, int isstdin) {
   int c;
   struct stat sb;
 
   if(fstat(0, &sb))
-    fatal(1, "can't follow %s: %m", s ? s : "<stdin>");
+    fatal(1, "can't follow %s: %m", s);
   if((!S_ISREG(sb.st_mode) && !S_ISFIFO(sb.st_mode)) ||
-    (S_ISFIFO(sb.st_mode) && s == nil))
-    fatal(1, "can't follow %s: not supported", s ? s : "<stdin>");
+    (S_ISFIFO(sb.st_mode) && isstdin))
+    fatal(1, "can't follow %s: not supported", s);
   for(;;) {
     sleep(3);
     while((c = fgetc(stdin)) != EOF) {
@@ -28,6 +28,7 @@ follow(char *s) {
     }
     if(ferror(stdin))
       fatal(1, "error reading %s: %m", s);
+    clearerr(stdin);
     fflush(stdout);
   }
 }
@@ -39,7 +40,8 @@ readinput(void) {
 
   n = 0;
   while(n < LINE_MAX) {
-    if(fread(&c, 1, 1, stdin) < 1)
+    c = fgetc(stdin);
+    if(c == EOF)
       return nil;
     if(byte)
       return &c;
@@ -111,5 +113,5 @@ main(int argc, char *argv[]) {
     else
       print(buf[i].s);
   if(fflag)
-    follow(argv[0]);
+    follow(argc ? argv[0] : "<stdin>", !argc);
 }

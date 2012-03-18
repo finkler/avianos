@@ -1,32 +1,24 @@
-CHECK
-  - syslogd
-  - keymap
-
 BUGS
   - ???
   
 FEATURES
   - utf8 support !!!
-	- du.c/chown.c/etc. -H and -L flag implementation.
+  - ls.c Cflag support
+	- du.c/chown.c/etc. -H -L and -P flag implementation.
 	- strings.c skip elf header?
   - login.c utmp(x) support?
   - login.c lastlog support? ( http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=%2Fcom.ibm.aix.files%2Fdoc%2Faixfiles%2Flastlog.htm )
-  - syslogd.c modifiable output files?
   - keymap.c "COMPOSE" support?
-  - mount.c fstab support? (better wrap in shell scrip)
-  
-  - remove stty "lprintf"!
 
 PORTS
-  - chkeymap / fonts / etc.
-  - ls
-  - tail
   - getmode
   - uevd
-  - acpid
   - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
   - mkgrp / rmgrp
   - sh
+
+  - chkeymap / fonts / etc.
+  - acpid
 
 ---------  
   - network

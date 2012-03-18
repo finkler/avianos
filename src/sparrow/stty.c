@@ -18,6 +18,7 @@ uint getbaudval(char *);
 char *getbaudstr(uint);
 void putcchars(void);
 void putflags(Map *, uint *);
+void putline(char *, ...);
 void putsaved(void);
 void putsize(void);
 void putspeed(void);
@@ -149,7 +150,7 @@ putcchars(void) {
         sprintf(s, "%c", cc);
       else
         sprintf(s, "^%c", UNCTRL(cc));
-      lprintf("%s = %s;", m->key, s);
+      putline("%s = %s;", m->key, s);
     }
   }
 }
@@ -159,10 +160,36 @@ putflags(Map *m, uint *flag) {
   for(; m->key; m++)
     if(aflag || (m->def != (*flag & m->val))) {
       if(*flag & m->val)
-        lprintf("%s", m->key);
+        putline("%s", m->key);
       else
-        lprintf("-%s", m->key);
+        putline("-%s", m->key);
     }
+}
+
+void
+putline(char *fmt, ...) {
+  static int len, tw;
+  va_list ap;
+  char buf[LINE_MAX+1];
+  int n;
+
+  if(tw == 0)
+    tw = textwidth();
+  if(fmt == nil) {
+    print("\n");
+    return;
+  }
+  va_start(ap, fmt);
+  n = vsnprintf(buf, LINE_MAX, fmt, ap);
+  va_end(ap);
+  if(len && len+n >= tw) {
+    print("\n");
+    len = 0;
+  }
+  if(len)
+    print(" ");
+  print(buf);
+  len += n;
 }
 
 void
@@ -182,7 +209,7 @@ putsize(void) {
 
   for(m = csize; m->key; m++)
     if((aflag || m->val != CS8) && ((tc.c_cflag&CSIZE) == m->val)) {
-      lprintf("%s", m->key);
+      putline("%s", m->key);
       break;
     }
 }
@@ -196,7 +223,7 @@ putspeed(void) {
   if(ispeed == ospeed)
     printf("speed %s baud;\n", getbaudstr(ispeed));
   else
-    printf("ispeed %s baud; " "ospeed %s baud;\n",
+    printf("ispeed %s baud; ospeed %s baud;\n",
       getbaudstr(ispeed), getbaudstr(ospeed));
 }
 
@@ -402,13 +429,13 @@ main(int argc, char *argv[]) {
     }
     putspeed();
     putcchars();
-    lprintf(nil);
+    putline(nil);
     putsize();
     putflags(control, &tc.c_cflag);
     putflags(input, &tc.c_iflag);
     putflags(local, &tc.c_lflag);
     putflags(output, &tc.c_oflag);
-    lprintf(nil);
+    putline(nil);
     exit(0);
     /* not reached */
   }

@@ -31,4 +31,6 @@ int forkdaemon(void);
 void sysalert(char *, ...);
 void sysfatal(int, char *, ...);
 
+uint getmode(char *, uint);
+
 #endif /* _AVIAN_H_ */

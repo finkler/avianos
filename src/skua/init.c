@@ -4,6 +4,7 @@
 #include <sys/reboot.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <termios.h>
 
 #define LOGIN    "/bin/login"
 #define PATH     "/bin"
@@ -11,6 +12,10 @@
 #define RC_STOP  "/etc/rc.stop"
 #define TERM     "Linux"
 #define TTY      "/dev/tty1"
+
+#ifndef IUTF8
+#define IUTF8 0040000
+#endif
 
 void rc(char *);
 void shutdown(int);
@@ -37,6 +42,7 @@ shutdown(int signum) {
 void
 spawntty(void) {
   struct sigaction act;
+  struct termios tc;
   int fd;
 
   if(fork()) {
@@ -60,6 +66,10 @@ spawntty(void) {
   dup2(fd, 2);
   if(fd > 2)
     close(fd);
+  if(!tcgetattr(0, &tc)) {
+    tc.c_iflag |= IUTF8;
+    tcsetattr(0, TCSANOW, &tc);
+  }
   setenv("TERM", TERM, 1);
   execl(LOGIN, LOGIN, nil);
   alert("can't exec %s: %m", LOGIN);
