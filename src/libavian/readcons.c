@@ -11,7 +11,7 @@ echo(int fd, int toggle) {
     return -1;
   was = tc.c_lflag&ECHO;
   tc.c_lflag &= ~ECHO;
-  tc.c_lflag |= toogle;
+  tc.c_lflag |= toggle;
   if(tcsetattr(0, TCSANOW, &tc) < 0)
     return -1;
   return was;

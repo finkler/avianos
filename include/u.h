@@ -1,8 +1,6 @@
 #ifndef _U_H_
 #define _U_H_
 
-#define _XOPEN_SOURCE 1000
-
 #include <ctype.h>
 #include <fcntl.h>
 #include <limits.h>

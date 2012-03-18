@@ -177,7 +177,7 @@ main(int argc, char *argv[]) {
   if(argc == 0)
     grep(stdin, "<stdin>", 0);
   for(i = 0, rval = 0; i < argc; i++) {
-    f = fopen(argv[i], "r")
+    f = fopen(argv[i], "r");
     if(f == nil) {
       if(!sflag)
         alert("can't open %s: %m", argv[i]);

@@ -1,5 +1,6 @@
 #include <u.h>
 #include <avian.h>
+#include <hash.h>
 
 int rval;
 

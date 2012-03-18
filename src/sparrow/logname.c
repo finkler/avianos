@@ -18,7 +18,7 @@ main(int argc, char *argv[]) {
   
   if(argc != 0)
     usage();
-  p = getlogin()
+  p = getlogin();
   if(p == nil)
     fatal(1, "%m");
   println(p);

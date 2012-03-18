@@ -35,7 +35,7 @@ wc(FILE *in, char *s) {
     printf(" %7d", byte);
   if(in != stdin)
     printf(" %s", s);
-  print('\n');
+  print("\n");
 }
 
 int

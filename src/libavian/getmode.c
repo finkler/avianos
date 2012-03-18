@@ -28,6 +28,7 @@ action(int op, char *perm) {
   if(op == '=') {
     if(*p == '\0')
       mod ^= mod&(who&(S_ISRWXU|S_ISRWXG|S_IRWXO));
+    cpy = 0;
     while(IS_PERMCPY(*p)) {
       switch(*p++) {
       case 'u':

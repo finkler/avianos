@@ -28,7 +28,7 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     if(i > 0)
       *p++ = ' ';
-    strcpy(p, argv[i])
+    strcpy(p, argv[i]);
     p += strlen(p);
   }
   openlog(getlogin(), 0, LOG_USER);

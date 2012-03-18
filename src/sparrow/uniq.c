@@ -24,14 +24,14 @@ skip(char *s) {
 
 void
 usage(void) {
-  fprint(stderr "usage: uniq [-c|-d|-u] [-f fields] [-s char] "
+  fprint(stderr, "usage: uniq [-c|-d|-u] [-f fields] [-s char] "
     "[input_file [output_file]]\n");
   exit(1);
 }
 
 int
 main(int argc, char *argv[]) {
-  char *buf[2][LINE_MAX+1];
+  char buf[2][LINE_MAX+1];
   int cflag, dflag, uflag;
   int n;
 
