@@ -114,7 +114,8 @@ Map output[] = {
   {nil, 0, 0}
 };
 
-uint getbaudval(char *s) {
+uint
+getbaudval(char *s) {
   Map *m;
 
   for(m = baud; m->key; m++)

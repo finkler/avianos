@@ -33,4 +33,6 @@ void sysfatal(int, char *, ...);
 
 uint getmode(char *, uint);
 
+char *stradd(char *, ...);
+
 #endif /* _AVIAN_H_ */

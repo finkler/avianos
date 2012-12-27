@@ -1,7 +1,7 @@
 ROOT=../..
 include ${ROOT}/config.mk
 
-SRC = cleanname.c daemon.c fatal.c fgetln.c getmode.c readcons.c textwidth.c sysfatal.c
+SRC = cleanname.c daemon.c fatal.c fgetln.c getmode.c readcons.c textwidth.c stradd.c sysfatal.c
 OBJ = ${SRC:.c=.o}
 
 .c.o:

@@ -2,6 +2,8 @@
 #include <avian.h>
 #include <termios.h>
 
+static int echo(int, int);
+
 int
 echo(int fd, int toggle) {
   struct termios tc;
@@ -31,7 +33,6 @@ readcons(char *prompt, char *def, int secret) {
   else
     fprintf(tty, "%s: ", prompt);
   fflush(tty);
-  set = -1;
   if(secret) {
     set = echo(fileno(tty), 0);
     if(set == -1)

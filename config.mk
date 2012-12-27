@@ -4,5 +4,5 @@ LIBS = -L${ROOT}/lib -lc -lavian
 CFLAGS = -std=c99 -pedantic -Wall -Os -D_XOPEN_SOURCE=700 ${INCS}
 LDFLAGS = -s -static ${LIBS}
 
-CC = musl-gcc
+CC = gcc
 AR = ar
