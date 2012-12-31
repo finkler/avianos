@@ -2,8 +2,6 @@
 #include <avian.h>
 #include <hash.h>
 
-int rval;
-
 void
 sum(FILE *in, char *s) {
   uchar buf[8192];
@@ -17,7 +15,6 @@ sum(FILE *in, char *s) {
   }
   if(ferror(in)) {
     alert("error reading %s: %m", s);
-    rval = 1;
     return;
   }
   if(in == stdin)
@@ -37,14 +34,12 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
   
-  rval = 0;
   if(argc == 0)
     sum(stdin, "<stdin>");
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
       alert("can't open %s: %m", argv[i]);
-      rval = 1;
       continue;
     }
     sum(f, argv[i]);

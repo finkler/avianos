@@ -13,7 +13,6 @@ struct FSInfo {
 };
 
 long blksiz;
-int rval;
 FSInfo *fsinf;
 
 void
@@ -77,7 +76,6 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND 
   
-  rval = 0;
   parsemounts();
   printf("%-12s %5ld-blocks %12s %12s  Capacity  Mounted on\n",
     "Filesystem", blksiz, "Used", "Available");
@@ -87,7 +85,6 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     if(statvfs(argv[i], &sb)) {
       alert("%s: %m", argv[i]);
-      rval = 1;
       continue;
     }
     for(r = fsinf; r; r = r->next)

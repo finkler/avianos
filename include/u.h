@@ -16,9 +16,9 @@
 #define min(a,b)      ((a)<(b)?(a):(b))
 #define nelem(x)      (sizeof(x)/sizeof((x)[0]))
 #define nil           ((void *)0)
+
 #define print(s)      fputs((s),stdout)
 #define println       puts
-#define fprintln(f,s) fputs((s),(f));fputc('\n',(f))
 #define fprint(f,s)   fputs((s),(f))
   
 typedef unsigned char uchar;

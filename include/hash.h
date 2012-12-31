@@ -13,7 +13,7 @@ typedef struct {
     int err;
 } SHA1Digest;
 
-extern SHA1Digest *sha1(uchar *, int, SHA1Digest *);
-extern char *sha1pickle(SHA1Digest *);
+SHA1Digest *sha1(uchar *, int, SHA1Digest *);
+char *sha1pickle(SHA1Digest *);
 
 #endif /* _HASH_H_ */

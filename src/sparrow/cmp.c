@@ -10,7 +10,7 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int c[2], i, rval;
+  int c[2], i;
   int lflag, sflag;
   FILE *f[2];
   struct stat sb[2];
@@ -49,7 +49,6 @@ main(int argc, char *argv[]) {
       exit(1);
     }
   }
-  rval = 0;
   for(byte = line = 1; !feof(f[0]); byte++) {
     for(i = 0; i < 2; i++) {
       c[i] = fgetc(f[i]);

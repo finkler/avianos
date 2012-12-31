@@ -4,7 +4,6 @@
 #include <sys/stat.h>
 
 char *modstr;
-int rval;
 
 void
 usage(void) {
@@ -15,10 +14,8 @@ usage(void) {
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
   struct FTW *ftwbuf) {
-  if(chmod(fpath, getmode(modstr, sb->st_mode))) {
+  if(chmod(fpath, getmode(modstr, sb->st_mode)))
     alert("%s: %m", fpath);
-    rval = 1;
-  }
   return 0;
 }
 
@@ -40,11 +37,9 @@ main(int argc, char *argv[]) {
   if(argc < 2)
     usage();
   modstr = argv[0];
-  rval = 0;
   for(i = 1; i < argc; i++)
     if(stat(argv[i], &sb)) {
       alert("can't stat %s: %m", argv[i]);
-      rval = 1;
       continue;
     }
     if(S_ISDIR(sb.st_mode) && Rflag) {
@@ -54,10 +49,8 @@ main(int argc, char *argv[]) {
       p = argv[i];
       if(readlink(p, buf, PATH_MAX) > 0)
         p = buf;
-      if(chmod(p, getmode(modstr, sb.st_mode))) {
+      if(chmod(p, getmode(modstr, sb.st_mode)))
         alert("%s: %m", p);
-        rval = 1;
-      }
     }
   exit(rval);
 }

@@ -33,6 +33,7 @@ readcons(char *prompt, char *def, int secret) {
   else
     fprintf(tty, "%s: ", prompt);
   fflush(tty);
+  set = -1;
   if(secret) {
     set = echo(fileno(tty), 0);
     if(set == -1)

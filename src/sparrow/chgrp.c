@@ -4,7 +4,7 @@
 #include <ftw.h>
 #include <pwd.h>
 
-int gid, rval;
+int gid;
 
 void
 usage(void) {
@@ -16,10 +16,8 @@ usage(void) {
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
   struct FTW *ftwbuf) {
-  if(chown(fpath, -1, gid)) {
+  if(chown(fpath, -1, gid))
     alert("%s: %m", fpath);
-    rval = 1;
-  }
   return 0;
 }
 
@@ -67,10 +65,8 @@ main(int argc, char *argv[]) {
       p = argv[i];
       if(!hflag && readlink(p, buf, PATH_MAX) > 0)
         p = buf;
-      if(chown(p, -1, gid)) {
+      if(chown(p, -1, gid))
         alert("%s: %m", argv[i]);
-        rval = 1;
-      }
     }
   exit(rval);
 }

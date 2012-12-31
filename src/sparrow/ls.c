@@ -136,7 +136,7 @@ scan(char *s) {
   for(r = l; Rflag && r; r = r->next)
     if(S_ISDIR(r->info.st_mode) && strcmp(r->name, ".") &&
       strcmp(r->name, "..")) {
-      p = stradd(s, "/", r->name, nil);
+      p = stradd(s, "/", r->name);
       printf("\n%s:\n", p);
       scan(p);
       free(p);

@@ -13,7 +13,7 @@ struct Pattern {
 
 int Fflag, cflag, lflag, qflag;
 int nflag, sflag, vflag, xflag;
-int flags, rval;
+int flags;
 Pattern *c;
 
 void

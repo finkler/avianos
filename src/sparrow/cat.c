@@ -1,8 +1,6 @@
 #include <u.h>
 #include <avian.h>
 
-int rval;
-
 void
 cat(FILE *in, char *s) {
   char buf[8192];
@@ -11,13 +9,10 @@ cat(FILE *in, char *s) {
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     if(fwrite(buf, 1, n, stdout) != n) {
       alert("write error copying %s: %m", s);
-      rval = 1;
       return;
     }
-  if(ferror(in)) {
+  if(ferror(in))
     alert("error reading %s: %m", s);
-    rval = 1;
-  }
 }
 
 int
@@ -34,7 +29,6 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND 
   
-  rval = 0;
   if(argc == 0)
     cat(stdin, "<stdin>");
   for(i = 0; i < argc; i++)
@@ -44,7 +38,6 @@ main(int argc, char *argv[]) {
       f = fopen(argv[i], "r");
       if(f == nil) {
         alert("can't open %s: %m", argv[i]);
-        rval = 1;
         continue;
       }
       cat(f, argv[i]);

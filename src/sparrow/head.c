@@ -1,8 +1,6 @@
 #include <u.h>
 #include <avian.h>
 
-int rval;
-
 void
 head(FILE *in, char *s, int lines) {
   char *buf;
@@ -11,10 +9,8 @@ head(FILE *in, char *s, int lines) {
     println(buf);
     lines--;
   }
-  if(ferror(in)) {
+  if(ferror(in))
     alert("error reading %s: %m", s);
-    rval = 1;
-  }
 }
 
 int
@@ -32,14 +28,12 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND 
   
-  rval = 0;
   if(argc == 0)
     head(stdin, "<stdin>", n);
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
       alert("can't open %s: %m", argv[i]);
-      rval = 1;
       continue;
     }
     if(argc > 1)

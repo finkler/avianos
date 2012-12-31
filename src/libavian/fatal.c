@@ -3,16 +3,7 @@
 
 static void vlog(char *, va_list);
 
-char *argv0 = nil;
-
-void
-__fixargv0(char *s) {
-  argv0 = strrchr(s, '/');
-  if(argv0)
-    argv0++;
-  else
-    argv0 = s;
-}
+int rval = EXIT_SUCCESS;
 
 void
 alert(char *fmt, ...) {
@@ -21,16 +12,17 @@ alert(char *fmt, ...) {
   va_start(ap, fmt);
   vlog(fmt, ap);
   va_end(ap);
+  rval = EXIT_FAILURE;
 }
 
 void
-fatal(int rval, char *fmt, ...) {
+fatal(int c, char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);
   vlog(fmt, ap);
   va_end(ap);
-  exit(rval);
+  exit(c);
 }
 
 void
