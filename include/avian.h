@@ -25,7 +25,7 @@ char *fgetln(FILE *);
 char *readcons(char *, char *, int);
 int textwidth(void);
 
-uint symmod(char *, uint);
+uint symmod(uint, char *);
 
 #define stradd(s,...) vstradd(s,__VA_ARGS__,nil)
 char *vstradd(char *, ...);

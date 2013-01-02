@@ -23,7 +23,7 @@ void
 action(int op, char *perm) {
   uint cpy, set;
   char *p;
-  
+
   p = perm;
   if(op == '=') {
     if(*p == '\0')
@@ -78,7 +78,7 @@ void
 parse(char *s) {
   char *e, *p, *perm;
   int op;
-  
+
   who = 0;
   for(p = s; IS_WHO(*p); p++)
     switch(*p) {
@@ -113,15 +113,14 @@ parse(char *s) {
 }
 
 uint
-symmod(char *str, uint m) {
+symmod(uint m, char *str) {
   char *p, *s;
-  
+
   mod = m;
-  p = str;
+  p = s = strdup(str);
   while((p = strchr(p, 'X')))
     if(mod&S_IXALL)
       *p = 'x';
-  s = strdup(str);
   for(p = strtok(s, ","); p; p = strtok(nil, ","))
     parse(p);
   free(s);

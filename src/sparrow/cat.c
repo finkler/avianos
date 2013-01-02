@@ -27,8 +27,8 @@ main(int argc, char *argv[]) {
   default:
     fprint(stderr, "usage: cat [-u] [file...]\n");
     exit(1);
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc == 0)
     cat(stdin, "<stdin>");
   for(i = 0; i < argc; i++)

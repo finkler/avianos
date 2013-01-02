@@ -20,7 +20,7 @@
 #define print(s)      fputs((s),stdout)
 #define println       puts
 #define fprint(f,s)   fputs((s),(f))
-  
+
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
