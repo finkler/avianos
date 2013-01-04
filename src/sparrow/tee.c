@@ -6,7 +6,7 @@
 
 int
 main(int argc, char *argv[]) {
-  int aflag, i, n, rval;
+  int aflag, i, n;
   char *buf;
   FILE *f[FILE_MAX];
 
@@ -23,13 +23,10 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND 
   
-  rval = 0;
-  n = 0;
-  for(i = 0; i < argc && n < FILE_MAX-1; i++) {
-    f[n++] = fopen(argv[i], aflag ? "a" : "w");
+  for(i = n = 0; i < argc && n < FILE_MAX-1; i++, n++) {
+    f[n] = fopen(argv[i], aflag ? "a" : "w");
     if(f[n] == nil) {
-      alert("can't open %s: %m", argv[n]);
-      rval = 1;
+      alert("can't open %s: %m", argv[i]);
       n--;
     }
   }
@@ -37,10 +34,8 @@ main(int argc, char *argv[]) {
   while((buf = fgetln(stdin)))
     for(i = 0; i < n; i++) {
       fprintln(f[i], buf);
-      if(ferror(f[i])) {
+      if(ferror(f[i]))
         alert("error writing %s: %m", argv[i]);
-        rval = 1;
-      }
     }
   if(ferror(stdin))
     fatal(1, "error reading <stdin>: %m");

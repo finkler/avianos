@@ -3,17 +3,17 @@
 #include <utf8.h>
 
 int cflag, lflag, mflag, wflag;
-int totb, totw, totl, totc;
+int totb, totw, totl, totm;
 
 void
 wc(FILE *in, char *s) {
-  int byte, chr, line, word;
+  int byte, ch, line, word;
   int c, p;
 
   byte = chr = line = word = 0;
   for(p = ' '; (c = fgetc(in)) != EOF; p = c) {
     if(c < RUNE_SELF || runestart(c))
-      chr++;
+      ch++;
     byte++;
     if(isspace(c)) {
       if(c == '\n')
@@ -25,7 +25,7 @@ wc(FILE *in, char *s) {
   if(ferror(in))
     alert("%s: %m", s);
   totb += byte;
-  totc += chr;
+  totm += ch;
   totl += line;
   totw += word;
   if(lflag)
@@ -35,7 +35,7 @@ wc(FILE *in, char *s) {
   if(cflag)
     printf(" %7d", byte);
   if(mflag)
-    printf(" %7d", chr);
+    printf(" %7d", ch);
   if(in != stdin)
     printf(" %s", s);
   print("\n");
@@ -93,7 +93,7 @@ main(int argc, char *argv[]) {
     if(cflag)
       printf(" %7d", totb);
     if(mflag)
-      printf(" %7d", totc);
+      printf(" %7d", totm);
     println(" total");
   }
   exit(rval);

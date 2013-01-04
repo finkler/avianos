@@ -3,8 +3,8 @@
 
 #define INCR  100
 
-typedef struct _Edge Edge;
-struct _Edge {
+typedef struct Edge Edge;
+struct Edge {
   char *u, *v;
   Edge *next;
 };
@@ -21,7 +21,7 @@ insertedge(char *u, char *v) {
   tm->u = strdup(u);
   tm->v = strdup(v);
   tm->next = nil;
-  if(!E) {
+  if(E == nil) {
     E = tm;
   } else {
     r = E;

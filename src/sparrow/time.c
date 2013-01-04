@@ -14,7 +14,7 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   double clk_tck;
-  int pflag, rval;
+  int pflag;
   ulong st_time, en_time;
   struct tms st_cpu, en_cpu;
 

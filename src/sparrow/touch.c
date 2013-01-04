@@ -43,39 +43,32 @@ reftime(char *path) {
 void
 timetime(char *s) {
   uint n;
-  char *p;
+  char *fmt, *p;
   struct tm tm;
 
-  n = strlen(s);
-  if(n > 15)
-    fatal(1, "invalid time format %s", s);
-  memset(&tm, 0, sizeof tm);
-  p = strchr(s, '.');
-  if(p != nil) {
-    tm.tm_sec = atoi(++p);
-    n -= 3;
+  n = strlen(s); 
+  switch(n) {
+  case 15: case 12:
+    fmt = "%Y";
+    break;
+  case 13: case 10:
+    fmt = "%y";
+    break;
+  case 11: case 8:
+    fmt = "";
+    break;
+  default:
+    fatal(1, "%s: invalid time format", s);
   }
-  if(n == 12) {
-    sscanf(s, "%4d", &tm.tm_year);
-    tm.tm_year -= 1900;
-    s += 4;
-  } else if(n == 10) {
-    sscanf(s, "%2d", &tm.tm_year);
-    if(tm.tm_year < 69)
-      tm.tm_year += 100;
-    s += 2;
-  } else if(n != 8)
-    fatal(1, "invalid time format %s", s);
-  sscanf(s, "%2d%2d%2d%2d",
-    &tm.tm_mon, &tm.tm_mday, &tm.tm_hour, &tm.tm_min);
-  tm.tm_mon--;
+  p = stradd(fmt, "%m%d%H%M.%S");
+  strptime(s, p, &tm);
+  free(p);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
 void
 usage(void) {
-  fprint(stderr,
-    "usage: touch [-acm] "
+  fprint(stderr, "usage: touch [-acm] "
     "[-r ref_file|-t time|-d date_time] file...\n");
   exit(1);
 }
@@ -83,7 +76,7 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   int aflag, cflag, mflag;
-  int fd, i, rval, timeset;
+  int fd, i, timeset;
 
   aflag = cflag = mflag = 0;
   timeset = 0;
@@ -123,24 +116,18 @@ main(int argc, char *argv[]) {
     times[0].tv_nsec = UTIME_OMIT;
   if(!mflag)
     times[1].tv_nsec = UTIME_OMIT;
-  rval = 0;
   for(i = 0; i < argc; i++)
     if(!access(argv[i], F_OK)) {
-      if(utimensat(AT_FDCWD, argv[i], times, 0)) {
+      if(utimensat(AT_FDCWD, argv[i], times, 0))
         alert("%s: %m", argv[i]);
-        rval = 1;
-      }
     } else if(!cflag) {
       fd = creat(argv[i], MODE);
       if(fd < 0) {
-        alert("can't create %s :%m", argv[i]);
-        rval = 1;
+        alert("can't create %s: %m", argv[i]);
         continue;
       }
-      if(futimens(fd, times)) {
+      if(futimens(fd, times))
         alert("%s: %m", argv[i]);
-        rval = 1;
-      }
       close(fd);
     }
   exit(rval);
