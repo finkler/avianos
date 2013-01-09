@@ -5,8 +5,7 @@ BUGS
   - ???
 
 FEATURES
-  - utf8 support !!!
-  - ls.c Cflag support
+  - utf8 support (look for it) !!!
 	- du.c/chown.c/etc. -H -L and -P flag implementation.
 	- strings.c skip elf header?
   - login.c utmp(x) support?
@@ -32,7 +31,6 @@ PORTS
 	- batch
 	- bc
 	- comm
-	- cp*
 	- crontab
 	- csplit
 	- cut
