@@ -10,20 +10,17 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int i, rval;
+  int i;
 
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
-  rval = 0;
   for(i = 0; i < argc; i++)
-    if(swapoff(argv[i])) {
+    if(swapoff(argv[i]))
       alert("%m");
-      rval = 1;
-    }
   exit(rval);
 }

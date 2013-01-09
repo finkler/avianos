@@ -13,7 +13,7 @@ input(uchar *data, int len, SHA1Digest *state) {
   if(len == 0 || state->err)
     return;
   while(len-- && !state->err)   {
-    state->msg[state->i++] = (*data & 0xFF);
+    state->msg[state->i++] = (*data&0xFF);
     state->low += 8;
     state->low &= 0xFFFFFFFF;
     if(state->low == 0) {
@@ -42,14 +42,14 @@ pad(SHA1Digest *state) {
     while(state->i < 56)
       state->msg[state->i++] = 0;
   }
-  state->msg[56] = (state->high >> 24) & 0xFF;
-  state->msg[57] = (state->high >> 16) & 0xFF;
-  state->msg[58] = (state->high >> 8) & 0xFF;
-  state->msg[59] = (state->high) & 0xFF;
-  state->msg[60] = (state->low >> 24) & 0xFF;
-  state->msg[61] = (state->low >> 16) & 0xFF;
-  state->msg[62] = (state->low >> 8) & 0xFF;
-  state->msg[63] = (state->low) & 0xFF;
+  state->msg[56] = (state->high>>24)&0xFF;
+  state->msg[57] = (state->high>>16)&0xFF;
+  state->msg[58] = (state->high>>8)&0xFF;
+  state->msg[59] = (state->high)&0xFF;
+  state->msg[60] = (state->low>>24)&0xFF;
+  state->msg[61] = (state->low>>16)&0xFF;
+  state->msg[62] = (state->low>>8)&0xFF;
+  state->msg[63] = (state->low)&0xFF;
   process(state);
 }
 
@@ -60,9 +60,9 @@ process(SHA1Digest *state) {
   int i;
 
   for(i = 0; i < 16; i++) {
-    W[i] = ((uint32)state->msg[i*4]) << 24;
-    W[i] |= ((uint32)state->msg[i*4+1]) << 16;
-    W[i] |= ((uint32)state->msg[i*4+2]) << 8;
+    W[i] = ((uint32)state->msg[i*4])<<24;
+    W[i] |= ((uint32)state->msg[i*4+1])<<16;
+    W[i] |= ((uint32)state->msg[i*4+2])<<8;
     W[i] |= ((uint32)state->msg[i*4+3]);
   }
   for(i = 16; i < 80; i++)
@@ -77,7 +77,7 @@ process(SHA1Digest *state) {
   K[2] = 0x8F1BBCDC;
   K[3] = 0xCA62C1D6;
   for(i = 0; i < 20; i++) {
-    temp =  LOR32(5, A) + ((B & C) | ((~B) & D)) + E + W[i] + K[0];
+    temp =  LOR32(5, A)+((B&C)|((~B)&D))+E+W[i]+K[0];
     temp &= 0xFFFFFFFF;
     E = D;
     D = C;
@@ -86,7 +86,7 @@ process(SHA1Digest *state) {
     A = temp;
   }
   for(i = 20; i < 40; i++) {
-    temp = LOR32(5, A) + (B ^ C ^ D) + E + W[i] + K[1];
+    temp = LOR32(5, A)+(B^C^D)+E+W[i]+K[1];
     temp &= 0xFFFFFFFF;
     E = D;
     D = C;
@@ -95,8 +95,8 @@ process(SHA1Digest *state) {
     A = temp;
   }
   for(i = 40; i < 60; i++) {
-    temp = LOR32(5, A) + 
-      ((B & C) | (B & D) | (C & D)) + E + W[i] + K[2];
+    temp = LOR32(5, A)+
+      ((B&C)|(B&D)|(C&D))+E+W[i]+K[2];
     temp &= 0xFFFFFFFF;
     E = D;
     D = C;
@@ -105,7 +105,7 @@ process(SHA1Digest *state) {
     A = temp;
   }
   for(i = 60; i < 80; i++) {
-    temp = LOR32(5, A) + (B ^ C ^ D) + E + W[i] + K[3];
+    temp = LOR32(5, A)+(B^C^D)+E+W[i]+K[3];
     temp &= 0xFFFFFFFF;
     E = D;
     D = C;
@@ -113,11 +113,11 @@ process(SHA1Digest *state) {
     B = A;
     A = temp;
   }
-  state->h[0] = (state->h[0] + A) & 0xFFFFFFFF;
-  state->h[1] = (state->h[1] + B) & 0xFFFFFFFF;
-  state->h[2] = (state->h[2] + C) & 0xFFFFFFFF;
-  state->h[3] = (state->h[3] + D) & 0xFFFFFFFF;
-  state->h[4] = (state->h[4] + E) & 0xFFFFFFFF;
+  state->h[0] = (state->h[0]+A)&0xFFFFFFFF;
+  state->h[1] = (state->h[1]+B)&0xFFFFFFFF;
+  state->h[2] = (state->h[2]+C)&0xFFFFFFFF;
+  state->h[3] = (state->h[3]+D)&0xFFFFFFFF;
+  state->h[4] = (state->h[4]+E)&0xFFFFFFFF;
   state->i = 0;
 }
 
@@ -145,7 +145,7 @@ char *
 sha1pickle(SHA1Digest *state) {
   SHA1Digest d;
   char *p;
-  
+
   memcpy(&d, state, sizeof(SHA1Digest));
   pad(&d);
   p = malloc(SHA1_LEN+1);

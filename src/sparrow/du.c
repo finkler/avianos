@@ -24,7 +24,7 @@ walk(const char *fpath, const struct stat *sb, int tflag,
     }
     subtotal = 0;
     total += sb->st_size;
-    if(!ftwbuf->level) {
+    if(ftwbuf->level == 0) {
       siz = (total+(blksiz-1))/blksiz;
       printf("%-7lu %s\n", siz, fpath);
       total = 0;
@@ -32,7 +32,7 @@ walk(const char *fpath, const struct stat *sb, int tflag,
     break;
   case FTW_SL:
   case FTW_F:
-    if(aflag || !ftwbuf->level) {
+    if(aflag || ftwbuf->level == 0) {
       siz = (sb->st_size+(blksiz-1))/blksiz;
       printf("%-7lu %s\n", siz, fpath);
     }
@@ -70,8 +70,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(aflag+sflag > 1)
     usage();
   subtotal = total = 0;

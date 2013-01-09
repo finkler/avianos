@@ -116,6 +116,8 @@ uint
 symmod(uint m, char *str) {
   char *p, *s;
 
+  if(isdigit((int)*str))
+    return (uint)strtol(str, nil, 8);
   mod = m;
   p = s = strdup(str);
   while((p = strchr(p, 'X')))

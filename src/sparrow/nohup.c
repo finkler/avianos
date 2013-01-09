@@ -19,8 +19,8 @@ main(int argc, char *argv[]) {
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
   if(isatty(1)) {
@@ -33,11 +33,11 @@ main(int argc, char *argv[]) {
         fatal(1, "can't open %s: %m", path);
     }
     if(dup2(fd, 1) < 0)
-      fatal(1, "%m");
+      fatal(1, "dup2: %m");
     alert("sending output to %s", path);
   }
   if(isatty(2) && dup2(1, 2) < 0)
-    fatal(1, "%m");
+    fatal(1, "dup2: %m");
   signal(SIGHUP, SIG_IGN);
   execvp(*argv, argv);
   fatal(errno == ENOENT ? 127 : 126, "can't exec %s: %m", *argv);

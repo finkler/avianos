@@ -1,12 +1,9 @@
 RECOVER
   - ls
-  - stradd
-  - rune (utf8) :(
-
 
 BUGS
   - ???
-  
+
 FEATURES
   - utf8 support !!!
   - ls.c Cflag support
@@ -17,7 +14,6 @@ FEATURES
   - keymap.c "COMPOSE" support?
 
 PORTS
-  - getmode
   - uevd
   - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
   - mkgrp / rmgrp
@@ -26,7 +22,7 @@ PORTS
   - chkeymap / fonts / etc.
   - acpid
 
----------  
+---------
   - network
   - ssh
 
@@ -36,13 +32,13 @@ PORTS
 	- batch
 	- bc
 	- comm
-	- cp
+	- cp*
 	- crontab
 	- csplit
 	- cut
 	- dd
 	- diff
-	- ed
+	- ed*
 	- expand
 	- expr
 	- file
@@ -56,11 +52,11 @@ PORTS
 	- locale
 	- localedef
 	- lp
-	- ls
+	- ls*
 	- m4
 	- mailx
-	- man
-	- mv
+	- man*
+	- mv*
 	- od
 	- paste
 	- patch
@@ -69,8 +65,8 @@ PORTS
 	- pr
 	- printf
 	- ps
-	- sed
-	- sh
+	- sed*
+	- sh*
 	- sort
 	- tabs
 	- tput

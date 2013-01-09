@@ -11,7 +11,6 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   int flags, i, prio;
-  int rval;
 
   flags = prio = 0;
   ARGBEGIN("dp:"){
@@ -26,14 +25,11 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND
-  
+
   if(argc < 1)
     usage();
-  rval = 0;
   for(i = 0; i < argc; i++)
-    if(swapon(argv[i], flags)) {
+    if(swapon(argv[i], flags))
       alert("%m");
-      rval = 1;
-    }
   exit(rval);
 }

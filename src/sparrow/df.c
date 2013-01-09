@@ -16,42 +16,42 @@ long blksiz;
 FSInfo *fsinf;
 
 void
-output(FSInfo *f) {
+output(FSInfo *fi) {
   ulong avail, blocks;
   ulong cap, used;
 
-  blocks = f->sb.f_blocks * f->sb.f_frsize;
-  used = (f->sb.f_blocks - f->sb.f_bfree) * f->sb.f_frsize;
-  avail = f->sb.f_bavail * f->sb.f_frsize;
+  blocks = fi->sb.f_blocks * fi->sb.f_frsize;
+  used = (fi->sb.f_blocks - fi->sb.f_bfree) * fi->sb.f_frsize;
+  avail = fi->sb.f_bavail * fi->sb.f_frsize;
   cap = (used * 100 + (blocks - 1)) / blocks;
   printf("%-12s %12lu %12lu %12lu %8lu%%  %s\n",
-    f->name, blocks/blksiz, used/blksiz, avail/blksiz, cap, f->path);
+    fi->name, blocks/blksiz, used/blksiz, avail/blksiz, cap, fi->path);
 }
 
 void
 parsemounts(void) {
   char *buf;
   FILE *f;
-  FSInfo *tm, *r;
+  FSInfo *new, *r;
 
   f = fopen(PATH_MOUNTS, "r");
   if(f == nil)
     fatal(1, "can't open %s: %m", PATH_MOUNTS);
   while((buf = fgetln(f))) {
-    tm = malloc(sizeof(FSInfo));
-    sscanf(buf, "%s %s", tm->name, tm->path);
-    if(statvfs(tm->path, &tm->sb) || tm->sb.f_blocks == 0) {
-      free(tm);
+    new = malloc(sizeof(FSInfo));
+    sscanf(buf, "%s %s", new->name, new->path);
+    if(statvfs(new->path, &new->sb) || new->sb.f_blocks == 0) {
+      free(new);
       continue;
     }
-    tm->next = nil;
+    new->next = nil;
     if(fsinf == nil) {
-      fsinf = tm;
+      fsinf = new;
     } else {
       r = fsinf;
       while(r->next)
         r = r->next;
-      r->next = tm;
+      r->next = new;
     }
   }
   fclose(f);
@@ -74,8 +74,8 @@ main(int argc, char *argv[]) {
   default:
     fprint(stderr, "usage: df [-kP] [file...]\n");
     exit(1);
-  }ARGEND 
-  
+  }ARGEND
+
   parsemounts();
   printf("%-12s %5ld-blocks %12s %12s  Capacity  Mounted on\n",
     "Filesystem", blksiz, "Used", "Available");

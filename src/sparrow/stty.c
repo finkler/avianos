@@ -4,7 +4,7 @@
 
 #ifndef IUTF8
 #define IUTF8 0040000
-#endif 
+#endif
 #define CTRL(c)   ((c)=='?'?0x7f:(c)&0x1f)
 #define UNCTRL(c) ((c)==0x7f?'?':(c)+0x40)
 
@@ -30,7 +30,6 @@ int setsize(char *);
 int setspeed(char *, char *);
 
 int aflag, gflag;
-int rval;
 struct termios tc;
 Map baud[] = {
   {"0",     B0,     0},
@@ -197,11 +196,11 @@ void
 putsaved(void) {
   Map *m;
 
-  printf("%x:%x:%x:%x", tc.c_cflag, tc.c_iflag,
-    tc.c_lflag, tc.c_oflag);
+  printf("%x:%x:%x:%x:%x:%x", tc.c_cflag, tc.c_iflag,
+    tc.c_lflag, tc.c_oflag, cfgetispeed(&tc), cfgetospeed(&tc));
   for(m = cchar; m->key; m++)
     printf(":%x", tc.c_cc[m->val]);
-  printf(":%x:%x\n", cfgetispeed(&tc), cfgetospeed(&tc));
+  print("\n");
 }
 
 void
@@ -236,24 +235,13 @@ readsaved(char *s) {
   char *p;
 
   memset(&tc, 0, sizeof tc);
-  flags[0] = &tc.c_cflag;
-  flags[1] = &tc.c_iflag;
-  flags[2] = &tc.c_lflag;
-  flags[3] = &tc.c_oflag;
   p = s;
   for(i = 0; i < 4; i++) {
     *flags[i] = (uint)strtol(p, &p, 16);
     if(*p == ':')
       p++;
     else
-      fatal(1, "invalid operand %s", s);
-  }
-  for(m = cchar; m->key; m++) {
-    tc.c_cc[m->val] = (uchar)strtol(p, &p, 16);
-    if(*p == ':')
-      p++;
-    else
-      fatal(1, "invalid operand %s", s);
+      fatal(1, "%s: invalid operand", s);
   }
   for(i = 0; i < 2; i++) {
     speed[i] = strtol(p, &p, 16);
@@ -262,10 +250,17 @@ readsaved(char *s) {
     else if(i && *p == '\0')
       break;
     else
-      fatal(1, "invalid operand %s", s);
+      fatal(1, "%s: invalid operand", s);
   }
   cfsetispeed(&tc, speed[0]);
   cfsetospeed(&tc, speed[1]);
+  for(m = cchar; m->key; m++) {
+    tc.c_cc[m->val] = (uchar)strtol(p, &p, 16);
+    if(*p == ':')
+      p++;
+    else
+      fatal(1, "%s: invalid operand", s);
+  }
 }
 
 int
@@ -378,7 +373,6 @@ setspeed(char *s, char *p) {
   speed = getbaudval(p);
   if(speed == (uint)-1) {
     alert("invalid baud rate %s", p);
-    rval = 1;
     return 0;
   }
   if(s == nil) {
@@ -440,7 +434,6 @@ main(int argc, char *argv[]) {
     exit(0);
     /* not reached */
   }
-  rval = 0;
   for(i = 0; i < argc; i++) {
     if(setcomb(argv[i]) ||
       setflags(argv[i], control, &tc.c_cflag) ||
@@ -455,8 +448,7 @@ main(int argc, char *argv[]) {
       i++;
       continue;
     }
-    alert("invalid operand %s", argv[i]);
-    rval = 1;
+    alert("%s: invalid operand", argv[i]);
   }
   if(tcsetattr(0, TCSANOW, &tc))
     fatal(1, "can't set attributes: %m");

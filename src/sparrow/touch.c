@@ -17,7 +17,7 @@ datetime(char *s) {
     *p = 'T';
   p = strptime(s, "%Y-%m-%dT%H:%M", &tm);
   if(p == nil)
-    fatal(1, "invalid date format %s", s);
+    fatal(1, "%s: invalid date format", s);
   if(*p == '.' || *p == ',')
     times[0].tv_nsec = times[1].tv_nsec =
       strtol(++p, &p, 10)%(long)10e9;
@@ -26,7 +26,7 @@ datetime(char *s) {
     setenv("TZ", "UTC-0", 1);
   }
   if(*p != '\0')
-    fatal(1, "invalid date format %s", s);
+    fatal(1, "%s: invalid date format", s);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
@@ -42,27 +42,33 @@ reftime(char *path) {
 
 void
 timetime(char *s) {
+  char *fmt;
   uint n;
-  char *fmt, *p;
   struct tm tm;
 
-  n = strlen(s); 
-  switch(n) {
-  case 15: case 12:
-    fmt = "%Y";
+  fmt = nil;
+  n = 0;
+  switch(strlen(s)) {
+  case 12:
+    n = 10;
+  case 15:
+    fmt = "%Y%m%d%H%M.%S";
     break;
-  case 13: case 10:
-    fmt = "%y";
+  case 10:
+    n = 10;
+  case 13:
+    fmt = "%y%m%d%H%M.%S";
     break;
-  case 11: case 8:
-    fmt = "";
+  case 8:
+    n = 8;
+  case 11:
+    fmt = "%m%d%H%M.%S";
     break;
-  default:
-    fatal(1, "%s: invalid time format", s);
   }
-  p = stradd(fmt, "%m%d%H%M.%S");
-  strptime(s, p, &tm);
-  free(p);
+  if(fmt && n)
+    fmt[n] = '\0';
+  if(fmt == nil || strptime(s, fmt, &tm) == nil)
+    fatal(1, "%s: invalid time format", s);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
@@ -104,8 +110,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
   if(!(aflag+mflag))

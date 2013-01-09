@@ -14,7 +14,7 @@ usage(void) {
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
   struct FTW *ftwbuf) {
-  if(chmod(fpath, getmode(modstr, sb->st_mode)))
+  if(chmod(fpath, symmod(sb->st_mode, modstr)))
     alert("%s: %m", fpath);
   return 0;
 }
@@ -32,8 +32,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 2)
     usage();
   modstr = argv[0];
@@ -49,7 +49,7 @@ main(int argc, char *argv[]) {
       p = argv[i];
       if(readlink(p, buf, PATH_MAX) > 0)
         p = buf;
-      if(chmod(p, getmode(modstr, sb.st_mode)))
+      if(chmod(p, symmod(sb.st_mode, modstr)))
         alert("%s: %m", p);
     }
   exit(rval);

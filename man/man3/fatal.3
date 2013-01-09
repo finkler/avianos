@@ -1,0 +1,20 @@
+.TH BASENAME 1
+.SH NAME
+basename \- return non-directory portion of a pathname
+.SH SYNOPSIS
+.B basename
+.I string
+[
+.I suffix
+]
+.SH DESCRIPTION
+The string
+.I string
+is converted to the filename corresponding to the last pathname
+component in
+.I string
+and then the suffix string
+.IR suffix ,
+if present, is removed.
+.SH SEE ALSO
+dirname(1)

@@ -45,11 +45,10 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 2)
     usage();
-  rval = 0;
   if(isdigit(argv[0][0]))
     grp = getgrgid(atoi(argv[0]));
   else

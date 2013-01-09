@@ -18,15 +18,15 @@ Pattern *c;
 
 void
 addpattern(char *s) {
-  Pattern *tm;
+  Pattern *new;
 
-  tm = malloc(sizeof(Pattern));
+  new = malloc(sizeof(Pattern));
   if(Fflag)
-    tm->exp.fix = strdup(s);
-  else if(regcomp(&tm->exp.reg, s, flags))
+    new->exp.fix = strdup(s);
+  else if(regcomp(&new->exp.reg, s, flags))
     fatal(2, "invalid pattern %s", s);
-  tm->next = c;
-  c = tm;
+  new->next = c;
+  c = new;
 }
 
 void
@@ -110,7 +110,7 @@ usage(void) {
   fprint(stderr, "usage: grep [-E|-F] [-c|-l|-q] [-insvx] -e pattern_list\n"
     "\t[-e pattern_list]... [-f pattern_file]... [file...]\n"
     "       grep [-E|-F] [-c|-l|-q] [-insvx] [-e pattern_list]...\n"
-    "\t-f pattern_file [-f pattern_file]... [file...]\n" 
+    "\t-f pattern_file [-f pattern_file]... [file...]\n"
     "       grep [-E|-F] [-c|-l|-q] [-insvx] pattern_list [file...]\n");
   exit(2);
 }
@@ -163,8 +163,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(cflag+lflag+qflag > 1)
     usage();
   if(c == nil) {
@@ -173,7 +173,6 @@ main(int argc, char *argv[]) {
     parselist(argv[0]);
     argc--, argv++;
   }
-  rval = 0;
   if(argc == 0)
     grep(stdin, "<stdin>", 0);
   for(i = 0, rval = 0; i < argc; i++) {

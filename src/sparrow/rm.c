@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 
 int fflag, iflag;
-int rval;
 
 int
 ask(const char *s) {
@@ -62,11 +61,10 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
-  rval = 0;
   for(i = 0; i < argc; i++) {
     p = basename(cleanname(argv[i]));
     if(!strcmp(p, ".") || !strcmp(p, ".."))
@@ -85,8 +83,7 @@ main(int argc, char *argv[]) {
     continue;
   Failed:
     if(!fflag)
-      alert(errno ? "can't remove %s: %m" :
-        "can't remove %s", argv[i]);
+      alert(errno ? "can't remove %s: %m" : "can't remove %s", argv[i]);
     rval = 1;
     errno = 0;
   }

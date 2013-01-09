@@ -2,7 +2,7 @@
 #include <avian.h>
 
 char fmt[4];
-int len, rval;
+int len;
 
 void
 strings(FILE *in, char *s) {
@@ -22,10 +22,8 @@ strings(FILE *in, char *s) {
       }
       i = 0;
     }
-  if(ferror(in)) {
+  if(ferror(in))
     alert("error reading %s: %m", s);
-    rval = 1;
-  }
 }
 
 int
@@ -50,16 +48,14 @@ main(int argc, char *argv[]) {
     fprint(stderr,
       "usage: strings [-a] [-t format] [-n number]  [file...]\n");
     exit(1);
-  }ARGEND 
-  
-  rval = 0;
+  }ARGEND
+
   if(argc == 0)
     strings(stdin, "<stdin>");
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
       alert("can't open %s: %m", argv[i]);
-      rval = 1;
       continue;
     }
     strings(f, argv[i]);

@@ -36,30 +36,26 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int i, pflag, rval;
+  int i, pflag;
   uint m;
 
   m = S_IRWXU|S_IRWXG|S_IRWXO;
   pflag = 0;
   ARGBEGIN("m:p"){
   case 'm':
-    m = getmode(optarg, m);
+    m = symmod(m, optarg);
     break;
   case 'p':
     pflag = 1;
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
-  rval = 0;
   for(i = 0; i < argc; i++)
-    if(pflag ? mkpath(argv[i], m)
-      : mkdir(argv[i], m)) {
+    if(pflag ? mkpath(argv[i], m) : mkdir(argv[i], m))
       alert("%s: %m", argv[i]);
-      rval = 1;
-    }
   exit(rval);
 }

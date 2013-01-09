@@ -15,7 +15,7 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int i, pflag, rval;
+  int i, pflag;
   char *p;
 
   pflag = 0;
@@ -25,18 +25,15 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
-  rval = 0;
   qsort(argv, argc, sizeof(char *), cmp);
   for(i = 0; i < argc; i++)
     for(p = argv[i]; strcmp(p, "."); p = dirname(p)) {
-      if(rmdir(p)) {
+      if(rmdir(p))
         alert("can't remove %s: %m", p);
-        rval = 1;
-      }
       if(!pflag)
         break;
     }

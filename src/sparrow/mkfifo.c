@@ -10,24 +10,22 @@ usage(void) {
 
 int
 main(int argc, char *argv[]) {
-  int i, rval;
+  int i;
   uint m;
 
   m = S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
   ARGBEGIN("m:"){
   case 'm':
-    m = getmode(optarg, m);
+    m = symmod(m, optarg);
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
   for(i = 0; i < argc; i++)
-    if(mkfifo(argv[i], m)) {
+    if(mkfifo(argv[i], m))
       alert("%s: %m", argv[i]);
-      rval = 1;
-    }
   exit(rval);
 }

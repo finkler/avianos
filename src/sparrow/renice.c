@@ -13,7 +13,7 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   int gflag, pflag, uflag;
-  int i, n, rval, which, who;
+  int i, n, which, who;
   struct passwd *pwd;
 
   gflag = pflag = uflag = 0;
@@ -37,17 +37,15 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1 || gflag+pflag+uflag > 1 || n == 0)
     usage();
-  rval = 0;
   for(i = 0; i < argc; i++) {
     if(uflag && !isdigit(argv[i][0])) {
       pwd = getpwnam(argv[i]);
       if(pwd == nil) {
         alert("unknown user %s", argv[i]);
-        rval = 1;
         continue;
       }
       who = pwd->pw_uid;
@@ -56,10 +54,10 @@ main(int argc, char *argv[]) {
     }
     errno = 0;
     n += getpriority(which, who);
-    if(errno || setpriority(which, who, n)) {
-      alert("%m");
-      rval = 1;
-    }
+    if(errno)
+      alert("getpriority: %m");
+    if(setpriority(which, who, n))
+      alert("setpriority: %m");
   }
   exit(rval);
 }
