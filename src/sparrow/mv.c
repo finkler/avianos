@@ -4,6 +4,8 @@
 #include <libgen.h>
 #include <sys/stat.h>
 
+#define S_WRACC(m) (m&(S_IWUSR|S_IWGRP|S_IWOTH))
+
 int fflag, iflag;
 
 int
@@ -43,7 +45,7 @@ mv(char *old, char *new) {
     } else
       return;
   }
-  if(isthere && !fflag && ((!S_WUGO(nsb.st_mode) && isatty(0)) ||
+  if(isthere && !fflag && ((!S_WRACC(nsb.st_mode) && isatty(0)) ||
     iflag) && ask(new))
     return;
   if(rename(old, new)) {
