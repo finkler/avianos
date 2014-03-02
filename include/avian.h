@@ -29,5 +29,8 @@ uint symmod(uint, char *);
 
 #define stradd(s,...) vstradd(s,__VA_ARGS__,nil)
 char *vstradd(char *, ...);
+#define trim(s) ltrim(rtrim(s))
+char *ltrim(char *);
+char *rtrim(char *);
 
 #endif /* _AVIAN_H_ */

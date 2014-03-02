@@ -3,15 +3,15 @@
 #include <sys/stat.h>
 
 int
-biprimary(char *op, char *s1, char *s2) {
+binary(char *op, char *s1, char *s2) {
   char *e1, *e2;
   long n1, n2;
 
-  if(!strcmp(op, "=")) 
+  if(!strcmp(op, "="))
     return strcmp(s1, s2);
   if(!strcmp(op, "!="))
     return !strcmp(s1, s2);
-  n1 = strtol(s1, &e1, 0);      
+  n1 = strtol(s1, &e1, 0);
   n2 = strtol(s2, &e2, 0);
   if(*e1 != '\0' || *e2 != '\0')
     fatal(2, "%s: not a number", *e1 ? s1 : s2);
@@ -31,7 +31,7 @@ biprimary(char *op, char *s1, char *s2) {
 }
 
 int
-primary(char *op, char *s) {
+unary(char *op, char *s) {
   int fd;
   struct stat sb;
 
@@ -68,7 +68,7 @@ primary(char *op, char *s) {
   if(!strcmp(op, "-x"))
     return access(s, X_OK);
   if(!strcmp(op, "-z"))
-    return stat(s, &sb) || sb.st_size > 0;
+    return strlen(s) > 0;
   fatal(2, "%s: invalid operator", op);
 }
 
@@ -88,10 +88,10 @@ main(int argc, char *argv[]) {
   }
   switch(argc) {
   case 3:
-    rval = biprimary(argv[1], argv[0], argv[2]);
+    rval = binary(argv[1], argv[0], argv[2]);
     break;
   case 2:
-    rval = primary(argv[0], argv[1]);
+    rval = unary(argv[0], argv[1]);
     break;
   case 1:
     rval = argv[0][0] == '\0';

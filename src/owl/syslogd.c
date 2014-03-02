@@ -118,13 +118,13 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc > 0)
     usage();
   if(getuid())
     fatal(1, "permission denied");
-  if(forkdaemon())
+  if(bg())
     fatal(1, "can't run process: %m");
   if(!kflag)
     logkmsg();

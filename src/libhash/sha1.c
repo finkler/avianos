@@ -1,32 +1,11 @@
 #include <u.h>
 #include <hash.h>
 
-#define LOR32(shift,x)\
-  ((((x)<<(shift))&0xFFFFFFFF)|((x)>>(32-(shift))))
+#define LOR32(x,shift) (((x)<<(shift))|((x)>>(32-(shift))))
 
-static void input(uchar *, int, SHA1Digest *);
 static void pad(SHA1Digest *);
 static void process(SHA1Digest *);
-
-void
-input(uchar *data, int len, SHA1Digest *state) {
-  if(len == 0 || state->err)
-    return;
-  while(len-- && !state->err)   {
-    state->msg[state->i++] = (*data&0xFF);
-    state->low += 8;
-    state->low &= 0xFFFFFFFF;
-    if(state->low == 0) {
-      state->high++;
-      state->high &= 0xFFFFFFFF;
-      if(state->high == 0)
-        state->err = 1;
-    }
-    if(state->i == 64)
-      process(state);
-    data++;
-  }
-}
+static void update(uchar *, int, SHA1Digest *);
 
 void
 pad(SHA1Digest *state) {
@@ -134,7 +113,7 @@ sha1(uchar *data, int len, SHA1Digest *state) {
     state->h[3] = 0x10325476;
     state->h[4] = 0xC3D2E1F0;
   }
-  input(data, len, state);
+  update(data, len, state);
   if(!state->err)
     return state;
   free(state);
@@ -154,4 +133,24 @@ sha1pickle(SHA1Digest *state) {
   sprintf(p, "%08x%08x%08x%08x%08x", state->h[0], state->h[1],
     state->h[2], state->h[3], state->h[4]);
   return p;
+}
+
+void
+update(uchar *data, int len, SHA1Digest *state) {
+  if(len == 0 || state->err)
+    return;
+  while(len-- && !state->err)   {
+    state->msg[state->i++] = (*data&0xFF);
+    state->low += 8;
+    state->low &= 0xFFFFFFFF;
+    if(state->low == 0) {
+      state->high++;
+      state->high &= 0xFFFFFFFF;
+      if(state->high == 0)
+        state->err = 1;
+    }
+    if(state->i == 64)
+      process(state);
+    data++;
+  }
 }
