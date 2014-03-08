@@ -1,0 +1,21 @@
+#!/bin/sh
+
+iso=$HOME/Downloads/archlinux-2014.02.01-dual.iso
+
+case $1 in
+boot)
+  qemu-system-i386 -no-kvm -pflash ./bios/OVMF_IA32.fd -m 128 -hda ./sys.img -boot c
+  ;;
+mount)
+  mount -o loop,offset=1048576,uid=1000,gid=1000 ./sys.img ./part0
+  mount -o loop,offset=34603008 ./sys.img ./part1
+  ;;
+setup)
+  qemu-system-i386 -no-kvm -m 512 -hda ./sys.img -cdrom $iso -boot d
+  ;;
+*)
+  echo "usage: adm command" 2>&1
+  exit 1
+  ;;
+esac
+exit $?
