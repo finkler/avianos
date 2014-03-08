@@ -1,7 +1,7 @@
 #include <u.h>
 #include <avian.h>
 
-#define INCR  100
+#define INCR 100
 
 typedef struct Edge Edge;
 struct Edge {
@@ -117,8 +117,8 @@ main(int argc, char *argv[]) {
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc > 1)
     usage();
   if(argc == 1 && !freopen(argv[0], "r", stdin))

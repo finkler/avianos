@@ -54,6 +54,7 @@ mv(char *old, char *new) {
       exit(1);
     return;
   }
+  // copy for st_dev !=
 }
 
 void

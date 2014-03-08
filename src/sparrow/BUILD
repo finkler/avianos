@@ -11,5 +11,5 @@ for src in $(ls *.sh)
 do
 	name=${src%.sh}
 	cp $src bin/$name
-  chmod +x bin/$name
+  	chmod +x bin/$name
 done

@@ -11,8 +11,8 @@ int runedec(rune *, char *);
 int runeenc(char *, rune);
 int runelen(rune);
 int runestart(int);
-int utflen(char *);
-int utfnlen(char *, int);
+uint utflen(char *);
+uint utfnlen(char *, int);
 char *utfrune(char *, rune);
 char *utfrrune(char *, rune);
 #define utfutf strstr

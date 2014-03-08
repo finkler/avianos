@@ -14,6 +14,6 @@ runeenc(char *buf, rune r) {
   h = 0xFF<<(8-n);
   buf[0] = h|(r>>(6*(n-1)));
   for(i = 1; i < n; i++)
-    buf[i] = 0x80|(((char)(r>>(6*(n-i-1)))0x3F);
+    buf[i] = 0x80|((char)(r>>(6*(n-i-1)))&0x3F);
   return i;
 }
