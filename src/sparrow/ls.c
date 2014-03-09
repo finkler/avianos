@@ -264,8 +264,8 @@ printdate(struct timespec *ts) {
   long tdiff;
 
   tdiff = time(NULL)-ts->tv_sec;
-  strftime(s, sizeof s, (tdiff >= 0 && tdiff < 15552000) ?
-    "%b %e %H:%M" : "%b %e  %Y", localtime(&ts->tv_sec));
+  strftime(s, sizeof s, (tdiff>=0&&tdiff<15552000)?
+    "%b %e %H:%M":"%b %e  %Y", localtime(&ts->tv_sec));
   print(s);
 }
 
