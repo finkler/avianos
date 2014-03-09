@@ -48,7 +48,7 @@ setup(void) {
   setgid(pwd->pw_gid);
   setuid(pwd->pw_uid);
   if(chdir(pwd->pw_dir)) {
-    alert("can't change directory %s: %m", pwd->pw_dir);
+    alert("chdir %s: %m", pwd->pw_dir);
     if(chdir("/"))
       exit(1);
   }
@@ -65,8 +65,8 @@ main(int argc, char *argv[]) {
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc > 1)
     usage();
   if(!isatty(0))
@@ -80,5 +80,5 @@ main(int argc, char *argv[]) {
   signal(SIGTSTP, SIG_IGN);
   setup();
   execl(pwd->pw_shell, pwd->pw_shell, nil);
-  fatal(1, "can't exec %s: %m", pwd->pw_shell);
+  fatal(1, "exec %s: %m", pwd->pw_shell);
 }

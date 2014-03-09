@@ -14,18 +14,18 @@ Map m[] = {
   {"defaults",    0},
   {"dirsync",     MS_DIRSYNC},
   {"mandlock",    MS_MANDLOCK},
-  {"move",        MS_MOVE}, 
+  {"move",        MS_MOVE},
   {"noatime",     MS_NOATIME},
-  {"nodev",       MS_NODEV}, 
+  {"nodev",       MS_NODEV},
   {"nodiratime",  MS_NODIRATIME},
   {"noexec",      MS_NOEXEC},
   {"nosuid",      MS_NOSUID},
   {"ro",          MS_RDONLY},
-  {"relatime",    MS_RELATIME}, 
-  {"remount",     MS_REMOUNT}, 
-  {"silent",      MS_SILENT}, 
-  {"strictatime", MS_STRICTATIME}, 
-  {"sync",        MS_SYNCHRONOUS}, 
+  {"relatime",    MS_RELATIME},
+  {"remount",     MS_REMOUNT},
+  {"silent",      MS_SILENT},
+  {"strictatime", MS_STRICTATIME},
+  {"sync",        MS_SYNCHRONOUS},
   {nil, 0}
 };
 
@@ -79,10 +79,10 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc != 2)
     usage();
   if(mount(argv[0], argv[1], type, flags, data))
-    fatal(1, "can't mount %s on %s: %m", argv[0], argv[1]);
+    fatal(1, "mount %s, %s: %m", argv[0], argv[1]);
 }

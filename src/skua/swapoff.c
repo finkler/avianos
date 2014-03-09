@@ -21,6 +21,6 @@ main(int argc, char *argv[]) {
     usage();
   for(i = 0; i < argc; i++)
     if(swapoff(argv[i]))
-      alert("%m");
+      alert("swapoff: %m");
   exit(rval);
 }

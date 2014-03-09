@@ -1,3 +1,6 @@
+REWRITE
+  - keymap.c
+
 BUGS
   - df (strange bug)
   - stty (putline??)
@@ -48,7 +51,6 @@ PORTS
 	- locale
 	- localedef
 	- lp
-	- ls*
 	- m4
 	- mailx
 	- man*

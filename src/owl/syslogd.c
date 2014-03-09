@@ -21,20 +21,20 @@ FILE *err, *msg;
 void
 logkmsg(void) {
   char buf[MSG_LEN+1], c;
-  FILE *in, *out;
+  FILE *kin, *kout;
   int n, st;
 
   if(fork())
     return;
-  in = fopen(KMSG_IFILE, "r");
-  if(in == nil)
+  kin = fopen(KMSG_IFILE, "r");
+  kout = fopen(KMSG_OFILE, "w");
+  if(kin == nil || kout == nil) {
+    alert("open %s: %m", kin?KMSG_IFILE:KMSG_OFILE);
     _exit(1);
-  out = fopen(KMSG_OFILE, "w");
-  if(out == nil)
-    _exit(1);
+  }
   for(;;) {
     n = st = 0;
-    while((c = fgetc(in)) != EOF && n < MSG_LEN) {
+    while((c = fgetc(kin)) != EOF && n < MSG_LEN) {
       if(st == 0) {
         if(c == '>')
           st = 1;
@@ -45,12 +45,13 @@ logkmsg(void) {
         break;
     }
     buf[n] = '\0';
-    if(fprint(out, buf) == EOF)
+    if(fprint(kout, buf) == EOF)
       break;
   }
-  if(ferror(in))
-    alert("error reading %s: %m", KMSG_IFILE);
-  _exit(1);
+  if(ferror(in)) {
+    alert("read %s: %m", KMSG_IFILE);
+    _exit(1);
+  }
 }
 
 void
@@ -62,19 +63,20 @@ run(void) {
 
   fd = socket(PF_UNIX, SOCK_DGRAM, 0);
   if(fd < 0)
-    fatal(1, "can't open socket: %m");
+    fatal(1, "socket: %m");
   in.sun_family = AF_UNIX;
   strcpy(in.sun_path, "/dev/log");
   len = sizeof in.sun_family + strlen(in.sun_path);
   if(bind(fd, (struct sockaddr *)&in, len))
-    fatal(1, "can't connect socket /dev/log: %m");
+    fatal(1, "bind /dev/log: %m");
   while((n = recvfrom(fd, buf, MSG_LEN, 0, nil, nil)) > 0) {
     if(buf[n-1] == '\n')
       n--;
     buf[n] = '\0';
     srvmessage(buf);
   }
-  fatal(1, "error reading /dev/log: %m");
+  if(n == -1)
+    fatal(1, "read /dev/log: %m");
 }
 
 void
@@ -125,14 +127,14 @@ main(int argc, char *argv[]) {
   if(getuid())
     fatal(1, "permission denied");
   if(bg())
-    fatal(1, "can't run process: %m");
+    fatal(1, "bg: %m");
   if(!kflag)
     logkmsg();
   err = fopen(ERR_FILE, "a");
   if(err == nil)
-    fatal(1, "can't open %s: %m", ERR_FILE);
+    fatal(1, "open %s: %m", ERR_FILE);
   msg = fopen(MSG_FILE, "a");
   if(msg == nil)
-    fatal(1, "can't open %s: %m", MSG_FILE);
+    fatal(1, "open %s: %m", MSG_FILE);
   run();
 }

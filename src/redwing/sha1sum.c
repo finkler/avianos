@@ -13,7 +13,7 @@ sum(FILE *in, char *s) {
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     digest = sha1(buf, n, digest);
   if(ferror(in)) {
-    alert("error reading %s: %m", s);
+    alert("read %s: %m", s);
     return;
   }
   p = sha1pickle(digest);
@@ -41,7 +41,7 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
-      alert("can't open %s: %m", argv[i]);
+      alert("open %s: %m", argv[i]);
       continue;
     }
     sum(f, argv[i]);

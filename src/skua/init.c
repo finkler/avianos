@@ -26,7 +26,7 @@ void
 rc(char *cmd) {
   if(fork() == 0) {
     execlp(cmd, cmd, nil);
-    alert("can't exec %s: %m", cmd);
+    alert("exec %s: %m", cmd);
     _exit(1);
   }
   wait(nil);
@@ -36,7 +36,7 @@ void
 shutdown(int signum) {
   sync();
   rc(RC_STOP);
-  reboot(signum == SIGINT ? RB_AUTOBOOT : RB_POWER_OFF);
+  reboot(signum==SIGINT?RB_AUTOBOOT:RB_POWER_OFF);
 }
 
 void
@@ -58,7 +58,7 @@ spawntty(void) {
   chmod(TTY, 0600);
   fd = open(TTY, O_RDWR|O_TTY_INIT);
   if(fd < 0) {
-    alert("can't open %s: %m", TTY);
+    alert("open %s: %m", TTY);
     _exit(1);
   }
   dup2(fd, 0);
@@ -72,7 +72,7 @@ spawntty(void) {
   }
   setenv("TERM", TERM, 1);
   execl(LOGIN, LOGIN, nil);
-  alert("can't exec %s: %m", LOGIN);
+  alert("exec %s: %m", LOGIN);
   _exit(1);
 }
 
@@ -90,7 +90,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND
-  
+
   if(argc > 0)
     usage();
   if(getuid() || getpid() != 1)

@@ -29,9 +29,9 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND
-  
+
   if(argc != 1)
     usage();
   if(umount2(argv[0], flags))
-    fatal(1, "can't unmount %s: %m", argv[0]);
+    fatal(1, "umount2 %s: %m", argv[0]);
 }

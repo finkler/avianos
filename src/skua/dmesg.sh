@@ -5,7 +5,7 @@ usage() {
   exit 1
 }
 
-while getopts "n:" flags
+while getopts ":n:" flags
 do
   case $flags in
   n)
@@ -19,6 +19,7 @@ do
     usage
   esac
 done
+shift $((OPTIND-1))
 
 if [ $# -gt 0 ]; then
   usage

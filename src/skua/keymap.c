@@ -31,7 +31,7 @@ escapestr(char *s) {
 void
 setdiacs(void) {
   static struct kbdiacrs kd;
-  
+
   if(ioctl(fd, KDSKBDIACR, &kd))
     fatal(1, "ioctl: %m");
 }
@@ -93,7 +93,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND
-  
+
   if(argc != 1)
     usage();
   f = fopen(argv[0], "r");
@@ -155,7 +155,7 @@ main(int argc, char *argv[]) {
     fatal(1, "syntax error: missing END");
   fd = open(CONS, O_WRONLY);
   if(fd < 0)
-    fatal(1, "can't open %s: %m", CONS);
+    fatal(1, "open %s: %m", CONS);
   setdiacs();
   setfuncs();
   setkeys();
