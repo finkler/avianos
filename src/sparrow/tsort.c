@@ -123,7 +123,7 @@ main(int argc, char *argv[]) {
     usage();
   if(argc == 1 && !freopen(argv[0], "r", stdin))
     fatal(1, "open %s: %m", argv[0]);
-  parsefile(argc == 1 ? argv[0] : "<stdin>");
+  parsefile(argc==1?argv[0]:"<stdin>");
   while(len) {
     cyclic = 1;
     i = 0;

@@ -14,7 +14,7 @@ binary(char *op, char *s1, char *s2) {
   n1 = strtol(s1, &e1, 0);
   n2 = strtol(s2, &e2, 0);
   if(*e1 != '\0' || *e2 != '\0')
-    fatal(2, "%s: not a number", *e1 ? s1 : s2);
+    fatal(2, "%s: not a number", *e1?s1:s2);
   if(!strcmp(op, "-eq"))
     return n1 != n2;
   if(!strcmp(op, "-ne"))

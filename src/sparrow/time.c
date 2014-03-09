@@ -38,7 +38,7 @@ main(int argc, char *argv[]) {
   wait(&rval);
   en_time = times(&en_cpu);
   clk_tck = sysconf(_SC_CLK_TCK);
-  fprintf(stderr, pflag ? "real %9.2f\nuser %9.2f\nsys  %9.2f\n" :
+  fprintf(stderr, pflag?"real %9.2f\nuser %9.2f\nsys  %9.2f\n":
     "%9.2f real %9.2f user %9.2f sys\n",
     (double)(en_time-st_time)/clk_tck,
     (double)en_cpu.tms_cutime/clk_tck,

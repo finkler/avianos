@@ -24,7 +24,7 @@ main(int argc, char *argv[]) {
   }ARGEND
 
   for(i = n = 0; i < argc && n < FILE_MAX-1; i++, n++) {
-    f[n] = fopen(argv[i], aflag ? "a" : "w");
+    f[n] = fopen(argv[i], aflag?"a":"w");
     if(f[n] == nil) {
       alert("open %s: %m", argv[i]);
       n--;
