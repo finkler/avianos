@@ -77,8 +77,8 @@ main(int argc, char *argv[]) {
   subtotal = total = 0;
   if(argc == 0)
     if(nftw(".", walk, 20, flags))
-      fatal(1, ".: %m");
+      fatal(1, "nftw .: %m");
   for(i = 0; i < argc; i++)
     if(nftw(argv[i], walk, 20, flags))
-      fatal(1, "%s: %m", argv[i]);
+      fatal(1, "nftw %s: %m", argv[i]);
 }

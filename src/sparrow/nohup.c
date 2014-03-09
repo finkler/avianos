@@ -30,7 +30,7 @@ main(int argc, char *argv[]) {
       snprintf(path, PATH_MAX, "%s/%s", getenv("HOME"), FILENAME);
       fd = open(path, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
       if(fd < 0)
-        fatal(1, "can't open %s: %m", path);
+        fatal(1, "open %s: %m", path);
     }
     if(dup2(fd, 1) < 0)
       fatal(1, "dup2: %m");
@@ -40,5 +40,5 @@ main(int argc, char *argv[]) {
     fatal(1, "dup2: %m");
   signal(SIGHUP, SIG_IGN);
   execvp(*argv, argv);
-  fatal(errno == ENOENT ? 127 : 126, "can't exec %s: %m", *argv);
+  fatal(errno==ENOENT?127:126, "exec %s: %m", *argv);
 }

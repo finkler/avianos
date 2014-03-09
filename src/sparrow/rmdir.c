@@ -33,7 +33,7 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++)
     for(p = argv[i]; strcmp(p, "."); p = dirname(p)) {
       if(rmdir(p))
-        alert("can't remove %s: %m", p);
+        alert("rmdir %s: %m", p);
       if(!pflag)
         break;
     }

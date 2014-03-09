@@ -12,9 +12,9 @@ ln(char *s1, char *s2) {
     goto Failed;
   if(S_ISLNK(sb.st_mode)) {
     if((Pflag || Lflag) && linkat(AT_FDCWD, s1, AT_FDCWD, s2,
-      Pflag ? 0 : AT_SYMLINK_FOLLOW))
+      Pflag?0:AT_SYMLINK_FOLLOW))
       goto Failed;
-  } else if(sflag ? symlink(s1, s2) : link(s1, s2))
+  } else if(sflag?symlink(s1,s2):link(s1,s2))
     goto Failed;
   return;
 Failed:

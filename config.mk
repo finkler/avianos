@@ -1,5 +1,5 @@
 INCS = -I${ROOT}/include
-LIBS = -L${ROOT}/lib -lc -lavian -lutf8
+LIBS = -L${ROOT}/lib -lc -lavian -lhash
 
 #CFLAGS = -std=gnu99 -pedantic -Wall -Os ${INCS}
 CFLAGS = -std=c99 -pedantic -Wall -Os -D_XOPEN_SOURCE=700 ${INCS}

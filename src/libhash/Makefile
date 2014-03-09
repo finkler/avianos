@@ -1,7 +1,7 @@
 ROOT=../..
 include ${ROOT}/config.mk
 
-SRC = sha1.c
+SRC = crc32.c sha1.c
 OBJ = ${SRC:.c=.o}
 
 .c.o:

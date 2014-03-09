@@ -57,23 +57,23 @@ main(int argc, char *argv[]) {
     stem = argv[1];
   if(argc > 0 && strcmp(argv[0], "-"))
     if(!freopen(argv[0], "r", stdin))
-      fatal(1, "can't open %s: %m", argv[0]);
+      fatal(1, "open %s: %m", argv[0]);
   if(strlen(stem) + slen > NAME_MAX)
     fatal(1, "suffix too long");
   for(i = 0; !feof(stdin); i++) {
     p = stradd(stem, suffix(i, slen));
     f = fopen(p, "w+");
     if(f == nil)
-      fatal(1, "can't open %s: %m", p);
+      fatal(1, "open %s: %m", p);
     while((c = fgetc(stdin)) != EOF) {
       if(fputc(c, f) != c)
-        fatal(1, "error writing %s: %m", p);
+        fatal(1, "write %s: %m", p);
       if(((line && c == '\n') || byte) && --n == 0)
         break;
       free(p);
     }
     if(ferror(stdin))
-      fatal(1, "error reading %s: %m", argc > 0 ? argv[0] : "<stdin>");
+      fatal(1, "read %s: %m", argc>0?argv[0]:"<stdin>");
     fclose(f);
   }
 }

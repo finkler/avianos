@@ -23,7 +23,7 @@ strings(FILE *in, char *s) {
       i = 0;
     }
   if(ferror(in))
-    alert("error reading %s: %m", s);
+    alert("read %s: %m", s);
 }
 
 int
@@ -55,7 +55,7 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
-      alert("can't open %s: %m", argv[i]);
+      alert("open %s: %m", argv[i]);
       continue;
     }
     strings(f, argv[i]);

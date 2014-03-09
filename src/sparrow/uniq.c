@@ -58,15 +58,15 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(cflag+dflag+uflag > 1 || argc > 2)
     usage();
   if(argc > 1 && !freopen(argv[1], "w", stdout))
-    fatal(1, "can't open %s: %m", argv[1]);
+    fatal(1, "open %s: %m", argv[1]);
   if(argc > 0 && strcmp(argv[0], "-"))
     if(!freopen(argv[0], "r", stdin))
-      fatal(1, "can't open %s: %m", argv[0]);
+      fatal(1, "open %s: %m", argv[0]);
   while(fgets(buf[0], LINE_MAX, stdin)) {
     for(n = 1; fgets(buf[1], LINE_MAX, stdin); n++)
       if(strcmp(skip(buf[0]), skip(buf[1])))

@@ -21,12 +21,12 @@ main(int argc, char *argv[]) {
   default:
     fprint(stderr, "usage: tee [-ai] [file...]\n");
     exit(1);
-  }ARGEND 
-  
+  }ARGEND
+
   for(i = n = 0; i < argc && n < FILE_MAX-1; i++, n++) {
     f[n] = fopen(argv[i], aflag ? "a" : "w");
     if(f[n] == nil) {
-      alert("can't open %s: %m", argv[i]);
+      alert("open %s: %m", argv[i]);
       n--;
     }
   }
@@ -35,9 +35,9 @@ main(int argc, char *argv[]) {
     for(i = 0; i < n; i++) {
       fprintln(f[i], buf);
       if(ferror(f[i]))
-        alert("error writing %s: %m", argv[i]);
+        alert("write %s: %m", argv[i]);
     }
   if(ferror(stdin))
-    fatal(1, "error reading <stdin>: %m");
+    fatal(1, "read <stdin>: %m");
   exit(rval);
 }

@@ -79,7 +79,7 @@ main(int argc, char *argv[]) {
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
-      alert("can't open %s: %m", argv[i]);
+      alert("open %s: %m", argv[i]);
       continue;
     }
     wc(f, argv[i]);

@@ -26,6 +26,6 @@ main(int argc, char *argv[]) {
     usage();
   for(i = 0; i < argc; i++)
     if(mkfifo(argv[i], m))
-      alert("%s: %m", argv[i]);
+      alert("mkfifo %s: %m", argv[i]);
   exit(rval);
 }

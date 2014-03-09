@@ -24,10 +24,10 @@ follow(char *s, int isstdin) {
     sleep(3);
     while((c = fgetc(stdin)) != EOF) {
       if(fputc(c, stdout) == EOF)
-        fatal(1, "error writing <stdout>: %m");
+        fatal(1, "write <stdout>: %m");
     }
     if(ferror(stdin))
-      fatal(1, "error reading %s: %m", s);
+      fatal(1, "read %s: %m", s);
     clearerr(stdin);
     fflush(stdout);
   }
@@ -86,12 +86,12 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc > 1)
     usage();
   if(argc == 1 && !freopen(argv[0], "r", stdin))
-    fatal(1, "can't open %s: %m", argv[0]);
+    fatal(1, "open %s: %m", argv[0]);
   buf = malloc(len*sizeof(Buffer));
   for(n = 0; (p = readinput()); n++) {
     if(n == len) {
@@ -113,5 +113,5 @@ main(int argc, char *argv[]) {
     else
       print(buf[i].s);
   if(fflag)
-    follow(argc ? argv[0] : "<stdin>", !argc);
+    follow(argc?argv[0]:"<stdin>", !argc);
 }

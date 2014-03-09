@@ -64,7 +64,7 @@ grep(FILE *in, char *s, int pname) {
   }
   if(ferror(in)) {
     if(!sflag)
-      alert("error reading %s: %m", s);
+      alert("read %s: %m", s);
     rval = 2;
     return;
   }
@@ -179,7 +179,7 @@ main(int argc, char *argv[]) {
     f = fopen(argv[i], "r");
     if(f == nil) {
       if(!sflag)
-        alert("can't open %s: %m", argv[i]);
+        alert("open %s: %m", argv[i]);
       rval = 2;
       continue;
     }

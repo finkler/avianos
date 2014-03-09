@@ -17,7 +17,7 @@ datetime(char *s) {
     *p = 'T';
   p = strptime(s, "%Y-%m-%dT%H:%M", &tm);
   if(p == nil)
-    fatal(1, "%s: invalid date format", s);
+    fatal(1, "invalid date format %s", s);
   if(*p == '.' || *p == ',')
     times[0].tv_nsec = times[1].tv_nsec =
       strtol(++p, &p, 10)%(long)10e9;
@@ -26,7 +26,7 @@ datetime(char *s) {
     setenv("TZ", "UTC-0", 1);
   }
   if(*p != '\0')
-    fatal(1, "%s: invalid date format", s);
+    fatal(1, "invalid date format %s", s);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
@@ -68,7 +68,7 @@ timetime(char *s) {
   if(fmt && n)
     fmt[n] = '\0';
   if(fmt == nil || strptime(s, fmt, &tm) == nil)
-    fatal(1, "%s: invalid time format", s);
+    fatal(1, "invalid time format %s", s);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
@@ -129,11 +129,11 @@ main(int argc, char *argv[]) {
     } else if(!cflag) {
       fd = creat(argv[i], MODE);
       if(fd < 0) {
-        alert("can't create %s: %m", argv[i]);
+        alert("creat %s: %m", argv[i]);
         continue;
       }
       if(futimens(fd, times))
-        alert("%s: %m", argv[i]);
+        alert("futimens %s: %m", argv[i]);
       close(fd);
     }
   exit(rval);

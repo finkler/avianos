@@ -21,8 +21,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc > 1)
     usage();
   fmt = "%a %b %e %H:%M:%S %Z %Y";
@@ -32,7 +32,6 @@ main(int argc, char *argv[]) {
     fmt = &argv[0][1];
   }
   now = time(nil);
-  strftime(buf, sizeof buf, fmt, uflag ?
-    gmtime(&now) : localtime(&now));
+  strftime(buf, sizeof buf, fmt, uflag?gmtime(&now):localtime(&now));
   println(buf);
 }

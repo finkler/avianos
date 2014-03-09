@@ -25,15 +25,15 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 1)
     usage();
   st_time = times(&st_cpu);
   if(fork() == 0) {
     execv(*argv, argv);
-    alert("time: can't exec %s: %m", *argv);
-    _exit(errno == ENOENT ? 127 : 126);
+    alert("exec %s: %m", *argv);
+    _exit(errno==ENOENT?127:126);
   }
   wait(&rval);
   en_time = times(&en_cpu);

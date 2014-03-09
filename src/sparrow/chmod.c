@@ -15,7 +15,7 @@ int
 walk(const char *fpath, const struct stat *sb, int tflag,
   struct FTW *ftwbuf) {
   if(chmod(fpath, symmod(sb->st_mode, modstr)))
-    alert("%s: %m", fpath);
+    alert("chmod %s: %m", fpath);
   return 0;
 }
 
@@ -39,18 +39,18 @@ main(int argc, char *argv[]) {
   modstr = argv[0];
   for(i = 1; i < argc; i++)
     if(stat(argv[i], &sb)) {
-      alert("can't stat %s: %m", argv[i]);
+      alert("stat %s: %m", argv[i]);
       continue;
     }
     if(S_ISDIR(sb.st_mode) && Rflag) {
       if(nftw(argv[i], walk, 20, 0))
-        fatal(1, "%s: %m", argv[i]);
+        fatal(1, "nftw %s: %m", argv[i]);
     } else {
       p = argv[i];
       if(readlink(p, buf, PATH_MAX) > 0)
         p = buf;
       if(chmod(p, symmod(sb.st_mode, modstr)))
-        alert("%s: %m", p);
+        alert("chmod %s: %m", p);
     }
   exit(rval);
 }

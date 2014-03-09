@@ -83,7 +83,7 @@ main(int argc, char *argv[]) {
     continue;
   Failed:
     if(!fflag)
-      alert(errno ? "can't remove %s: %m" : "can't remove %s", argv[i]);
+      alert(errno?"can't remove %s: %m":"can't remove %s", argv[i]);
     rval = 1;
     errno = 0;
   }

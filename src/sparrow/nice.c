@@ -20,8 +20,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc == 0)
     usage();
   errno = 0;
@@ -31,5 +31,5 @@ main(int argc, char *argv[]) {
   if(setpriority(PRIO_PROCESS, 0, n))
     fatal(1, "setpriority: %m");
   execvp(*argv, argv);
-  fatal(errno == ENOENT ? 127 : 126, "can't exec %s: %m", argv[0]);
+  fatal(errno==ENOENT?127:126, "can't exec %s: %m", argv[0]);
 }

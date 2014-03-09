@@ -55,7 +55,7 @@ main(int argc, char *argv[]) {
   if(argc < 1)
     usage();
   for(i = 0; i < argc; i++)
-    if(pflag ? mkpath(argv[i], m) : mkdir(argv[i], m))
-      alert("%s: %m", argv[i]);
+    if(pflag?mkpath(argv[i],m):mkdir(argv[i],m))
+      alert("mkdir %s: %m", argv[i]);
   exit(rval);
 }

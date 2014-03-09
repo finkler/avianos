@@ -61,7 +61,7 @@ parsefile(char *s) {
       fatal(1, "odd number of items");
   }
   if(ferror(stdin))
-    fatal(1, "error reading %s: %m", s);
+    fatal(1, "read %s: %m", s);
   cap = INCR;
   len = 0;
   V = malloc(cap*sizeof(char *));
@@ -122,7 +122,7 @@ main(int argc, char *argv[]) {
   if(argc > 1)
     usage();
   if(argc == 1 && !freopen(argv[0], "r", stdin))
-    fatal(1, "can't open %s: %m", argv[0]);
+    fatal(1, "open %s: %m", argv[0]);
   parsefile(argc == 1 ? argv[0] : "<stdin>");
   while(len) {
     cyclic = 1;

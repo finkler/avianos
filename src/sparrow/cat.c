@@ -8,11 +8,11 @@ cat(FILE *in, char *s) {
 
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     if(fwrite(buf, 1, n, stdout) != n) {
-      alert("write error copying %s: %m", s);
+      alert("write %s: %m", s);
       return;
     }
   if(ferror(in))
-    alert("error reading %s: %m", s);
+    alert("read %s: %m", s);
 }
 
 int
@@ -37,7 +37,7 @@ main(int argc, char *argv[]) {
     } else {
       f = fopen(argv[i], "r");
       if(f == nil) {
-        alert("can't open %s: %m", argv[i]);
+        alert("open %s: %m", argv[i]);
         continue;
       }
       cat(f, argv[i]);

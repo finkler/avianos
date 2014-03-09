@@ -10,7 +10,7 @@ head(FILE *in, char *s, int lines) {
     lines--;
   }
   if(ferror(in))
-    alert("error reading %s: %m", s);
+    alert("read %s: %m", s);
 }
 
 int
@@ -26,14 +26,14 @@ main(int argc, char *argv[]) {
   default:
     fprint(stderr, "usage: head [-n number] [file...]\n");
     exit(1);
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc == 0)
     head(stdin, "<stdin>", n);
   for(i = 0; i < argc; i++) {
     f = fopen(argv[i], "r");
     if(f == nil) {
-      alert("can't open %s: %m", argv[i]);
+      alert("open %s: %m", argv[i]);
       continue;
     }
     if(argc > 1)

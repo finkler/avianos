@@ -1,7 +1,6 @@
 #include <u.h>
 #include <avian.h>
 #include <dirent.h>
-#include <ftw.h>
 #include <grp.h>
 #include <pwd.h>
 #include <sys/stat.h>
@@ -294,7 +293,7 @@ printlong(File *l) {
     n = numlen(r->info.st_nlink);
     if(n > fmt.lnk)
       fmt.lnk = n;
-    n = numlen(r->info.st_rdev ? r->info.st_rdev : r->info.st_size);
+    n = numlen(r->info.st_rdev?r->info.st_rdev:r->info.st_size);
     if(n > fmt.siz)
       fmt.siz = n;
     usr = nil;
@@ -332,8 +331,8 @@ printlong(File *l) {
       else
         printf(" %*u", fmt.grp, r->info.st_gid);
     }
-    printf(" %*llu ", fmt.siz, r->info.st_rdev ?
-      r->info.st_rdev : r->info.st_size);
+    printf(" %*llu ", fmt.siz, r->info.st_rdev?
+      r->info.st_rdev:r->info.st_size);
     printdate(&r->info.st_mtim);
     print(" ");
     printname(r->name);

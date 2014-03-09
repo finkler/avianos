@@ -17,7 +17,7 @@ int
 walk(const char *fpath, const struct stat *sb, int tflag,
   struct FTW *ftwbuf) {
   if(chown(fpath, uid, gid))
-    alert("%s: %m", fpath);
+    alert("chown %s: %m", fpath);
   return 0;
 }
 
@@ -46,8 +46,8 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc < 2)
     usage();
   gid = -1;
@@ -72,13 +72,13 @@ main(int argc, char *argv[]) {
   for(i = 1; i < argc; i++)
     if(Rflag) {
       if(nftw(argv[i], walk, 20, flags) < 0)
-        fatal(1, "%s: %m", argv[i]);
+        fatal(1, "nftw %s: %m", argv[i]);
     } else {
       p = argv[i];
       if(!hflag && readlink(p, buf, PATH_MAX) > 0)
         p = buf;
       if(chown(p, uid, gid))
-        alert("%s: %m", argv[i]);
+        alert("chown %s: %m", argv[i]);
     }
   exit(rval);
 }

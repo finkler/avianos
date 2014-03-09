@@ -16,19 +16,19 @@ main(int argc, char *argv[]) {
     fprint(stderr,
       "usage: env [-i] [name=value]... [utility [argument...]]\n");
     exit(1);
-  }ARGEND 
-  
+  }ARGEND
+
   for(; *argv; argv++) {
     p = strchr(*argv, '=');
     if(p == nil)
       break;
     *p++ = '\0';
     if(setenv(*argv, p, 1))
-      fatal(1, "setenv %s=%s: %m", *argv, p);
+      fatal(1, "setenv %s: %m", *argv);
   }
   if(*argv) {
     execvp(*argv, argv);
-    fatal(errno == ENOENT ? 127 : 126, "can't exec %s: %m", *argv);
+    fatal(errno==ENOENT?127:126, "exec %s: %m", *argv);
   }
   for(e = environ; *e; e++)
     println(*e);

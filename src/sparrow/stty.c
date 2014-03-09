@@ -451,6 +451,6 @@ main(int argc, char *argv[]) {
     alert("%s: invalid operand", argv[i]);
   }
   if(tcsetattr(0, TCSANOW, &tc))
-    fatal(1, "can't set attributes: %m");
+    fatal(1, "tcsetattr: %m");
   exit(rval);
 }

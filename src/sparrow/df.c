@@ -36,7 +36,7 @@ parsemounts(void) {
 
   f = fopen(PATH_MOUNTS, "r");
   if(f == nil)
-    fatal(1, "can't open %s: %m", PATH_MOUNTS);
+    fatal(1, "open %s: %m", PATH_MOUNTS);
   while((buf = fgetln(f))) {
     new = malloc(sizeof(FSInfo));
     sscanf(buf, "%s %s", new->name, new->path);
@@ -84,7 +84,7 @@ main(int argc, char *argv[]) {
       output(r);
   for(i = 0; i < argc; i++) {
     if(statvfs(argv[i], &sb)) {
-      alert("%s: %m", argv[i]);
+      alert("statvfs %s: %m", argv[i]);
       continue;
     }
     for(r = fsinf; r; r = r->next)

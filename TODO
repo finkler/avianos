@@ -1,8 +1,6 @@
-RECOVER
-  - ls
-
 BUGS
-  - ???
+  - df (strange bug)
+  - stty (putline??)
 
 FEATURES
   - utf8 support (look for it) !!!

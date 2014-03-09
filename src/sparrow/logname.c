@@ -14,12 +14,12 @@ main(int argc, char *argv[]) {
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc != 0)
     usage();
   p = getlogin();
   if(p == nil)
-    fatal(1, "%m");
+    fatal(1, "getlogin: %m");
   println(p);
 }
