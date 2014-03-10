@@ -4,8 +4,8 @@
 char *
 fgetln(FILE *stream) {
   static char line[LINE_MAX];
-  int n;
-  
+  uint n;
+
   if(fgets(line, LINE_MAX, stream) == nil)
     return nil;
   n = strlen(line);

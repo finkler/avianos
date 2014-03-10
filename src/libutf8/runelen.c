@@ -4,7 +4,7 @@
 int
 runelen(rune r) {
   int i;
-  rune n;
+  uint32 n;
 
   n = RUNE_SELF;
   for(i = 1; i <= UTF_MAX; i++) {

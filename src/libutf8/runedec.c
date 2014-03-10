@@ -3,16 +3,17 @@
 
 int
 runedec(rune *r, char *s) {
-  uchar h;
+  uchar h, *p;
   int i, n;
 
-  if(*s < RUNE_SELF) {
-    *r = *s;
+  p = (uchar *)s;
+  if(*p < RUNE_SELF) {
+    *r = *p;
     return 1;
   }
-  h = 0xFF<<(8-UTF_MAX);
+  h = (0xFF<<(8-UTF_MAX))&0xFF;
   for(n = UTF_MAX; n > 1; n--) {
-    if((*s&h) == h)
+    if((*p&h) == h)
       break;
     h <<= 1;
   }
@@ -20,10 +21,10 @@ runedec(rune *r, char *s) {
     *r = RUNE_ERROR;
     return 1;
   }
-  *r = s[0]&(0xFF>>(8-n-1));
+  *r = p[0]&(0xFF>>(n+1));
   for(i = 1; i < n; i++) {
     *r <<= 6;
-    *r |= s[i]&0xF;
+    *r |= p[i]&0x3F;
   }
   return i;
 }

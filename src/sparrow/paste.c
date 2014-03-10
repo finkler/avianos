@@ -17,7 +17,7 @@ list(char *s) {
       ndelim--;
   p = s;
   delim = malloc(ndelim*sizeof(rune));
-  for(i = 0; i < ndelim; i++) {
+  for(i = 0; i < ndelim; i++)
     if(*p == '\\') {
       switch(*++p) {
       case 'n':
@@ -39,7 +39,6 @@ list(char *s) {
     } else {
       p += runedec(&delim[i], p);
     }
-  }
 }
 
 void
@@ -49,28 +48,46 @@ paste(FILE **in, int n) {
 
   i = j = 0;
   while(i != n) {
-    while(i < n) {
-      p = fgetln(in[i]);
+    for(i = 0; i < n; i++) {
+      p = readline(in[i]);
       if(p)
         print(p);
-      else if(sflag)
-        break;
       buf[runeenc(buf, delim[j++])] = '\0';
       if(j == ndelim)
         j = 0;
-      print(buf);
-      if(!sflag)
-        i++;
+      if(i < n-1)
+        print(buf);
     }
     print("\n");
-    if(sflag) {
-      j = 0;
-      i++;
-    } else {
-      for(i = 0; i < n; i++)
-        if(!feof(in[i]))
-          break;
+    for(i = 0; i < n; i++)
+      if(!feof(in[i]))
+        break;
+  }
+}
+
+void
+sequential(FILE **in, int n) {
+  char buf[UTF_MAX+1], *p, *q;
+  int i, j;
+
+  p = nil;
+  for(i = 0; i < n; i++) {
+    j = 0;
+    q = readline(in[i]);
+    for(;;) {
+      free(p);
+      if(q == nil)
+        break;
+      p = strdup(q);
+      q = readline(in[i]);
+      print(p);
+      buf[runeenc(buf, delim[j++])] = '\0';
+      if(j == ndelim)
+        j = 0;
+      if(q)
+        print(buf);
     }
+    print("\n");
   }
 }
 
@@ -116,6 +133,9 @@ main(int argc, char *argv[]) {
       }
     }
   }
-  paste(f, argc);
+  if(sflag)
+    sequential(f, argc);
+  else
+    paste(f, argc);
   exit(rval);
 }
