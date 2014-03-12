@@ -4,6 +4,7 @@ REWRITE
 BUGS
   - df (strange bug)
   - stty (putline??)
+  - mv (return value of call to system)
 
 FEATURES
   - utf8 support (look for it) !!!
@@ -54,9 +55,7 @@ PORTS
 	- m4
 	- mailx
 	- man*
-	- mv*
 	- od
-	- paste
 	- patch
 	- pathchk
 	- pax

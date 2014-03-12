@@ -20,6 +20,23 @@ ask(char *s) {
 }
 
 void
+cp(char *src, char *dst) {
+  char cmd[10], *p;
+
+  strcpy(cmd, "cp -RPp");
+  if(fflag)
+    strcat(cmd, "f");
+  if(iflag)
+    strcat(cmd, "i");
+  p = stradd(cmd, " ", src, " ", dst);
+  system(p);
+  free(p);
+  p = stradd("rm -fr ", src);
+  system(p);
+  free(p);
+}
+
+void
 mv(char *old, char *new) {
   int isthere;
   struct stat nsb, osb;
@@ -36,7 +53,7 @@ mv(char *old, char *new) {
     }
     isthere = 0;
   } else if(nsb.st_dev == osb.st_dev && nsb.st_ino == osb.st_ino) {
-    if(strcmp(basename(cleanname(old)), basename(cleanname(new))) {
+    if(strcmp(basename(cleanname(old)), basename(cleanname(new)))) {
       if(unlink(new)) {
         alert("unlink %s: %m", new);
         return;
@@ -51,10 +68,8 @@ mv(char *old, char *new) {
   if(rename(old, new)) {
     alert("rename %s: %m", new);
     if(errno == EXDEV)
-      exit(1);
-    return;
+      cp(old, new);
   }
-  // copy for st_dev !=
 }
 
 void

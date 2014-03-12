@@ -4,7 +4,6 @@
 
 rune *delim;
 int ndelim;
-int sflag;
 
 void
 list(char *s) {
@@ -49,14 +48,15 @@ paste(FILE **in, int n) {
   i = j = 0;
   while(i != n) {
     for(i = 0; i < n; i++) {
-      p = readline(in[i]);
+      p = fgetln(in[i]);
       if(p)
         print(p);
-      buf[runeenc(buf, delim[j++])] = '\0';
-      if(j == ndelim)
-        j = 0;
-      if(i < n-1)
+      if(i < n-1) {
+        buf[runeenc(buf, delim[j++])] = '\0';
+        if(j == ndelim)
+          j = 0;
         print(buf);
+      }
     }
     print("\n");
     for(i = 0; i < n; i++)
@@ -66,26 +66,27 @@ paste(FILE **in, int n) {
 }
 
 void
-sequential(FILE **in, int n) {
+self(FILE **in, int n) {
   char buf[UTF_MAX+1], *p, *q;
   int i, j;
 
   p = nil;
   for(i = 0; i < n; i++) {
     j = 0;
-    q = readline(in[i]);
+    q = fgetln(in[i]);
     for(;;) {
       free(p);
       if(q == nil)
         break;
       p = strdup(q);
-      q = readline(in[i]);
+      q = fgetln(in[i]);
       print(p);
-      buf[runeenc(buf, delim[j++])] = '\0';
-      if(j == ndelim)
-        j = 0;
-      if(q)
+      if(q) {
+        buf[runeenc(buf, delim[j++])] = '\0';
+        if(j == ndelim)
+          j = 0;
         print(buf);
+      }
     }
     print("\n");
   }
@@ -100,7 +101,7 @@ usage(void) {
 int
 main(int argc, char *argv[]) {
   FILE **f;
-  int i;
+  int i, sflag;
   rune tab;
 
   tab = '\t';
@@ -134,7 +135,7 @@ main(int argc, char *argv[]) {
     }
   }
   if(sflag)
-    sequential(f, argc);
+    self(f, argc);
   else
     paste(f, argc);
   exit(rval);
