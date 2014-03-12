@@ -7,8 +7,8 @@
 
 void
 base64enc(char *s) {
-  char b64[] =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyz0123456789+/";
+  char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz0123456789+/";
   char enc[B64_LEN+1], buf[3];
   int i, n;
 
