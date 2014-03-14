@@ -43,7 +43,7 @@ histenc(char *s) {
     if(n > 1)
       enc[i++] = 0x20 + (((buf[1]<<2)|((buf[2]>>6)&0x3))&0x3F);
     if(n > 2)
-      enc[i++] = 0x20 + ((buf[2])&0x3F);
+      enc[i++] = 0x20 + (buf[2]&0x3F);
     if(i == HIST_LEN) {
       enc[i] = '\0';
       printf("%c%s\n", 0x20+nr, enc);

@@ -9,7 +9,7 @@ TARG = _
 
 ${TARG}: ${TARG}.o
 	@echo LD $@
-	@${CC} -o $@ $< ${LDFLAGS} -lsec
+	@${CC} -o $@ $< ${LDFLAGS} ${LIB}
 
 clean:
 	@echo cleaning

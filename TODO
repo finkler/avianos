@@ -1,5 +1,6 @@
 REWRITE
   - keymap.c
+  - uuencode ???
 
 BUGS
   - df (strange bug)
@@ -7,7 +8,7 @@ BUGS
   - mv (return value of call to system)
 
 FEATURES
-  - utf8 support (look for it) !!!
+  - utf8 support (strings.c ???) !!!
   - du.c/chown.c/etc. -H -L and -P flag implementation.
   - strings.c skip elf header?
   - login.c utmp(x) support?
@@ -15,10 +16,9 @@ FEATURES
   - keymap.c "COMPOSE" support?
 
 PORTS
-  - uevd
+  - uevd (pnpd)
   - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
   - mkgrp / rmgrp
-  - sh
 
   - chkeymap / fonts / etc.
   - acpid
@@ -27,55 +27,54 @@ PORTS
   - network
   - ssh
 
----------
-	- at
-	- awk
-	- batch
-	- bc
-	- comm
-	- crontab
-	- csplit
-	- cut
-	- dd
-	- diff
-	- ed*
-	- expand
-	- expr
-	- file
-	- find
-	- fold
-	- gencat
-	- getconf
-	- hash
-	- iconv
-	- join
-	- locale
-	- localedef
-	- lp
-	- m4
-	- mailx
-	- man*
-	- od
-	- patch
-	- pathchk
-	- pax
-	- pr
-	- printf
-	- ps
-	- sed*
-	- sh*
-	- sort
-	- tabs
-	- tput
-	- tr
-	- unexpand
-	- uudecode
-	- uuencode
-	- write
-	- xargs
+POSIX UTILS
+  - at
+  - awk
+  - batch
+  - bc
+  - comm
+  - crontab
+  - csplit
+  - cut
+  - dd
+  - diff
+  - ed*
+  - expand
+  - expr
+  - file
+  - find
+  - fold
+  - gencat
+  - getconf
+  - hash
+  - iconv
+  - join
+  - locale
+  - localedef
+  - lp
+  - m4
+  - mailx
+  - man*
+  - od
+  - patch
+  - pathchk
+  - pax
+  - pr
+  - printf
+  - ps
+  - sed*
+  - sh*
+  - sort
+  - tabs
+  - tput
+  - tr
+  - unexpand
+  - uudecode
+  - write
+  - xargs
 
 SUPPORT FS
-	- ext2/4
-	- iso9660 / udf
-	- swap
-	- vfat
+  - ext2/4
+  - iso9660 / udf
+  - swap
+  - vfat

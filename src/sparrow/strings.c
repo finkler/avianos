@@ -46,7 +46,7 @@ main(int argc, char *argv[]) {
     break;
   default:
     fprint(stderr,
-      "usage: strings [-a] [-t format] [-n number]  [file...]\n");
+      "usage: strings [-a] [-t format] [-n number] [file...]\n");
     exit(1);
   }ARGEND
 

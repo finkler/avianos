@@ -12,11 +12,13 @@ do
     if [ $OPTARG -lt 7 ]; then
       if [ $OPTARG -gt 0 ]; then
         echo $OPTARG > /proc/sys/kernel/printk
-        exit 0;
+        exit 0
       fi
     fi
+    echo "dmesg: invalid level $OPTARG" 1>&2
+    exit 1;;
   *)
-    usage
+    usage;;
   esac
 done
 shift $((OPTIND-1))

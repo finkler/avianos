@@ -8,7 +8,7 @@ cat(FILE *in, char *s) {
 
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     if(fwrite(buf, 1, n, stdout) != n) {
-      alert("write %s: %m", s);
+      alert("write <stdout>: %m");
       return;
     }
   if(ferror(in))
