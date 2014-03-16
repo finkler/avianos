@@ -3,17 +3,17 @@ REWRITE
   - uuencode ???
 
 BUGS
-  - df (strange bug)
+  - df (strange bug ???)
   - stty (putline??)
   - mv (return value of call to system)
 
 FEATURES
-  - utf8 support (strings.c ???) !!!
-  - du.c/chown.c/etc. -H -L and -P flag implementation.
+  - -H -L and -P flag implementations !!!
   - strings.c skip elf header?
   - login.c utmp(x) support?
   - login.c lastlog support? ( http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=%2Fcom.ibm.aix.files%2Fdoc%2Faixfiles%2Flastlog.htm )
   - keymap.c "COMPOSE" support?
+  - mount (fstab support ??)
 
 PORTS
   - uevd (pnpd)
@@ -23,8 +23,7 @@ PORTS
   - chkeymap / fonts / etc.
   - acpid
 
----------
-  - network
+  - dhcpcd
   - ssh
 
 POSIX UTILS

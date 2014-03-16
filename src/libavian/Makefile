@@ -15,7 +15,7 @@ avian: ${OBJ}
 clean:
 	@echo cleaning
 	@rm -f ${OBJ} libavian.a
-  
+
 install:
 	@echo installing
 	@cp libavian.a ${ROOT}/lib

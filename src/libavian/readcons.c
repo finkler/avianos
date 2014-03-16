@@ -8,7 +8,7 @@ int
 echo(int fd, int toggle) {
   struct termios tc;
   int was;
-  
+
   if(tcgetattr(fd, &tc) < 0)
     return -1;
   was = tc.c_lflag&ECHO;

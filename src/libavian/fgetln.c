@@ -8,10 +8,10 @@ fgetln(FILE *stream) {
   int i, n;
 
   i = 0;
-  while((n = fread(&c, sizeof c, 1, stream)) > 0) {
+  while((n = fread(&c, 1, 1, stream)) > 0) {
     if(c == '\b' && i > 0) {
       i--;
-      while(i > 0 && line[i] <= 0xC0 && line[i] >= 0x80)
+      while(i > 0 && line[i] < 0xc1 && line[i] > 0x7f)
         i--;
       continue;
     }
