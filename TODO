@@ -16,7 +16,6 @@ FEATURES
   - mount (fstab support ??)
 
 PORTS
-  - uevd (pnpd)
   - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
   - mkgrp / rmgrp
 
@@ -25,6 +24,7 @@ PORTS
 
   - dhcpcd
   - ssh
+  - uevd (pnpd)
 
 POSIX UTILS
   - at

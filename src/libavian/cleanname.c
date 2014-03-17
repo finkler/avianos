@@ -10,7 +10,7 @@ cleanname(char *s) {
     for(n = 0; n < strlen(p); n++)
       p[n] = p[n+1];
   n = strlen(s);
-  if(n > 0 && s[n-1] == '/')
+  if(n > 1 && s[n-1] == '/')
     s[n-1] = '\0';
   return s;
 }
