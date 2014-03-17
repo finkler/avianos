@@ -14,6 +14,7 @@ FEATURES
   - login.c lastlog support? ( http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=%2Fcom.ibm.aix.files%2Fdoc%2Faixfiles%2Flastlog.htm )
   - keymap.c "COMPOSE" support?
   - mount (fstab support ??)
+  - getconf (specifications ??)
 
 PORTS
   - mkuser [-g gid,...] [-s shell] name [uid] / rmuser
@@ -44,7 +45,6 @@ POSIX UTILS
   - find
   - fold
   - gencat
-  - getconf
   - hash
   - iconv
   - join
@@ -56,7 +56,6 @@ POSIX UTILS
   - man*
   - od
   - patch
-  - pathchk
   - pax
   - pr
   - printf
