@@ -3,7 +3,7 @@
 
 char *
 ltrim(char *s) {
-  while(isspace(*s))
+  while(isblank(*s))
     s++;
   return s;
 }

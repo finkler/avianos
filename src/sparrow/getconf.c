@@ -242,7 +242,7 @@ main(int argc, char *argv[]) {
 
   ARGBEGIN("v:"){
   case 'v':
-    break;
+    fatal(1, "unknown specification");
   default:
     usage();
   }ARGEND
