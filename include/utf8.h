@@ -7,12 +7,13 @@
 
 typedef uint16 rune;
 
+#define fullrune(c) ((c)<RUNE_SELF||runestart(c))
 int runedec(rune *, char *);
 int runeenc(char *, rune);
 int runelen(rune);
 int runestart(int);
 uint utflen(char *);
-uint utfnlen(char *, int);
+uint utfnlen(char *, uint);
 char *utfrune(char *, rune);
 char *utfrrune(char *, rune);
 #define utfutf strstr

@@ -68,7 +68,6 @@ POSIX UTILS
   - unexpand
   - uudecode
   - write
-  - xargs
 
 SUPPORT FS
   - ext2/4
