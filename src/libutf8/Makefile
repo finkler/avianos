@@ -1,7 +1,7 @@
 ROOT=../..
 include ${ROOT}/config.mk
 
-SRC = runedec.c runeenc.c runelen.c runestart.c utflen.c utfnlen.c utfrrune.c utfrune.c
+SRC = fullrune.c runedec.c runeenc.c runelen.c runestart.c utflen.c utfnlen.c utfrrune.c utfrune.c
 OBJ = ${SRC:.c=.o}
 
 .c.o:

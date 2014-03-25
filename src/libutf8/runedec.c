@@ -3,28 +3,21 @@
 
 int
 runedec(rune *r, char *s) {
-  uchar h, *p;
   int i, n;
 
-  p = (uchar *)s;
-  if(*p < RUNE_SELF) {
-    *r = *p;
+  n = fullrune(*s);
+  if(n == 1) {
+    *r = *s;
     return 1;
   }
-  h = (0xFF<<(8-UTF_MAX))&0xFF;
-  for(n = UTF_MAX; n > 1; n--) {
-    if((*p&h) == h)
-      break;
-    h <<= 1;
-  }
-  if(n == 1) {
+  if(n == 0) {
     *r = RUNE_ERROR;
     return 1;
   }
-  *r = p[0]&(0xFF>>(n+1));
+  *r = s[0]&(0xFF>>(n+1));
   for(i = 1; i < n; i++) {
     *r <<= 6;
-    *r |= p[i]&0x3F;
+    *r |= s[i]&0x3F;
   }
   return i;
 }

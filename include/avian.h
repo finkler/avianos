@@ -1,8 +1,8 @@
 #ifndef _AVIAN_H_
 #define _AVIAN_H_
 
-extern void __fixargv0(char *);
 extern char *argv0;
+void __fixargv0(char *);
 #define ARGBEGIN(s)\
   setlocale(LC_ALL, "");\
   __fixargv0(argv[0]);\

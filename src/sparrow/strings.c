@@ -40,8 +40,8 @@ main(int argc, char *argv[]) {
     len = atoi(optarg);
     break;
   case 't':
-    if(strlen(optarg) != 1 || !strpbrk(optarg, "dox"))
-      fatal(1, "illegal format %s", optarg);
+    if(!strpbrk(optarg, "dox") || optarg[1] != '\0')
+      fatal(1, "invalid format %s", optarg);
     sprintf(fmt, "%%%c ", *optarg);
     break;
   default:

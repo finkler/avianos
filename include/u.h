@@ -12,14 +12,14 @@
 #include <string.h>
 #include <unistd.h>
 
-#define max(a,b)      ((a)>(b)?(a):(b))
-#define min(a,b)      ((a)<(b)?(a):(b))
-#define nelem(x)      (sizeof(x)/sizeof((x)[0]))
-#define nil           ((void *)0)
+#define max(a,b)    ((a)>(b)?(a):(b))
+#define min(a,b)    ((a)<(b)?(a):(b))
+#define nelem(x)    (sizeof(x)/sizeof((x)[0]))
+#define nil         ((void *)0)
 
-#define print(s)      fputs((s),stdout)
-#define println       puts
-#define fprint(f,s)   fputs((s),(f))
+#define print(s)    fputs((s),stdout)
+#define println     puts
+#define fprint(f,s) fputs((s),(f))
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -38,3 +38,4 @@ typedef uint32_t uint32;
 typedef uint64_t uint64;
 
 #endif /* _U_H_ */
+

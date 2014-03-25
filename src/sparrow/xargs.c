@@ -9,24 +9,24 @@ int pflag, tflag;
 
 int
 getarg(char *buf, int len) {
-  int c, n, quote, single;
+  int c, caret, n, quote;
 
   c = fgetc(stdin);
   while(isspace(c))
     c = fgetc(stdin);
-  n = quote = single = 0;
+  caret = n = quote = 0;
   while(c != EOF && c != '\n') {
-    if(!(single+quote) && isblank(c))
+    if(!(caret+quote) && isblank(c))
       break;
-    if(!single && c == '"') {
+    if(!caret && c == '"') {
       quote = quote ? 0 : 1;
       goto Loop;
     }
     if(!quote && c == '\'') {
-      single = single ? 0 : 1;
+      caret = caret ? 0 : 1;
       goto Loop;
     }
-    if(!(single+quote) && c == '\\')
+    if(!(caret+quote) && c == '\\')
       c = fgetc(stdin);
     if(n < len-1)
       buf[n++] = c;

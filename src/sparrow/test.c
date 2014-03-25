@@ -76,6 +76,7 @@ int
 main(int argc, char *argv[]) {
   int not;
 
+  setlocale(LC_ALL, "");
   __fixargv0(argv[0]);
   argc--, argv++;
   if(!strcmp(argv0, "[") && strcmp(argv[--argc], "]"))

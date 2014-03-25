@@ -35,7 +35,6 @@ POSIX UTILS
   - crontab
   - csplit
   - cut
-  - dd
   - diff
   - ed*
   - expand
@@ -74,3 +73,16 @@ SUPPORT FS
   - iso9660 / udf
   - swap
   - vfat
+
+USER PORTABILITY
+  - bg
+  - crontab
+  - ex
+  - fc
+  - fg
+  - jobs
+  - mailx
+  - more
+  - sh
+  - talk
+  - vi

@@ -41,7 +41,7 @@ list(char *s) {
 }
 
 void
-paste(FILE **in, int n) {
+parallel(FILE **in, int n) {
   char buf[UTF_MAX+1], *p;
   int i, j;
 
@@ -66,7 +66,7 @@ paste(FILE **in, int n) {
 }
 
 void
-self(FILE **in, int n) {
+sequential(FILE **in, int n) {
   char buf[UTF_MAX+1], *p, *q;
   int i, j;
 
@@ -135,8 +135,8 @@ main(int argc, char *argv[]) {
     }
   }
   if(sflag)
-    self(f, argc);
+    sequential(f, argc);
   else
-    paste(f, argc);
+    parallel(f, argc);
   exit(rval);
 }

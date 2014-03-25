@@ -1,6 +1,6 @@
 #!/bin/sh
 
-iso=$HOME/Downloads/archlinux-2014.02.01-dual.iso
+iso=$HOME/Downloads/archlinux-2014.03.01-dual.iso
 
 case $1 in
 boot)
@@ -11,7 +11,7 @@ mount)
   mount -o loop,offset=34603008 ./sys.img ./part1
   ;;
 setup)
-  qemu-system-i386 -no-kvm -m 512 -hda ./sys.img -cdrom $iso -boot d
+  qemu-system-x86_64 -m 512 -hda ./sys.img -cdrom $iso -boot d
   ;;
 *)
   echo "usage: adm command" 2>&1

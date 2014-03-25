@@ -21,7 +21,7 @@ fgetln(FILE *stream) {
     if(i == LINE_MAX)
       break;
   }
-  if(n < 1)
+  if(n < 0 || (n == 0 && i == 0))
     return nil;
   line[i] = '\0';
   return line;
