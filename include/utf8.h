@@ -7,7 +7,7 @@
 
 typedef uint16 rune;
 
-int fullrune(int)
+int fullrune(int);
 int runedec(rune *, char *);
 int runeenc(char *, rune);
 int runelen(rune);

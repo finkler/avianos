@@ -239,8 +239,8 @@ expr(char *s) {
 
 void
 summary(int sig) {
-  fprintf(stderr, "%u+%u records in\n", ibc, ibp);
-  fprintf(stderr, "%u+%u records out\n", obc, obp);
+  fprintf(stderr, "%u+%u records in\n"
+    "%u+%u records out\n", ibc, ibp, obc, obp);
   if(tbc > 1)
     fprintf(stderr, "%u truncated records\n", tbc);
   else if(tbc)
