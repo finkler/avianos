@@ -8,7 +8,9 @@ int
 chkfmt(FILE *f) {
   uchar magic[2];
 
-  if(fread(magic, 1, 2, f) != 2 || magic[0] != 0x1f || magic[1] != 0x8b)
+  if(fread(magic, 1, 2, f) != 2 ||
+    magic[0] != 0x1f ||
+    magic[1] != 0x8b)
     return -1;
   rewind(f);
   return 0;

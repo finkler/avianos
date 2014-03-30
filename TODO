@@ -1,11 +1,11 @@
 REWRITE
-  - keymap.c
+  - keymap.c (new keymap format?)
   - uuencode ???
 
 BUGS
   - stty (putline??)
   - mv (return value of cp call to system)
-  - od (currently very x86 specific?)
+  - od (currently very x86 specific???)
 
 FEATURES
   - -H -L and -P flag implementations !!!
@@ -24,7 +24,7 @@ PORTS
 
   - dhcpcd (needed with ipv6?)
   - ssh
-  - uevd (pnpd)
+  - uevd (pnpd, plug and play)
 
 POSIX UTILS
   - at
@@ -44,7 +44,6 @@ POSIX UTILS
   - fold
   - gencat
   - hash
-  - iconv
   - join
   - locale
   - localedef

@@ -27,7 +27,7 @@ auth(char *user) {
   sp = getspnam(pwd->pw_name);
   if(sp != nil) {
     pass = readcons("password", nil, 1);
-    digest = sha1((uchar *)pass, strlen(pass), nil);
+    digest = sha1(pass, strlen(pass), nil);
     p = sha1pickle(digest);
     if(strcmp(sp->sp_pwdp, p))
       fatal(1, "wrong password");

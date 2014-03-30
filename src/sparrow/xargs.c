@@ -145,6 +145,8 @@ main(int argc, char *argv[]) {
     cmd[len] = nil;
     total += n;
   }
+  if(ferror(stdin))
+    fatal(1, "read <stdin>: %m");
   if(len > argc)
     run(cmd);
   exit(rval);

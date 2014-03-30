@@ -30,6 +30,6 @@ main(int argc, char *argv[]) {
     usage();
   for(i = 0; i < argc; i++)
     if(swapon(argv[i], flags))
-      alert("swapon: %m");
+      alert("%m");
   exit(rval);
 }
