@@ -258,11 +258,6 @@ tappend(char *s) {
     case '\0':
       siz = sizeof(double);
       break;
-    case '1':
-      siz = strtol(s+1, nil, 10);
-      if(siz != FLTLEN)
-        fatal(1, "invalid type %s", s);
-      break;
     case '4': case '8':
       siz -= '0';
       break;
@@ -276,6 +271,9 @@ tappend(char *s) {
       siz = sizeof(long double);
       break;
     default:
+      siz = strtol(s+1, nil, 10);
+      if(siz == FLTLEN)
+        break;
       fatal(1, "invalid type %s", s);
     }
     break;

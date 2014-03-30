@@ -4,7 +4,7 @@
 
 void
 usage(void) {
-  fprint(stderr, "usage: umount [-dfLm] dir\n");
+  fprint(stderr, "usage: umount [-dfmL] mount_point\n");
   exit(1);
 }
 
@@ -33,5 +33,5 @@ main(int argc, char *argv[]) {
   if(argc != 1)
     usage();
   if(umount2(argv[0], flags))
-    fatal(1, "umount2 %s: %m", argv[0]);
+    fatal(1, "%m", argv[0]);
 }

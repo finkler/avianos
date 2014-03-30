@@ -3,9 +3,9 @@ REWRITE
   - uuencode ???
 
 BUGS
-  - df (strange bug ???)
   - stty (putline??)
-  - mv (return value of call to system)
+  - mv (return value of cp call to system)
+  - od (currently very x86 specific?)
 
 FEATURES
   - -H -L and -P flag implementations !!!
@@ -22,7 +22,7 @@ PORTS
   - chkeymap / fonts / etc.
   - acpid
 
-  - dhcpcd
+  - dhcpcd (needed with ipv6?)
   - ssh
   - uevd (pnpd)
 
@@ -52,7 +52,6 @@ POSIX UTILS
   - m4
   - mailx
   - man*
-  - od
   - patch
   - pax
   - pr
