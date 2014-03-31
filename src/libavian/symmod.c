@@ -117,11 +117,11 @@ symmod(uint m, char *str) {
   char *p, *s;
 
   if(isdigit((int)*str))
-    return (uint)strtol(str, nil, 8);
+    return strtoul(str, nil, 8);
   mod = m;
   p = s = strdup(str);
-  while((p = strchr(p, 'X')))
-    if(mod&S_IXALL)
+  if(mod&S_IXALL)
+    while((p = strchr(p, 'X')))
       *p = 'x';
   for(p = strtok(s, ","); p; p = strtok(nil, ","))
     parse(p);

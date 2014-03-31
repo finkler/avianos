@@ -159,7 +159,7 @@ main(int argc, char *argv[]) {
   int lflag;
 
   cflag = lflag = sflag = 0;
-  from = to = nil;
+  from = to = "utf8";
   ARGBEGIN("cf:lst:"){
   case 'c':
     cflag = 1;
