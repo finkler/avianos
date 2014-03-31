@@ -1,6 +1,5 @@
 REWRITE
   - keymap.c (new keymap format?)
-  - uuencode ???
 
 BUGS
   - stty (putline??)

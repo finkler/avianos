@@ -33,7 +33,7 @@ struct stat *
      fileinfo(char *, int);
 void insert(File **, char *, struct stat *);
 int  nosort(File *, File *);
-uint numlen(vlong);
+uint longlen(vlong);
 void popvisitor(void);
 void printcolumn(File *);
 void printdate(struct timespec *);
@@ -143,36 +143,6 @@ nosort(File *f1, File *f2) {
   return 0;
 }
 
-uint
-numlen(vlong x) {
-  uint n;
-
-  n = 1;
-  if(x < 0) {
-    n = 2;
-    x = -x;
-  }
-  if(x >= 10000000000000000) {
-    n += 16;
-    x /= 10000000000000000;
-  }
-  if(x >= 100000000) {
-    n += 8;
-    x /= 100000000;
-  }
-  if(x >= 10000) {
-    n += 4;
-    x /= 10000;
-  }
-  if(x >= 100) {
-    n += 2;
-    x /= 100;
-  }
-  if(x >= 10)
-    n++;
-  return n;
-}
-
 void
 popvisitor(void) {
   Visitor *r;
@@ -195,12 +165,12 @@ printcolumn(File *l) {
   memset(&fmt, 0, sizeof fmt);
   for(cnt = 0, r = l; r; cnt++, r = r->next) {
     if(iflag) {
-      n = numlen(r->info.st_ino);
+      n = longlen(r->info.st_ino);
       if(n > fmt.ino)
         fmt.ino = n;
     }
     if(sflag) {
-      n = numlen(r->info.st_blocks);
+      n = longlen(r->info.st_blocks);
       if(n > fmt.blk)
         fmt.blk = n;
     }
@@ -281,19 +251,19 @@ printlong(File *l) {
   memset(&fmt, 0, sizeof fmt);
   for(r = l; r; r = r->next) {
     if(iflag) {
-      n = numlen(r->info.st_ino);
+      n = longlen(r->info.st_ino);
       if(n > fmt.ino)
         fmt.ino = n;
     }
     if(sflag) {
-      n = numlen(r->info.st_blocks);
+      n = longlen(r->info.st_blocks);
       if(n > fmt.blk)
         fmt.blk = n;
     }
-    n = numlen(r->info.st_nlink);
+    n = longlen(r->info.st_nlink);
     if(n > fmt.lnk)
       fmt.lnk = n;
-    n = numlen(r->info.st_rdev?r->info.st_rdev:r->info.st_size);
+    n = longlen(r->info.st_rdev?r->info.st_rdev:r->info.st_size);
     if(n > fmt.siz)
       fmt.siz = n;
     usr = nil;
@@ -302,10 +272,10 @@ printlong(File *l) {
       usr = getpwuid(r->info.st_uid);
       grp = getgrgid(r->info.st_gid);
     }
-    n = usr ? utflen(usr->pw_name) : numlen(r->info.st_uid);
+    n = usr ? utflen(usr->pw_name) : longlen(r->info.st_uid);
     if(n > fmt.usr)
       fmt.usr = n;
-    n = grp ? utflen(grp->gr_name) : numlen(r->info.st_gid);
+    n = grp ? utflen(grp->gr_name) : longlen(r->info.st_gid);
     if(n > fmt.grp)
       fmt.grp = n;
   }
@@ -433,12 +403,12 @@ printone(File *l) {
   if(iflag+sflag)
     for(r = l; r; r = r->next) {
       if(iflag) {
-        n = numlen(r->info.st_ino);
+        n = longlen(r->info.st_ino);
         if(n > fmt.ino)
           fmt.ino = n;
       }
       if(sflag) {
-        n = numlen(r->info.st_blocks);
+        n = longlen(r->info.st_blocks);
         if(n > fmt.blk)
           fmt.blk = n;
       }
@@ -465,9 +435,9 @@ printstream(File *l) {
   for(r = l; r; r = r->next) {
     n = 0;
     if(iflag)
-      n += numlen(r->info.st_ino) + 1;
+      n += longlen(r->info.st_ino) + 1;
     if(sflag)
-      n += numlen(r->info.st_blocks) + 1;
+      n += longlen(r->info.st_blocks) + 1;
     n += utflen(r->name);
     if(Fflag || pflag)
       n++;
