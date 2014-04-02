@@ -11,47 +11,48 @@
 #define MSG_FILE   "/var/log/messages"
 #define MSG_LEN    512
 
+void cleanup(int);
 void logkmsg(void);
 void run(void);
 void srvmessage(char *);
 void usage(void);
 
 FILE *err, *msg;
+int pid;
+
+void
+cleanup(int sig) {
+  if(pid)
+    kill(pid, SIGTERM);
+  exit(1);
+}
 
 void
 logkmsg(void) {
-  char buf[MSG_LEN+1], c;
+  char buf[MSG_LEN];
   FILE *kin, *kout;
-  int n, st;
 
-  if(fork())
+  pid = fork();
+  if(pid)
     return;
   kin = fopen(KMSG_IFILE, "r");
+  if(kin == nil) {
+    alert("open %s: %m", KMSG_IFILE);
+    _exit(1);
+  }
   kout = fopen(KMSG_OFILE, "w");
-  if(kin == nil || kout == nil) {
-    alert("open %s: %m", kin?KMSG_IFILE:KMSG_OFILE);
+  if(kout == nil) {
+    alert("open %s: %m", KMSG_OFILE);
     _exit(1);
   }
-  for(;;) {
-    n = st = 0;
-    while((c = fgetc(kin)) != EOF && n < MSG_LEN) {
-      if(st == 0) {
-        if(c == '>')
-          st = 1;
-        continue;
-      }
-      buf[n++] = c;
-      if(c == '\n')
-        break;
-    }
-    buf[n] = '\0';
-    if(fprint(kout, buf) == EOF)
+  while(fgets(buf, MSG_LEN, kin))
+    if(fprint(kout, buf+1) == EOF) {
+      alert("write %s: %m", KMSG_OFILE)
       break;
-  }
-  if(ferror(in)) {
+    }
+  if(ferror(in))
     alert("read %s: %m", KMSG_IFILE);
-    _exit(1);
-  }
+  _exit(1);
 }
 
 void
@@ -75,7 +76,7 @@ run(void) {
     buf[n] = '\0';
     srvmessage(buf);
   }
-  if(n == -1)
+  if(n < 0)
     fatal(1, "read /dev/log: %m");
 }
 
@@ -85,10 +86,13 @@ srvmessage(char *buf) {
   char *p;
 
   p = strchr(buf, '>');
-  if(p == nil || sscanf(buf, "<%u>", &prio) != 1)
+  if(p == nil || sscanf(buf, "<%u>", &prio) == 0)
     return;
   p++;
   switch(LOG_PRI(prio)) {
+  case LOG_ALERT:
+  case LOG_CRIT:
+  case LOG_EMERG:
   case LOG_ERR:
     fprintf(err, "*** %s\n", p);
     break;
@@ -128,6 +132,7 @@ main(int argc, char *argv[]) {
     fatal(1, "permission denied");
   if(bg())
     fatal(1, "bg: %m");
+  signal(SIGTERM, cleanup);
   if(!kflag)
     logkmsg();
   err = fopen(ERR_FILE, "a");

@@ -31,7 +31,6 @@ uint symmod(uint, char *);
 
 #define stradd(s,...) vstradd(s,__VA_ARGS__,nil)
 char *vstradd(char *, ...);
-char *strsub(char *, char *, char *);
 #define trim(s) ltrim(rtrim(s))
 char *ltrim(char *);
 char *rtrim(char *);

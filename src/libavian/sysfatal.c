@@ -11,16 +11,17 @@ sysalert(char *fmt, ...) {
   va_start(ap, fmt);
   __vsyslog(LOG_WARNING, fmt, ap);
   va_end(ap);
+  rval = EXIT_FAILURE;
 }
 
 void
-sysfatal(int rval, char *fmt, ...) {
+sysfatal(int c, char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);
   __vsyslog(LOG_ERR, fmt, ap);
   va_end(ap);
-  exit(rval);
+  exit(c);
 }
 
 void

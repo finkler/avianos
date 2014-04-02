@@ -36,7 +36,10 @@ void
 shutdown(int signum) {
   sync();
   rc(RC_STOP);
-  reboot(signum==SIGINT?RB_AUTOBOOT:RB_POWER_OFF);
+  if(signum == SIGINT)
+    reboot(RB_AUTOBOOT);
+  else
+    reboot(RB_POWER_OFF);
 }
 
 void

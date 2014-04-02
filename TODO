@@ -30,7 +30,6 @@ POSIX UTILS
   - awk
   - batch
   - bc
-  - comm
   - crontab
   - csplit
   - cut
