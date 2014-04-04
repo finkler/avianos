@@ -2,11 +2,12 @@
 #include <utf8.h>
 
 int
-runeenc(char *buf, rune r) {
+runeenc(char *buf, rune r)
+{
   uchar h;
   int i, n;
 
-  if(r < RUNE_SELF) {
+  if(r < RUNE_SELF){
     buf[0] = (char)r;
     return 1;
   }

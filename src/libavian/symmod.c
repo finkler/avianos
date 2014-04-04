@@ -14,23 +14,25 @@
 #define IS_PERM(c)    ((c)=='r'||(c)=='w'||(c)=='x'||(c)=='s')
 #define IS_OP(c)      ((c)=='+'||(c)=='-'||(c)=='=')
 
-static void action(int, char *);
+static void action(int, char*);
 static void parse(char *s);
 
-static uint mod, who;
+uint mod;
+uint who;
 
 void
-action(int op, char *perm) {
+action(int op, char *perm)
+{
   uint cpy, set;
   char *p;
 
   p = perm;
-  if(op == '=') {
+  if(op == '='){
     if(*p == '\0')
       mod ^= mod&(who&(S_ISRWXU|S_ISRWXG|S_IRWXO));
     cpy = 0;
-    while(IS_PERMCPY(*p)) {
-      switch(*p++) {
+    while(IS_PERMCPY(*p)){
+      switch(*p++){
       case 'u':
         cpy = (mod&S_ISRWXU)>>6;
         break;
@@ -41,15 +43,15 @@ action(int op, char *perm) {
         cpy = mod&S_IRWXO;
         break;
       }
-      if(who&S_ISRWXU) {
+      if(who&S_ISRWXU){
         mod &= 0077;
         mod |= cpy<<6;
       }
-      if(who&S_ISRWXG) {
+      if(who&S_ISRWXG){
         mod &= 0707;
         mod |= cpy<<3;
       }
-      if(who&S_IRWXO) {
+      if(who&S_IRWXO){
         mod &= 0770;
         mod |= cpy;
       }
@@ -57,7 +59,7 @@ action(int op, char *perm) {
     return;
   }
   for(set = 0; IS_PERM(*p); p++)
-    switch(*p) {
+    switch(*p){
     case 'r':
       set |= S_IRALL;
       break;
@@ -75,13 +77,14 @@ action(int op, char *perm) {
 }
 
 void
-parse(char *s) {
+parse(char *s)
+{
   char *e, *p, *perm;
   int op;
 
   who = 0;
   for(p = s; IS_WHO(*p); p++)
-    switch(*p) {
+    switch(*p){
     case 'a':
       who = S_ISRWXA;
       break;
@@ -97,7 +100,7 @@ parse(char *s) {
     }
   if(who == 0)
     who = S_ISRWXA;
-  for(;;) {
+  for(;;){
     op = *p++;
     if(op == 0)
       break;
@@ -113,7 +116,8 @@ parse(char *s) {
 }
 
 uint
-symmod(uint m, char *str) {
+symmod(uint m, char *str)
+{
   char *p, *s;
 
   if(isdigit((int)*str))

@@ -1,8 +1,9 @@
 #include <u.h>
 #include <avian.h>
 
-char *
-cleanname(char *s) {
+char*
+cleanname(char *s)
+{
   int n;
   char *p;
 

@@ -3,13 +3,15 @@
 #include <sys/swap.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: swapon [-d] [-p priority] file...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int flags, i, prio;
 
   flags = prio = 0;
@@ -19,8 +21,8 @@ main(int argc, char *argv[]) {
     break;
   case 'p':
     prio = atoi(optarg);
-    flags |= SWAP_FLAG_PREFER|((prio<<SWAP_FLAG_PRIO_SHIFT)&
-      SWAP_FLAG_PRIO_MASK);
+    flags |= SWAP_FLAG_PREFER
+      |((prio<<SWAP_FLAG_PRIO_SHIFT)&SWAP_FLAG_PRIO_MASK);
     break;
   default:
     usage();

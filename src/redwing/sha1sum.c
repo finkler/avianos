@@ -3,7 +3,8 @@
 #include <hash.h>
 
 void
-sum(FILE *in, char *s) {
+sum(FILE *in, char *s)
+{
   uchar buf[8192];
   char *p;
   uint n;
@@ -12,7 +13,7 @@ sum(FILE *in, char *s) {
   digest = nil;
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
     digest = sha1(buf, n, digest);
-  if(ferror(in)) {
+  if(ferror(in)){
     alert("read %s: %m", s);
     return;
   }
@@ -26,7 +27,8 @@ sum(FILE *in, char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -38,9 +40,9 @@ main(int argc, char *argv[]) {
 
   if(argc == 0)
     sum(stdin, "<stdin>");
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

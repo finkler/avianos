@@ -3,7 +3,8 @@
 #include <sys/stat.h>
 
 int
-binary(char *op, char *s1, char *s2) {
+binary(char *op, char *s1, char *s2)
+{
   char *e1, *e2;
   long n1, n2;
 
@@ -14,7 +15,7 @@ binary(char *op, char *s1, char *s2) {
   n1 = strtol(s1, &e1, 0);
   n2 = strtol(s2, &e2, 0);
   if(*e1 != '\0' || *e2 != '\0')
-    fatal(2, "%s: not a number", *e1?s1:s2);
+    fatal(2, "%s: not a number", *e1 ? s1 : s2);
   if(!strcmp(op, "-eq"))
     return n1 != n2;
   if(!strcmp(op, "-ne"))
@@ -31,7 +32,8 @@ binary(char *op, char *s1, char *s2) {
 }
 
 int
-unary(char *op, char *s) {
+unary(char *op, char *s)
+{
   int fd;
   struct stat sb;
 
@@ -73,7 +75,8 @@ unary(char *op, char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int not;
 
   setlocale(LC_ALL, "");
@@ -83,11 +86,11 @@ main(int argc, char *argv[]) {
     fatal(2, "missing ]");
 
   not = 0;
-  if(argc > 1 && !strcmp(argv[0], "!")) {
+  if(argc > 1 && !strcmp(argv[0], "!")){
     not = 1;
     argc--, argv++;
   }
-  switch(argc) {
+  switch(argc){
   case 3:
     rval = binary(argv[1], argv[0], argv[2]);
     break;

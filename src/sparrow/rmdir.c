@@ -3,18 +3,21 @@
 #include <libgen.h>
 
 int
-cmp(const void *v1, const void *v2) {
-  return -(strcmp(*(char * const *)v1, *(char * const *)v2));
+cmp(const void *v1, const void *v2)
+{
+  return -(strcmp(*(char*const*)v1, *(char*const*)v2));
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: rmdir [-p] dir...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i, pflag;
   char *p;
 
@@ -29,9 +32,9 @@ main(int argc, char *argv[]) {
 
   if(argc < 1)
     usage();
-  qsort(argv, argc, sizeof(char *), cmp);
+  qsort(argv, argc, sizeof(char*), cmp);
   for(i = 0; i < argc; i++)
-    for(p = argv[i]; strcmp(p, "."); p = dirname(p)) {
+    for(p = argv[i]; strcmp(p, "."); p = dirname(p)){
       if(rmdir(p))
         alert("rmdir %s: %m", p);
       if(!pflag)

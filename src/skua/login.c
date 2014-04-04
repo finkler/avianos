@@ -13,7 +13,8 @@
 struct passwd *pwd;
 
 void
-auth(char *user) {
+auth(char *user)
+{
   char *p, *pass;
   struct spwd *sp;
   SHA1Digest *digest;
@@ -25,7 +26,7 @@ auth(char *user) {
   if(pwd == nil)
     fatal(1, "unknown user %s", user);
   sp = getspnam(pwd->pw_name);
-  if(sp != nil) {
+  if(sp != nil){
     pass = readcons("password", nil, 1);
     digest = sha1(pass, strlen(pass), nil);
     p = sha1pickle(digest);
@@ -38,7 +39,8 @@ auth(char *user) {
 }
 
 void
-setup(void) {
+setup(void)
+{
   fchown(0, pwd->pw_uid, pwd->pw_gid);
   fchmod(0, 0600);
   setenv("HOME", pwd->pw_dir, 1);
@@ -47,7 +49,7 @@ setup(void) {
   setenv("TERM", TERM, 0);
   setgid(pwd->pw_gid);
   setuid(pwd->pw_uid);
-  if(chdir(pwd->pw_dir)) {
+  if(chdir(pwd->pw_dir)){
     alert("chdir %s: %m", pwd->pw_dir);
     if(chdir("/"))
       exit(1);
@@ -55,13 +57,15 @@ setup(void) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: login [user]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   ARGBEGIN(""){
   default:
     usage();

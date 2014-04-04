@@ -3,13 +3,15 @@
 #include <sys/stat.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: mkfifo [-m mode] file...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i;
   uint m;
 

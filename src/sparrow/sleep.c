@@ -3,18 +3,20 @@
 #include <signal.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: sleep time\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc != 1)
     usage();
   signal(SIGALRM, SIG_IGN);

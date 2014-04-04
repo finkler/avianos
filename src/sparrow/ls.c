@@ -7,66 +7,95 @@
 #include <time.h>
 #include <utf8.h>
 
-typedef struct File File;
-struct File {
-  char *name;
-  struct stat info;
-  File *next;
+enum
+{
+  FmtBlk,
+  FmtGrp,
+  FmtLnk,
+  FmtIno,
+  FmtNam,
+  FmtSiz,
+  FmtUsr,
+  FmtLast
 };
 
-typedef struct Fmt {
-  int blk, grp, lnk, ino;
-  int nam, siz, usr;
-} Fmt;
+typedef struct File File;
+struct File
+{
+  char        *name;
+  struct stat info;
+  File        *next;
+};
 
 typedef struct Visitor Visitor;
-struct Visitor {
+struct Visitor
+{
   struct stat *info;
-  Visitor *next;
+  Visitor     *next;
 };
 
-int  alnumsort(File *, File *);
-void assign(char *);
-void clear(File *);
-int  columns(void);
-struct stat *
-     fileinfo(char *, int);
-void insert(File **, char *, struct stat *);
-int  nosort(File *, File *);
+int  alnumsort(File*, File*);
+void assign(char*);
+void clear(File*);
+struct stat*
+     fileinfo(char*, int);
+void insert(File**, char*, struct stat*);
+int  nosort(File*, File*);
 uint longlen(vlong);
 void popvisitor(void);
-void printcolumn(File *);
-void printdate(struct timespec *);
-void printlong(File *);
+void printcolumn(File*);
+void printdate(struct timespec*);
+void printlong(File*);
 void printmark(uint, int);
 void printmode(uint);
-void printname(char *);
-void printone(File *);
-void printstream(File *);
-void pushvisitor(struct stat *);
-void show(File *);
-int  sizesort(File *, File *);
-int  sort(File *, File *);
-int  timesort(File *, File *);
-void visit(char *, struct stat *);
-int  wasvisited(struct stat *);
+void printname(char*);
+void printone(File*);
+void printstream(File*);
+void pushvisitor(struct stat*);
+void show(File*);
+int  sizesort(File*, File*);
+int  sort(File*, File*);
+int  timesort(File*, File*);
+void visit(char*, struct stat*);
+int  wasvisited(struct stat*);
 
-int Aflag, Fflag, Hflag, Lflag, Rflag, aflag, cflag;
-int dflag, iflag, kflag, lflag, nflag, pflag, qflag;
-int rflag, sflag, uflag, xflag;
-int (*compar)(File *, File *);
-int dfd;
-File *dir, *f;
-void (*output)(File *);
+int Aflag;
+int Fflag;
+int Hflag;
+int Lflag;
+int Rflag;
+int aflag;
+int cflag;
+int dflag;
+int iflag;
+int kflag;
+int lflag;
+int nflag;
+int pflag;
+int qflag;
+int rflag;
+int sflag;
+int uflag;
+int xflag;
+
+int  (*compar)(File*, File*);
+int  dfd;
+File *dir;
+File *f;
+int  field[FmtLast];
+void (*output)(File*);
+
 Visitor *v;
 
 int
-alnumsort(File *f1, File *f2) {
+alnumsort(File *f1, File *f2)
+{
   return strcoll(f1->name, f2->name);
 }
 
 void
-assign(char *s) {
+assign(char *s)
+{
   struct stat *sb;
 
   sb = fileinfo(s, 1);
@@ -79,11 +108,12 @@ assign(char *s) {
 }
 
 void
-clear(File *l) {
+clear(File *l)
+{
   File *r1, *r2;
 
   r1 = l;
-  while(r1) {
+  while(r1){
     r2 = r1->next;
     free(r1->name);
     free(r1);
@@ -91,16 +121,9 @@ clear(File *l) {
   }
 }
 
-int
-columns(void) {
-  char *p;
-
-  p = getenv("COLUMNS");
-  return p ? atoi(p) : textwidth();
-}
-
-struct stat *
-fileinfo(char *s, int op) {
+struct stat*
+fileinfo(char *s, int op)
+{
   static struct stat sb;
   int flags;
 
@@ -110,7 +133,7 @@ fileinfo(char *s, int op) {
     flags = AT_SYMLINK_NOFOLLOW;
   if(dfd < 0)
     dfd = AT_FDCWD;
-  if(fstatat(dfd, s, &sb, flags)) {
+  if(fstatat(dfd, s, &sb, flags)){
     alert("stat %s: %m", s);
     return nil;
   }
@@ -118,7 +141,8 @@ fileinfo(char *s, int op) {
 }
 
 void
-insert(File **l, char *s, struct stat *sb) {
+insert(File **l, char *s, struct stat *sb)
+{
   File *new, *r;
 
   if(s == nil || sb == nil)
@@ -126,10 +150,10 @@ insert(File **l, char *s, struct stat *sb) {
   new = malloc(sizeof(File));
   new->name = strdup(s);
   new->info = *sb;
-  if(*l == nil || sort(*l, new) > 0) {
+  if(*l == nil || sort(*l, new) > 0){
     new->next = *l;
     *l = new;
-  } else {
+  }else{
     r = *l;
     while(r->next && sort(r->next, new) < 0)
       r = r->next;
@@ -139,12 +163,14 @@ insert(File **l, char *s, struct stat *sb) {
 }
 
 int
-nosort(File *f1, File *f2) {
+nosort(File *f1, File *f2)
+{
   return 0;
 }
 
 void
-popvisitor(void) {
+popvisitor(void)
+{
   Visitor *r;
 
   if(v == nil)
@@ -155,28 +181,28 @@ popvisitor(void) {
 }
 
 void
-printcolumn(File *l) {
+printcolumn(File *l)
+{
   int cnt, cols, i, j, k, n;
-  Fmt fmt;
   int ncols, nrows, sp;
   File *r, *p;
   char *s;
 
   memset(&fmt, 0, sizeof fmt);
-  for(cnt = 0, r = l; r; cnt++, r = r->next) {
-    if(iflag) {
+  for(cnt = 0, r = l; r; cnt++, r = r->next){
+    if(iflag){
       n = longlen(r->info.st_ino);
-      if(n > fmt.ino)
-        fmt.ino = n;
+      if(n > field[FmtIno])
+        field[FmtIno] = n;
     }
-    if(sflag) {
+    if(sflag){
       n = longlen(r->info.st_blocks);
-      if(n > fmt.blk)
-        fmt.blk = n;
+      if(n > field[FmtBlk])
+        field[FmtBlk] = n;
     }
     n = utflen(r->name);
-    if(n > fmt.nam)
-      fmt.nam = n;
+    if(n > field[FmtNam])
+      field[FmtNam] = n;
   }
   sp = 0;
   if(Fflag || pflag)
@@ -185,8 +211,8 @@ printcolumn(File *l) {
     sp++;
   if(sflag)
     sp++;
-  cols = columns();
-  n = fmt.ino + fmt.blk + fmt.nam + sp;
+  cols = textwidth();
+  n = field[FmtIno] + field[FmtBlk] + field[FmtNam] + sp;
   ncols = cols / n;
   if(cols%n < (ncols-1)*2)
     ncols--;
@@ -196,27 +222,27 @@ printcolumn(File *l) {
   if(cnt%ncols)
     nrows++;
   r = l;
-  for(i = 0; i < nrows; i++) {
+  for(i = 0; i < nrows; i++){
     p = r;
-    for(j = 0; j < ncols; j++) {
+    for(j = 0; j < ncols; j++){
       if(j > 0)
         print("  ");
       if(iflag)
-        printf("%*lld ", fmt.ino, p->info.st_ino);
+        printf("%*lld ", field[FmtIno], p->info.st_ino);
       if(sflag)
-        printf("%*llu ", fmt.blk, p->info.st_blocks);
+        printf("%*llu ", field[FmtBlk], p->info.st_blocks);
       printname(p->name);
       if(Fflag || pflag)
         printmark(p->info.st_mode, 1);
       s = p->name;
-      for(k = 0; k < nrows && p; k++) {
+      for(k = 0; k < nrows && p; k++){
         p = p->next;
         if(xflag)
           break;
       }
       if(p == nil)
         break;
-      n = fmt.nam - utflen(s);
+      n = field[FmtNam] - utflen(s);
       while(n--)
         print(" ");
     }
@@ -229,85 +255,87 @@ printcolumn(File *l) {
 }
 
 void
-printdate(struct timespec *ts) {
+printdate(struct timespec *ts)
+{
   static char s[13];
   long tdiff;
 
   tdiff = time(NULL)-ts->tv_sec;
-  strftime(s, sizeof s, (tdiff>=0&&tdiff<15552000)?
+  strftime(s, sizeof s, (tdiff>=0 && tdiff<15552000) ?
     "%b %e %H:%M":"%b %e  %Y", localtime(&ts->tv_sec));
   print(s);
 }
 
 void
-printlong(File *l) {
+printlong(File *l)
+{
   static char buf[PATH_MAX];
-  Fmt fmt;
   int n;
   File *r;
   struct passwd *usr;
   struct group *grp;
 
   memset(&fmt, 0, sizeof fmt);
-  for(r = l; r; r = r->next) {
-    if(iflag) {
+  for(r = l; r; r = r->next){
+    if(iflag){
       n = longlen(r->info.st_ino);
-      if(n > fmt.ino)
-        fmt.ino = n;
+      if(n > field[FmtIno])
+        field[FmtIno] = n;
     }
-    if(sflag) {
+    if(sflag){
       n = longlen(r->info.st_blocks);
-      if(n > fmt.blk)
-        fmt.blk = n;
+      if(n > field[FmtBlk])
+        field[FmtBlk] = n;
     }
     n = longlen(r->info.st_nlink);
-    if(n > fmt.lnk)
-      fmt.lnk = n;
-    n = longlen(r->info.st_rdev?r->info.st_rdev:r->info.st_size);
-    if(n > fmt.siz)
-      fmt.siz = n;
+    if(n > field[FmtLnk])
+      field[FmtLnk] = n;
+    n = longlen(r->info.st_rdev ?
+      r->info.st_rdev : r->info.st_size);
+    if(n > field[FmtSiz])
+      field[FmtSiz] = n;
     usr = nil;
     grp = nil;
-    if(!nflag) {
+    if(!nflag){
       usr = getpwuid(r->info.st_uid);
       grp = getgrgid(r->info.st_gid);
     }
     n = usr ? utflen(usr->pw_name) : longlen(r->info.st_uid);
-    if(n > fmt.usr)
-      fmt.usr = n;
+    if(n > field[FmtUsr])
+      field[FmtUsr] = n;
     n = grp ? utflen(grp->gr_name) : longlen(r->info.st_gid);
-    if(n > fmt.grp)
-      fmt.grp = n;
+    if(n > field[FmtGrp])
+      field[FmtGrp] = n;
   }
-  for(r = l; r; r = r->next) {
+  for(r = l; r; r = r->next){
     if(iflag)
-      printf("%*lld ", fmt.ino, r->info.st_ino);
+      printf("%*lld ", field[FmtIno], r->info.st_ino);
     if(sflag)
-      printf("%*llu ", fmt.blk, r->info.st_blocks);
+      printf("%*llu ", field[FmtBlk], r->info.st_blocks);
     printmode(r->info.st_mode);
-    printf(" %*u", fmt.lnk, r->info.st_nlink);
-    if(nflag) {
-      printf(" %*u %*u", fmt.usr, r->info.st_uid, fmt.grp,
-        r->info.st_gid);
-    } else {
+    printf(" %*u", field[FmtLnk], r->info.st_nlink);
+    if(nflag){
+      printf(" %*u %*u", field[FmtUsr], r->info.st_uid,
+        field[FmtGrp], r->info.st_gid);
+    }else{
       usr = getpwuid(r->info.st_uid);
       if(usr)
-        printf(" %*s", fmt.usr, usr->pw_name);
+        printf(" %*s", field[FmtUsr], usr->pw_name);
       else
-        printf(" %*u", fmt.usr, r->info.st_uid);
+        printf(" %*u", field[FmtUsr], r->info.st_uid);
       grp = getgrgid(r->info.st_gid);
       if(grp)
-        printf(" %*s", fmt.grp, grp->gr_name);
+        printf(" %*s", field[FmtGrp], grp->gr_name);
       else
-        printf(" %*u", fmt.grp, r->info.st_gid);
+        printf(" %*u", field[FmtGrp], r->info.st_gid);
     }
-    printf(" %*llu ", fmt.siz, r->info.st_rdev?
-      r->info.st_rdev:r->info.st_size);
+    printf(" %*llu ", field[FmtSiz], r->info.st_rdev ?
+      r->info.st_rdev : r->info.st_size);
     printdate(&r->info.st_mtim);
     print(" ");
     printname(r->name);
-    if(S_ISLNK(r->info.st_mode) &&
-      readlinkat(dfd, r->name, buf, PATH_MAX) > 0)
+    if(S_ISLNK(r->info.st_mode)
+    && readlinkat(dfd, r->name, buf, PATH_MAX) > 0)
       printf(" -> %s", buf);
     else if(Fflag || pflag)
       printmark(r->info.st_mode, 0);
@@ -316,7 +344,8 @@ printlong(File *l) {
 }
 
 void
-printmark(uint m, int fill) {
+printmark(uint m, int fill)
+{
   if(S_ISDIR(m))
     print("/");
   else if(pflag)
@@ -329,7 +358,7 @@ printmark(uint m, int fill) {
     print("=");
   else if(m&(S_IXUSR|S_IXGRP|S_IXOTH))
     print("*");
-  else {
+  else{
   End:
     if(fill)
       print(" ");
@@ -337,7 +366,8 @@ printmark(uint m, int fill) {
 }
 
 void
-printmode(uint m) {
+printmode(uint m)
+{
   static char s[11];
 
   memset(s, '-', 10);
@@ -355,23 +385,23 @@ printmode(uint m) {
     s[1] = 'r';
   if(m & S_IWUSR)
     s[2] = 'w';
-  if(m & S_ISUID) {
+  if(m & S_ISUID){
     if(m & S_IXUSR)
       s[3] = 's';
     else
       s[3] = 'S';
-  } else if(m & S_IXUSR)
+  }else if(m & S_IXUSR)
     s[3] = 'x';
   if(m & S_IRGRP)
     s[4] = 'r';
   if(m & S_IWGRP)
     s[5] = 'w';
-  if(m & S_ISGID) {
+  if(m & S_ISGID){
     if(m & S_IXGRP)
       s[6] = 's';
     else
       s[6] = 'S';
-  } else if(m & S_IXGRP)
+  }else if(m & S_IXGRP)
     s[6] = 'x';
   if(m & S_IROTH)
     s[7] = 'r';
@@ -383,7 +413,8 @@ printmode(uint m) {
 }
 
 void
-printname(char *s) {
+printname(char *s)
+{
   char *p;
 
   if(qflag)
@@ -394,30 +425,30 @@ printname(char *s) {
 }
 
 void
-printone(File *l) {
-  Fmt fmt;
+printone(File *l)
+{
   int n;
   File *r;
 
   memset(&fmt, 0, sizeof fmt);
   if(iflag+sflag)
-    for(r = l; r; r = r->next) {
-      if(iflag) {
+    for(r = l; r; r = r->next){
+      if(iflag){
         n = longlen(r->info.st_ino);
-        if(n > fmt.ino)
-          fmt.ino = n;
+        if(n > field[FmtIno])
+          field[FmtIno] = n;
       }
-      if(sflag) {
+      if(sflag){
         n = longlen(r->info.st_blocks);
-        if(n > fmt.blk)
-          fmt.blk = n;
+        if(n > field[FmtBlk])
+          field[FmtBlk] = n;
       }
     }
-  for(r = l; r; r = r->next) {
+  for(r = l; r; r = r->next){
     if(iflag)
-      printf("%*lld ", fmt.ino, r->info.st_ino);
+      printf("%*lld ", field[FmtIno], r->info.st_ino);
     if(sflag)
-      printf("%*llu ", fmt.blk, r->info.st_blocks);
+      printf("%*llu ", field[FmtBlk], r->info.st_blocks);
     printname(r->name);
     if(Fflag || pflag)
       printmark(r->info.st_mode, 0);
@@ -426,13 +457,14 @@ printone(File *l) {
 }
 
 void
-printstream(File *l) {
+printstream(File *l)
+{
   int cols, len, n;
   File *r;
 
   cols = columns();
   len = 0;
-  for(r = l; r; r = r->next) {
+  for(r = l; r; r = r->next){
     n = 0;
     if(iflag)
       n += longlen(r->info.st_ino) + 1;
@@ -443,14 +475,13 @@ printstream(File *l) {
       n++;
     if(r->next)
       n++;
-    if(r != l) {
+    if(r != l){
       n++;
-      if(len + n > cols) {
+      if(len + n > cols){
         len = 0;
         print("\n");
-      } else {
+      }else
         print(" ");
-      }
     }
     if(iflag)
       printf("%lld ", r->info.st_ino);
@@ -469,7 +500,8 @@ printstream(File *l) {
 
 
 void
-pushvisitor(struct stat *sb) {
+pushvisitor(struct stat *sb)
+{
   Visitor *new;
 
   new = malloc(sizeof(Visitor));
@@ -479,14 +511,15 @@ pushvisitor(struct stat *sb) {
 }
 
 void
-show(File *l) {
+show(File *l)
+{
   File *r;
   uvlong total;
 
   if(l == nil)
     return;
 
-  if(lflag+nflag+sflag) {
+  if(lflag+nflag+sflag){
     total = 0;
     for(r = l; r; r = r->next)
       total += r->info.st_blocks;
@@ -496,15 +529,17 @@ show(File *l) {
 }
 
 int
-sizesort(File *f1, File *f2) {
+sizesort(File *f1, File *f2)
+{
   vlong odiff;
 
-  return (odiff = f2->info.st_size-f1->info.st_size) ?
+  return (odiff=f2->info.st_size-f1->info.st_size) ?
     odiff : strcoll(f1->name, f2->name);
 }
 
 int
-sort(File *f1, File *f2) {
+sort(File *f1, File *f2)
+{
   int r;
 
   r = compar(f1, f2);
@@ -512,45 +547,48 @@ sort(File *f1, File *f2) {
 }
 
 int
-timesort(File *f1, File *f2) {
+timesort(File *f1, File *f2)
+{
   long tdiff, t1, t2;
 
-  if(cflag) {
+  if(cflag){
     t1 = f1->info.st_ctim.tv_sec;
     t2 = f2->info.st_ctim.tv_sec;
-  } else if(uflag) {
+  }else if(uflag){
     t1 = f1->info.st_atim.tv_sec;
     t2 = f2->info.st_atim.tv_sec;
-  } else {
+  }else{
     t1 = f1->info.st_mtim.tv_sec;
     t2 = f2->info.st_mtim.tv_sec;
   }
-  return (tdiff = t2-t1) ? tdiff : strcoll(f1->name, f2->name);
+  return (tdiff=t2-t1) ?
+    tdiff : strcoll(f1->name, f2->name);
 }
 
 void
-visit(char *s, struct stat *sb) {
+visit(char *s, struct stat *sb)
+{
   DIR *d;
   struct dirent *ent;
   File *l, *r;
   char *p;
 
-  if(wasvisited(sb)) {
+  if(wasvisited(sb)){
     alert("%s: already listed", s);
     return;
   }
   pushvisitor(sb);
   d = opendir(s);
-  if(d == nil) {
+  if(d == nil){
     alert("open %s: %m", s);
     return;
   }
   dfd = dirfd(d);
   l = nil;
-  while((ent = readdir(d))) {
-    if((!(Aflag+aflag) && ent->d_name[0] == '.') ||
-      (Aflag && (!strcmp(ent->d_name, ".") ||
-      !strcmp(ent->d_name, ".."))))
+  while((ent = readdir(d))){
+    if((!(Aflag+aflag) && ent->d_name[0] == '.')
+    || (Aflag && (!strcmp(ent->d_name, ".")
+    || !strcmp(ent->d_name, ".."))))
       continue;
     insert(&l, ent->d_name, fileinfo(ent->d_name, 0));
   }
@@ -558,8 +596,8 @@ visit(char *s, struct stat *sb) {
   closedir(d);
   dfd = -1;
   for(r = l; Rflag && r; r = r->next)
-    if(S_ISDIR(r->info.st_mode) && strcmp(r->name, ".") &&
-      strcmp(r->name, "..")) {
+    if(S_ISDIR(r->info.st_mode) && strcmp(r->name, ".")
+    && strcmp(r->name, "..")){
       p = stradd(s, "/", r->name);
       printf("\n%s:\n", p);
       visit(p, &r->info);
@@ -570,17 +608,20 @@ visit(char *s, struct stat *sb) {
 }
 
 int
-wasvisited(struct stat *sb) {
+wasvisited(struct stat *sb)
+{
   Visitor *r;
 
   for(r = v; r; r = r->next)
-    if(r->info->st_dev == sb->st_dev && r->info->st_ino == sb->st_ino)
+    if(r->info->st_dev == sb->st_dev
+    && r->info->st_ino == sb->st_ino)
       return 1;
   return 0;
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i;
   File *r;
 
@@ -688,12 +729,12 @@ main(int argc, char *argv[]) {
   if(argc == 0)
     assign(".");
   for(i = 0; i < argc; i++)
-      assign(cleanname(argv[i]));
+    assign(cleanname(argv[i]));
   show(f);
   if(dir && (dir->next || f || Rflag))
     printf("%s:\n", dir->name);
   clear(f);
-  for(r = dir; r; r = r->next) {
+  for(r = dir; r; r = r->next){
     visit(r->name, &r->info);
     if(r->next)
       printf("\n%s:\n", r->next->name);

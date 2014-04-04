@@ -2,13 +2,15 @@
 #include <avian.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: logname\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *p;
 
   ARGBEGIN(""){

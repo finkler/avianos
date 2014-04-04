@@ -9,19 +9,22 @@
 #define NUM    16
 
 typedef struct Dfmt Dfmt;
-struct Dfmt {
-  void (*dump)(Dfmt *, char *, int);
-  int field;
-  int size;
-  int type;
+struct Dfmt
+{
+  void (*dump)(Dfmt*, char*, int);
+  int  field;
+  int  size;
+  int  type;
 };
 
 typedef char Float[FLTLEN];
 
-typedef union Int {
+typedef union Int Int;
+union Int
+{
   vlong val;
-  char byte[INTLEN];
-} Int;
+  char  byte[INTLEN];
+};
 
 char addr[6];
 char *cname[] = {
@@ -31,30 +34,35 @@ char *cname[] = {
   "syn", "etb", "can", "em", "sub", "esc", "fs",
   "gs", "rs", "us", "sp", "del"
 };
-uint count, minsize, skip, width;
+uint count;
+uint minsize;
+uint skip;
+uint width;
 Dfmt *dfmt;
 int fields[8][4] = {
-  /* x */ { 2,  4,  8, 16},
-  /* a */ { 3,  3,  3,  3},
-  /* - */ { 0,  0,  0,  0},
-  /* c */ { 3,  3,  3,  3},
-  /* d */ { 4,  6, 11, 20},
-  /* u */ { 3,  5, 10, 20},
-  /* f */ {28,  0, 14, 21},
-  /* o */ { 3,  6, 11, 22}
+  /* x */{ 2,  4,  8, 16},
+  /* a */{ 3,  3,  3,  3},
+  /* - */{ 0,  0,  0,  0},
+  /* c */{ 3,  3,  3,  3},
+  /* d */{ 4,  6, 11, 20},
+  /* u */{ 3,  5, 10, 20},
+  /* f */{28,  0, 14, 21},
+  /* o */{ 3,  6, 11, 22}
 };
 int len;
-int nflag, vflag;
+int nflag;
+int vflag;
 
 void
-dumpascii(Dfmt *d, char *buf, int n) {
+dumpascii(Dfmt *d, char *buf, int n)
+{
   int c, k;
 
-  for(k = 0; k < n; k++) {
+  for(k = 0; k < n; k++){
     c = buf[k]&0x7F;
-    if(isprint(c)) {
+    if(isprint(c))
       printf("   %c", c);
-    } else {
+    else{
       if(c == 0x7F)
         c = 0x21;
       printf(" %3s", cname[c]);
@@ -64,14 +72,15 @@ dumpascii(Dfmt *d, char *buf, int n) {
 }
 
 void
-dumpchar(Dfmt *d, char *buf, int n) {
+dumpchar(Dfmt *d, char *buf, int n)
+{
   char utf[UTF_MAX+1];
   int k, nr;
 
   k = 0;
-  while(k < n) {
+  while(k < n){
     nr = fullrune(buf[k]);
-    if(nr == 0 || k+nr > n) {
+    if(nr == 0 || k+nr > n){
       printf(" %03o", buf[k]);
       k++;
       continue;
@@ -79,7 +88,7 @@ dumpchar(Dfmt *d, char *buf, int n) {
     strncpy(utf, buf+k, nr);
     utf[nr] = '\0';
     k += nr;
-    switch(*utf) {
+    switch(*utf){
     case '\0':
       print("  \\0");
       break;
@@ -108,9 +117,9 @@ dumpchar(Dfmt *d, char *buf, int n) {
       print("  \\v");
       break;
     default:
-      if(!isprint(*utf)) {
+      if(!isprint(*utf))
         printf(" %03o", (uchar)*utf);
-      } else {
+      else{
         printf("   %s", utf);
         while(--nr > 0)
           print("  **");
@@ -121,7 +130,8 @@ dumpchar(Dfmt *d, char *buf, int n) {
 }
 
 void
-dumpfloat(Dfmt *d, char *buf, int n) {
+dumpfloat(Dfmt *d, char *buf, int n)
+{
   char num[64];
   Float f;
   int j, k, field;
@@ -130,19 +140,19 @@ dumpfloat(Dfmt *d, char *buf, int n) {
   if(len > 1)
     field += d->size - 1;
   j = 0;
-  while(j < n) {
+  while(j < n){
     memset(f, 0, FLTLEN);
     for(k = 0; k < d->size && j < n; k++)
       f[k] = buf[j++];
-    switch(d->size) {
+    switch(d->size){
     case 4:
-      sprintf(num, "%14.7e", *(float *)&f);
+      sprintf(num, "%14.7e", *(float*)&f);
       break;
     case 8:
-      sprintf(num, "%21.14le", *(double *)&f);
+      sprintf(num, "%21.14le", *(double*)&f);
       break;
     default:
-      sprintf(num, "%28.21Le", *(long double *)&f);
+      sprintf(num, "%28.21Le", *(long double*)&f);
       break;
     }
     printf(" %*s", field, num);
@@ -151,7 +161,8 @@ dumpfloat(Dfmt *d, char *buf, int n) {
 }
 
 void
-dumpint(Dfmt *d, char *buf, int n) {
+dumpint(Dfmt *d, char *buf, int n)
+{
   char fmt[16], num[64];
   Int i;
   int j, k, field;
@@ -164,7 +175,7 @@ dumpint(Dfmt *d, char *buf, int n) {
   else
     sprintf(fmt, "%%ll%c", d->type);
   j = 0;
-  while(j < n) {
+  while(j < n){
     i.val = 0;
     for(k = 0; k < d->size && j < n; k++)
       i.byte[k] = buf[j++];
@@ -175,12 +186,13 @@ dumpint(Dfmt *d, char *buf, int n) {
 }
 
 int
-freadblk(char *buf, FILE *in) {
+freadblk(char *buf, FILE *in)
+{
   static uint cnt;
   int i;
 
-  if(count) {
-    for(i = 0; i < NUM && cnt < count; i++, cnt++) {
+  if(count){
+    for(i = 0; i < NUM && cnt < count; i++, cnt++){
       buf[i] = fgetc(in);
       if(buf[i] == EOF)
         break;
@@ -191,13 +203,14 @@ freadblk(char *buf, FILE *in) {
 }
 
 void
-od(FILE *in, char *s) {
+od(FILE *in, char *s)
+{
   char buf[NUM];
   int i, n, off;
 
-  while(skip) {
+  while(skip){
     n = fread(buf, 1, 1, in);
-    if(n < 0) {
+    if(n < 0){
       alert("read %s: %m", s);
       return;
     }
@@ -206,17 +219,17 @@ od(FILE *in, char *s) {
       return;
   }
   off = 0;
-  while((n = freadblk(buf, in)) > 0) {
+  while((n = freadblk(buf, in)) > 0){
     if(!nflag)
       printf(addr, off);
-    for(i = 0; i < len; i++) {
+    for(i = 0; i < len; i++){
       if(i > 0 && !nflag)
         print("       ");
       dfmt[i].dump(&dfmt[i], buf, n);
     }
     off += n;
   }
-  if(!nflag) {
+  if(!nflag){
     printf(addr, off);
     print("\n");
   }
@@ -225,21 +238,22 @@ od(FILE *in, char *s) {
 }
 
 void
-tappend(char *s) {
+tappend(char *s)
+{
   static int cap;
   int mod, n, siz;
 
-  if(cap == 0) {
+  if(cap == 0){
     cap = INCR;
     dfmt = malloc(cap*sizeof(Dfmt));
   }
-  if(cap == len) {
+  if(cap == len){
     cap += INCR;
     dfmt = realloc(dfmt, cap*sizeof(Dfmt));
   }
   mod = *s;
   siz = *(s+1);
-  switch(mod) {
+  switch(mod){
   case 'a':
     dfmt[len].dump = dumpascii;
     if(siz)
@@ -254,11 +268,12 @@ tappend(char *s) {
     break;
   case 'f':
     dfmt[len].dump = dumpfloat;
-    switch(siz) {
+    switch(siz){
     case '\0':
       siz = sizeof(double);
       break;
-    case '4': case '8':
+    case '4':
+    case '8':
       siz -= '0';
       break;
     case 'F':
@@ -277,15 +292,19 @@ tappend(char *s) {
       fatal(1, "invalid type %s", s);
     }
     break;
-  case 'd': case 'o':
-  case 'u': case 'x':
+  case 'd':
+  case 'o':
+  case 'u':
+  case 'x':
     dfmt[len].dump = dumpint;
-    switch(siz) {
+    switch(siz){
     case '\0':
       siz = sizeof(int);
       break;
-    case '1': case '2':
-    case '4': case '8':
+    case '1':
+    case '2':
+    case '4':
+    case '8':
       siz -= '0';
       break;
     case 'C':
@@ -320,7 +339,8 @@ tappend(char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *e;
   FILE *f;
   int i;
@@ -334,8 +354,9 @@ main(int argc, char *argv[]) {
   case 'A':
     if(optarg[1] != '\0')
       fatal(1, "invalid address base");
-    switch(optarg[0]) {
-    case 'd': case 'o':
+    switch(optarg[0]){
+    case 'd':
+    case 'o':
       sprintf(addr, "%%07%c", optarg[0]);
       break;
     case 'x':
@@ -350,7 +371,7 @@ main(int argc, char *argv[]) {
     break;
   case 'j':
     skip = strtoul(optarg, &e, 0);
-    switch(*e) {
+    switch(*e){
     case '\0':
       break;
     case 'b':
@@ -387,11 +408,11 @@ main(int argc, char *argv[]) {
   if(argc == 0)
     od(stdin, "<stdin>");
   for(i = 0; i < argc; i++)
-    if(!strcmp(argv[i], "-")) {
+    if(!strcmp(argv[i], "-"))
       od(stdin, "<stdin>");
-    } else {
+    else{
       f = fopen(argv[i], "r");
-      if(f == nil) {
+      if(f == nil){
         alert("open %s: %m", argv[i]);
         continue;
       }

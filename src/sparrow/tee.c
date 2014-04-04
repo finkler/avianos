@@ -5,7 +5,8 @@
 #define FILE_MAX 100
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int aflag, i, n;
   char *buf;
   FILE *f[FILE_MAX];
@@ -23,16 +24,16 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
 
-  for(i = n = 0; i < argc && n < FILE_MAX-1; i++, n++) {
+  for(i = n = 0; i < argc && n < FILE_MAX-1; i++, n++){
     f[n] = fopen(argv[i], aflag?"a":"w");
-    if(f[n] == nil) {
+    if(f[n] == nil){
       alert("open %s: %m", argv[i]);
       n--;
     }
   }
   f[n++] = stdout;
   while((buf = fgetln(stdin)))
-    for(i = 0; i < n; i++) {
+    for(i = 0; i < n; i++){
       fprintln(f[i], buf);
       if(ferror(f[i]))
         alert("write %s: %m", argv[i]);

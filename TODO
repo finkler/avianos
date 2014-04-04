@@ -7,6 +7,7 @@ BUGS
   - od (currently very x86 specific???)
 
 FEATURES
+  - ls (rdev split in major and minor number)
   - -H -L and -P flag implementations !!!
   - strings.c skip elf header?
   - login.c utmp(x) support?

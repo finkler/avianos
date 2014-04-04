@@ -5,31 +5,34 @@
 #define B64_LEN  72
 #define HIST_LEN 60
 
-void base64dec(char *);
-void histdec(char *);
+void base64dec(char*);
+void histdec(char*);
 int  lookup(int);
-int  openpath(char *);
+int  openpath(char*);
 void pack(char[4], char[3]);
 
 char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   "abcdefghijklmnopqrstuvwxyz0123456789+/";
-char dec[3], raw[4];
-char *inam, *onam;
-void (*uudecode)(char *);
+char dec[3];
+char raw[4];
+char *inam;
+char *onam;
+void (*uudecode)(char*);
 
 void
-base64dec(char *s) {
+base64dec(char *s)
+{
   static int i;
   int n, stop;
   char *p;
 
   stop = 0;
-  for(p = s; *p; p++) {
+  for(p = s; *p; p++){
     if(*p == '=')
       stop = 1;
     if(stop == 0)
       raw[i++] = lookup(*p);
-    if(i == 4 || stop) {
+    if(i == 4 || stop){
       n = 3;
       if(i == 2)
         n--;
@@ -45,7 +48,8 @@ base64dec(char *s) {
 }
 
 void
-histdec(char *s) {
+histdec(char *s)
+{
   int i, j, len, m, n;
 
   i = 0;
@@ -54,9 +58,9 @@ histdec(char *s) {
   len = len / 3 * 4;
   if(m != 0)
     len += m + 1; /* <- correct ? */
-  for(j = 0; j < len; j++) {
+  for(j = 0; j < len; j++){
     raw[i++] = s[j] - 0x20;
-    if(i == 4 || j == len-1) {
+    if(i == 4 || j == len-1){
       n = 3;
       if(i == 2)
         n--;
@@ -72,7 +76,8 @@ histdec(char *s) {
 }
 
 int
-lookup(int c) {
+lookup(int c)
+{
   int i;
 
   for(i = 0; i < 64; i++)
@@ -82,7 +87,8 @@ lookup(int c) {
 }
 
 int
-openpath(char *s) {
+openpath(char *s)
+{
   uint mod;
   char *p;
 
@@ -105,20 +111,23 @@ openpath(char *s) {
 }
 
 void
-pack(char bin[4], char bout[3]) {
+pack(char bin[4], char bout[3])
+{
   bout[0] = (bin[0]<<2)|(bin[1]>>4);
   bout[1] = (bin[1]<<4)|(bin[2]>>2);
   bout[2] = (bin[2]<<6)|bin[3];
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: uudecode [-o outfile] [file]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *end, *p;
   int parse;
 
@@ -134,26 +143,26 @@ main(int argc, char *argv[]) {
   if(argc > 1)
     usage();
   inam = "<stdin>";
-  if(argc) {
+  if(argc){
     inam = argv[0];
     if(!freopen(argv[0], "r", stdin))
       fatal(1, "open %s: %m", argv[0]);
   }
   parse = 0;
-  while((p = fgetln(stdin))) {
-    if(parse) {
+  while((p = fgetln(stdin))){
+    if(parse){
       if(!strcmp(p, end))
         break;
       uudecode(p);
       continue;
     }
-    if(!strncmp(p, "begin", 5)) {
+    if(!strncmp(p, "begin", 5)){
       p += 5;
-      if(!strncmp(p, "-base64 ", 8)) {
+      if(!strncmp(p, "-base64 ", 8)){
         end = "====";
         p += 8;
         uudecode = base64dec;
-      } else {
+      }else{
         end = "end";
         p++;
         uudecode = histdec;

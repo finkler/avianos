@@ -6,10 +6,12 @@
 
 #define S_WRACC(m) (m&(S_IWUSR|S_IWGRP|S_IWOTH))
 
-int fflag, iflag;
+int fflag;
+int iflag;
 
 int
-ask(char *s) {
+ask(char *s)
+{
   char *ans;
 
   fprintf(stderr, "mv: overwrite %s?[n]: ", s);
@@ -20,7 +22,8 @@ ask(char *s) {
 }
 
 void
-cp(char *src, char *dst) {
+cp(char *src, char *dst)
+{
   char cmd[10], *p;
 
   strcpy(cmd, "cp -RPp");
@@ -37,35 +40,38 @@ cp(char *src, char *dst) {
 }
 
 void
-mv(char *old, char *new) {
+mv(char *old, char *new)
+{
   int isthere;
   struct stat nsb, osb;
 
-  if(stat(old, &osb)) {
+  if(stat(old, &osb)){
     alert("stat %s: %m", old);
     return;
   }
   isthere = 1;
-  if(stat(new, &nsb)) {
-    if(errno != ENOENT) {
+  if(stat(new, &nsb)){
+    if(errno != ENOENT){
       alert("stat %s: %m", new);
       return;
     }
     isthere = 0;
-  } else if(nsb.st_dev == osb.st_dev && nsb.st_ino == osb.st_ino) {
-    if(strcmp(basename(cleanname(old)), basename(cleanname(new)))) {
-      if(unlink(new)) {
+  }else if(nsb.st_dev == osb.st_dev
+  && nsb.st_ino == osb.st_ino){
+    if(strcmp(basename(cleanname(old)), basename(cleanname(new)))){
+      if(unlink(new)){
         alert("unlink %s: %m", new);
         return;
       }
       isthere = 0;
-    } else
+    }else
       return;
   }
-  if(isthere && !fflag && ((!S_WRACC(nsb.st_mode) && isatty(0)) ||
-    iflag) && ask(new))
+  if(isthere && !fflag
+  && ((!S_WRACC(nsb.st_mode) && isatty(0)) || iflag)
+  && ask(new))
     return;
-  if(rename(old, new)) {
+  if(rename(old, new)){
     alert("rename %s: %m", new);
     if(errno == EXDEV)
       cp(old, new);
@@ -73,14 +79,16 @@ mv(char *old, char *new) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: mv [-if] source_file target_file\n"
-    "       mv [-if] source_file... target_dir\n");
+         "       mv [-if] source_file... target_dir\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i;
   char *p;
   struct stat sb;
@@ -102,7 +110,7 @@ main(int argc, char *argv[]) {
   if(argc < 2)
     usage();
   if(!stat(argv[argc-1], &sb) && S_ISDIR(sb.st_mode))
-    for(i = 0; i < argc-1; i++) {
+    for(i = 0; i < argc-1; i++){
       p = stradd(argv[argc-1], "/", basename(cleanname(argv[i])));
       mv(argv[i], p);
       free(p);

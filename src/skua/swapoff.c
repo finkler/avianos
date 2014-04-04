@@ -3,13 +3,15 @@
 #include <sys/swap.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: swapoff file...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i;
 
   ARGBEGIN(""){

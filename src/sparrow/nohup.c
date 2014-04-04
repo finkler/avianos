@@ -6,13 +6,15 @@
 #define FILENAME  "nohup.out"
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: nohup utility [argument...]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int fd;
   char path[PATH_MAX];
 
@@ -23,10 +25,10 @@ main(int argc, char *argv[]) {
 
   if(argc < 1)
     usage();
-  if(isatty(1)) {
+  if(isatty(1)){
     strcpy(path, FILENAME);
     fd = open(path, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
-    if(fd < 0) {
+    if(fd < 0){
       snprintf(path, PATH_MAX, "%s/%s", getenv("HOME"), FILENAME);
       fd = open(path, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
       if(fd < 0)
@@ -40,5 +42,5 @@ main(int argc, char *argv[]) {
     fatal(1, "dup2: %m");
   signal(SIGHUP, SIG_IGN);
   execvp(*argv, argv);
-  fatal(errno==ENOENT?127:126, "exec %s: %m", *argv);
+  fatal(errno==ENOENT ? 127 : 126, "exec %s: %m", *argv);
 }

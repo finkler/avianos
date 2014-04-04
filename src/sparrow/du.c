@@ -2,38 +2,43 @@
 #include <avian.h>
 #include <ftw.h>
 
-int aflag, blksiz, sflag;
-ulong total, subtotal;
+int   aflag;
+int   blksiz;
+int   sflag;
+ulong total;
+ulong subtotal;
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: du [-a|-s] [-kx] [-H|-L] [file...]\n");
   exit(1);
 }
 
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
-  struct FTW *ftwbuf) {
+     struct FTW *ftwbuf)
+{
   ulong siz;
 
-  switch(tflag) {
+  switch(tflag){
   case FTW_DP:
-    if(!sflag && ftwbuf->level) {
-      siz = (sb->st_size+subtotal+(blksiz-1))/blksiz;
+    if(!sflag && ftwbuf->level){
+      siz = (sb->st_size + subtotal + (blksiz - 1)) / blksiz;
       printf("%-7lu %s\n", siz, fpath);
     }
     subtotal = 0;
     total += sb->st_size;
-    if(ftwbuf->level == 0) {
-      siz = (total+(blksiz-1))/blksiz;
+    if(ftwbuf->level == 0){
+      siz = (total + (blksiz - 1)) / blksiz;
       printf("%-7lu %s\n", siz, fpath);
       total = 0;
     }
     break;
   case FTW_SL:
   case FTW_F:
-    if(aflag || ftwbuf->level == 0) {
-      siz = (sb->st_size+(blksiz-1))/blksiz;
+    if(aflag || ftwbuf->level == 0){
+      siz = (sb->st_size + (blksiz - 1)) / blksiz;
       printf("%-7lu %s\n", siz, fpath);
     }
     subtotal += sb->st_size;
@@ -44,7 +49,8 @@ walk(const char *fpath, const struct stat *sb, int tflag,
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int flags, i;
 
   aflag = sflag = 0;

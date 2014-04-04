@@ -64,7 +64,7 @@ main(int argc, char *argv[])
   f2 = openfile(argv[1]);
   m = 0;
   q = nil;
-  for(;;) {
+  for(;;){
     p = fgetln(f1);
     if(p)
       p = strdup(p);

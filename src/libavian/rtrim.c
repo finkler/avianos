@@ -1,8 +1,9 @@
 #include <u.h>
 #include <avian.h>
 
-char *
-rtrim(char *s) {
+char*
+rtrim(char *s)
+{
   char *p;
 
   p = s + strlen(s);

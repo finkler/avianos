@@ -14,21 +14,24 @@
 void cleanup(int);
 void logkmsg(void);
 void run(void);
-void srvmessage(char *);
+void srvmessage(char*);
 void usage(void);
 
-FILE *err, *msg;
+FILE *err;
+FILE *msg;
 int pid;
 
 void
-cleanup(int sig) {
+cleanup(int sig)
+{
   if(pid)
     kill(pid, SIGTERM);
   exit(1);
 }
 
 void
-logkmsg(void) {
+logkmsg(void)
+{
   char buf[MSG_LEN];
   FILE *kin, *kout;
 
@@ -36,17 +39,17 @@ logkmsg(void) {
   if(pid)
     return;
   kin = fopen(KMSG_IFILE, "r");
-  if(kin == nil) {
+  if(kin == nil){
     alert("open %s: %m", KMSG_IFILE);
     _exit(1);
   }
   kout = fopen(KMSG_OFILE, "w");
-  if(kout == nil) {
+  if(kout == nil){
     alert("open %s: %m", KMSG_OFILE);
     _exit(1);
   }
   while(fgets(buf, MSG_LEN, kin))
-    if(fprint(kout, buf+1) == EOF) {
+    if(fprint(kout, buf+1) == EOF){
       alert("write %s: %m", KMSG_OFILE)
       break;
     }
@@ -56,7 +59,8 @@ logkmsg(void) {
 }
 
 void
-run(void) {
+run(void)
+{
   char buf[MSG_LEN+1];
   int fd, n;
   struct sockaddr_un in;
@@ -68,9 +72,9 @@ run(void) {
   in.sun_family = AF_UNIX;
   strcpy(in.sun_path, "/dev/log");
   len = sizeof in.sun_family + strlen(in.sun_path);
-  if(bind(fd, (struct sockaddr *)&in, len))
+  if(bind(fd, (struct sockaddr*)&in, len))
     fatal(1, "bind /dev/log: %m");
-  while((n = recvfrom(fd, buf, MSG_LEN, 0, nil, nil)) > 0) {
+  while((n = recvfrom(fd, buf, MSG_LEN, 0, nil, nil)) > 0){
     if(buf[n-1] == '\n')
       n--;
     buf[n] = '\0';
@@ -81,7 +85,8 @@ run(void) {
 }
 
 void
-srvmessage(char *buf) {
+srvmessage(char *buf)
+{
   uint prio;
   char *p;
 
@@ -89,7 +94,7 @@ srvmessage(char *buf) {
   if(p == nil || sscanf(buf, "<%u>", &prio) == 0)
     return;
   p++;
-  switch(LOG_PRI(prio)) {
+  switch(LOG_PRI(prio)){
   case LOG_ALERT:
   case LOG_CRIT:
   case LOG_EMERG:
@@ -108,13 +113,15 @@ srvmessage(char *buf) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: syslogd [-k]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int kflag;
 
   kflag = 0;

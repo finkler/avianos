@@ -2,50 +2,53 @@
 #include <avian.h>
 #include <zlib.h>
 
-int cflag, vflag;
+int cflag;
+int vflag;
 
 int
-chkfmt(FILE *f) {
+chkfmt(FILE *f)
+{
   uchar magic[2];
 
-  if(fread(magic, 1, 2, f) != 2 ||
-    magic[0] != 0x1f ||
-    magic[1] != 0x8b)
+  if(fread(magic, 1, 2, f) != 2
+  || magic[0] != 0x1f
+  || magic[1] != 0x8b)
     return -1;
   rewind(f);
   return 0;
 }
 
 void
-gunzip(int ifd, char *s) {
+gunzip(int ifd, char *s)
+{
   char buf[8192], *name, *p;
   gzFile in;
   uint n;
   FILE *out;
 
   in = gzdopen(ifd, "rb");
-  if(in == nil) {
+  if(in == nil){
     alert("open %s: %m", s);
     return;
   }
-  if(cflag) {
+  if(cflag){
     name = "<stdout>";
     out = stdout;
-  } else {
+  }else{
     name = strdup(s);
     p = strrchr(name, '.');
-    if(p) {
+    if(p){
       if(!strcmp(p, ".tgz"))
         strcpy(p, ".tar");
       else if(!strcmp(p, ".gz"))
         *p = '\0';
     }
-    if(!strcmp(name, s)) {
+    if(!strcmp(name, s)){
       alert("can't overwrite %s", s);
       goto End;
     }
     out = fopen(name, "w");
-    if(out == nil) {
+    if(out == nil){
       alert("open %s: %m", name);
       goto End;
     }
@@ -53,7 +56,7 @@ gunzip(int ifd, char *s) {
   if(vflag)
     fprintf(stderr, "decompressing %s to %s\n", s, name);
   while((n = gzread(in, buf, sizeof buf)) > 0)
-    if(fwrite(buf, 1, n, out) != n) {
+    if(fwrite(buf, 1, n, out) != n){
       alert("write %s: %m", name);
       goto End;
     }
@@ -66,7 +69,8 @@ End:
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -83,13 +87,13 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
 
-  if(argc == 0) {
+  if(argc == 0){
     cflag = 1;
     gunzip(0, "<stdin>");
   }
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

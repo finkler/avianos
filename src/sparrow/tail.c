@@ -2,27 +2,29 @@
 #include <avian.h>
 #include <sys/stat.h>
 
-typedef union {
+typedef union{
   char c;
   char *s;
-} Buffer;
+};
 
-int byte, len;
+int byte;
+int len;
 Buffer *buf;
 
 void
-follow(char *s, int isstdin) {
+follow(char *s, int isstdin)
+{
   int c;
   struct stat sb;
 
   if(fstat(0, &sb))
     fatal(1, "can't follow %s: %m", s);
-  if((!S_ISREG(sb.st_mode) && !S_ISFIFO(sb.st_mode)) ||
-    (S_ISFIFO(sb.st_mode) && isstdin))
+  if((!S_ISREG(sb.st_mode) && !S_ISFIFO(sb.st_mode))
+  || (S_ISFIFO(sb.st_mode) && isstdin))
     fatal(1, "can't follow %s: not supported", s);
-  for(;;) {
+  for(;;){
     sleep(3);
-    while((c = fgetc(stdin)) != EOF) {
+    while((c = fgetc(stdin)) != EOF){
       if(fputc(c, stdout) == EOF)
         fatal(1, "write <stdout>: %m");
     }
@@ -33,13 +35,14 @@ follow(char *s, int isstdin) {
   }
 }
 
-char *
-readinput(void) {
+char*
+readinput(void)
+{
   static char c, line[LINE_MAX+1];
   int n;
 
   n = 0;
-  while(n < LINE_MAX) {
+  while(n < LINE_MAX){
     c = fgetc(stdin);
     if(c == EOF)
       return nil;
@@ -54,13 +57,15 @@ readinput(void) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: tail [-f] [-c number|-n number] [file]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int fflag, i, head, n;
   char *p;
 
@@ -73,7 +78,7 @@ main(int argc, char *argv[]) {
   case 'c':
     byte = 1;
   case 'n':
-    switch(*optarg) {
+    switch(*optarg){
     case '+':
       head = 1;
     case '-':
@@ -93,8 +98,8 @@ main(int argc, char *argv[]) {
   if(argc == 1 && !freopen(argv[0], "r", stdin))
     fatal(1, "open %s: %m", argv[0]);
   buf = malloc(len*sizeof(Buffer));
-  for(n = 0; (p = readinput()); n++) {
-    if(n == len) {
+  for(n = 0; (p = readinput()); n++){
+    if(n == len){
       if(head)
         break;
       if(byte == 0)
@@ -113,5 +118,5 @@ main(int argc, char *argv[]) {
     else
       print(buf[i].s);
   if(fflag)
-    follow(argc?argv[0]:"<stdin>", !argc);
+    follow(argc ? argv[0] : "<stdin>", !argc);
 }

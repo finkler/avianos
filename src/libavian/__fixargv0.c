@@ -4,7 +4,8 @@
 char *argv0 = nil;
 
 void
-__fixargv0(char *s) {
+__fixargv0(char *s)
+{
   argv0 = strrchr(s, '/');
   if(argv0)
     argv0++;

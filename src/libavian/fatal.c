@@ -1,12 +1,13 @@
 #include <u.h>
 #include <avian.h>
 
-static void vlog(char *, va_list);
+static void vlog(char*, va_list);
 
 int rval = EXIT_SUCCESS;
 
 void
-alert(char *fmt, ...) {
+alert(char *fmt, ...)
+{
   va_list ap;
 
   va_start(ap, fmt);
@@ -16,7 +17,8 @@ alert(char *fmt, ...) {
 }
 
 void
-fatal(int c, char *fmt, ...) {
+fatal(int c, char *fmt, ...)
+{
   va_list ap;
 
   va_start(ap, fmt);
@@ -26,7 +28,8 @@ fatal(int c, char *fmt, ...) {
 }
 
 void
-vlog(char *fmt, va_list ap) {
+vlog(char *fmt, va_list ap)
+{
   int n;
 
   if(argv0)

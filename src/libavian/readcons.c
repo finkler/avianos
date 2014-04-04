@@ -5,7 +5,8 @@
 static int echo(int, int);
 
 int
-echo(int fd, int toggle) {
+echo(int fd, int toggle)
+{
   struct termios tc;
   int was;
 
@@ -19,8 +20,9 @@ echo(int fd, int toggle) {
   return was;
 }
 
-char *
-readcons(char *prompt, char *def, int secret) {
+char*
+readcons(char *prompt, char *def, int secret)
+{
   char *line;
   int set;
   FILE *tty;
@@ -34,13 +36,13 @@ readcons(char *prompt, char *def, int secret) {
     fprintf(tty, "%s: ", prompt);
   fflush(tty);
   set = -1;
-  if(secret) {
+  if(secret){
     set = echo(fileno(tty), 0);
     if(set == -1)
       return nil;
   }
   line = fgetln(tty);
-  if(secret) {
+  if(secret){
     echo(fileno(tty), set);
     fprint(tty, "\n");
   }

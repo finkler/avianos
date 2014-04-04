@@ -7,7 +7,8 @@
 int gid;
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: chgrp [-h] group file...\n"
     "       chgrp -R [-H|-L|-P] group file...\n");
   exit(1);
@@ -15,14 +16,16 @@ usage(void) {
 
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
-  struct FTW *ftwbuf) {
+     struct FTW *ftwbuf)
+{
   if(chown(fpath, -1, gid))
     alert("chown %s: %m", fpath);
   return 0;
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char buf[PATH_MAX], *p;
   int flags, i, Rflag, hflag;
   struct group *grp;
@@ -57,10 +60,10 @@ main(int argc, char *argv[]) {
     fatal(1, "unknown group %s", argv[0]);
   gid = grp->gr_gid;
   for(i = 1; i < argc; i++)
-    if(Rflag) {
+    if(Rflag){
       if(nftw(argv[i], walk, 20, flags) < 0)
         fatal(1, "nftw %s: %m", argv[i]);
-    } else {
+    }else{
       p = argv[i];
       if(!hflag && readlink(p, buf, PATH_MAX) > 0)
         p = buf;

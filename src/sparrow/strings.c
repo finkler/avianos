@@ -5,16 +5,17 @@ char fmt[4];
 int len;
 
 void
-strings(FILE *in, char *s) {
+strings(FILE *in, char *s)
+{
   char buf[LINE_MAX];
   int c, i, n;
 
   i = 0;
   for(n = 1; (c = fgetc(in)) != EOF; n++)
-    if(isprint(c) && i < LINE_MAX) {
+    if(isprint(c) && i < LINE_MAX)
       buf[i++] = c;
-    } else {
-      if(i >= len && (c == 0 || c == '\n')) {
+    else{
+      if(i >= len && (c == 0 || c == '\n')){
         if(*fmt)
           printf(fmt, n);
         buf[i] = '\0';
@@ -27,7 +28,8 @@ strings(FILE *in, char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -52,9 +54,9 @@ main(int argc, char *argv[]) {
 
   if(argc == 0)
     strings(stdin, "<stdin>");
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

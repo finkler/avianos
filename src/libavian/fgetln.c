@@ -1,28 +1,28 @@
 #include <u.h>
 #include <avian.h>
 
-char *
-fgetln(FILE *stream) {
+char*
+fgetln(FILE *stream)
+{
   static char line[LINE_MAX+1];
-  char c;
-  int i, n;
+  int c, n;
 
-  i = 0;
-  while((n = fread(&c, 1, 1, stream)) > 0) {
-    if(c == '\b' && i > 0) {
-      i--;
-      while(i > 0 && line[i] < 0xc1 && line[i] > 0x7f)
-        i--;
+  n = 0;
+  while((c = fgetc(stream)) != EOF){
+    if(c == '\b' && n > 0){
+      n--;
+      while(n > 0 && line[n] < 0xc1 && line[n] > 0x7f)
+        n--;
       continue;
     }
     if(c == '\n')
       break;
-    line[i++] = c;
-    if(i == LINE_MAX)
+    line[n++] = c;
+    if(n == LINE_MAX)
       break;
   }
-  if(n < 0 || (n == 0 && i == 0))
+  if(c == EOF && n == 0)
     return nil;
-  line[i] = '\0';
+  line[n] = '\0';
   return line;
 }

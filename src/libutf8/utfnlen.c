@@ -2,7 +2,8 @@
 #include <utf8.h>
 
 uint
-utfnlen(char *s, uint maxlen) {
+utfnlen(char *s, uint maxlen)
+{
   uint n;
 
   n = utflen(s);

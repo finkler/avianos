@@ -5,12 +5,13 @@
 extern char **environ;
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char **e, *p;
 
   ARGBEGIN("i"){
   case 'i':
-    environ = calloc(1, sizeof(char *));
+    environ = calloc(1, sizeof(char*));
     break;
   default:
     fprint(stderr,
@@ -18,7 +19,7 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
 
-  for(; *argv; argv++) {
+  for(; *argv; argv++){
     p = strchr(*argv, '=');
     if(p == nil)
       break;
@@ -26,9 +27,9 @@ main(int argc, char *argv[]) {
     if(setenv(*argv, p, 1))
       fatal(1, "setenv %s: %m", *argv);
   }
-  if(*argv) {
+  if(*argv){
     execvp(*argv, argv);
-    fatal(errno==ENOENT?127:126, "exec %s: %m", *argv);
+    fatal(errno==ENOENT ? 127 : 126, "exec %s: %m", *argv);
   }
   for(e = environ; *e; e++)
     println(*e);

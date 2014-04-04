@@ -4,13 +4,15 @@
 #include <sys/resource.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: nice [-n increment] utility [argument...]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int n;
 
   n = 10;
@@ -31,5 +33,6 @@ main(int argc, char *argv[]) {
   if(setpriority(PRIO_PROCESS, 0, n))
     fatal(1, "setpriority: %m");
   execvp(*argv, argv);
-  fatal(errno==ENOENT?127:126, "can't exec %s: %m", argv[0]);
+  fatal(errno==ENOENT ? 127 : 126,
+    "can't exec %s: %m", argv[0]);
 }

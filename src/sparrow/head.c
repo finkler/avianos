@@ -2,10 +2,11 @@
 #include <avian.h>
 
 void
-head(FILE *in, char *s, int lines) {
+head(FILE *in, char *s, int lines)
+{
   char *buf;
 
-  while(lines > 0 && (buf = fgetln(in))) {
+  while(lines > 0 && (buf = fgetln(in))){
     println(buf);
     lines--;
   }
@@ -14,7 +15,8 @@ head(FILE *in, char *s, int lines) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i, n;
 
@@ -30,9 +32,9 @@ main(int argc, char *argv[]) {
 
   if(argc == 0)
     head(stdin, "<stdin>", n);
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

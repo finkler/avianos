@@ -2,20 +2,27 @@
 #include <avian.h>
 #include <utf8.h>
 
-int cflag, lflag, mflag, wflag;
-int totb, totw, totl, totm;
+int cflag;
+int lflag;
+int mflag;
+int wflag;
+int totb;
+int totw;
+int totl;
+int totm;
 
 void
-wc(FILE *in, char *s) {
+wc(FILE *in, char *s)
+{
   int byte, ch, line, word;
   int c, p;
 
-  byte = chr = line = word = 0;
-  for(p = ' '; (c = fgetc(in)) != EOF; p = c) {
+  byte = ch = line = word = 0;
+  for(p = ' '; (c = fgetc(in)) != EOF; p = c){
     if(c < RUNE_SELF || runestart(c))
       ch++;
     byte++;
-    if(isspace(c)) {
+    if(isspace(c)){
       if(c == '\n')
         line++;
       if(!isspace(p))
@@ -42,13 +49,15 @@ wc(FILE *in, char *s) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: wc [-c|-m] [-lw] [file...]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -76,16 +85,16 @@ main(int argc, char *argv[]) {
     cflag = lflag = wflag = 1;
   if(argc == 0)
     wc(stdin, "<stdin>");
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }
     wc(f, argv[i]);
     fclose(f);
   }
-  if(argc > 1) {
+  if(argc > 1){
     if(lflag)
       printf(" %7d", totl);
     if(wflag)

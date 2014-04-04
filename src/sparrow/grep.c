@@ -3,21 +3,29 @@
 #include <regex.h>
 
 typedef struct Pattern Pattern;
-struct Pattern {
-  union {
-    char *fix;
+struct Pattern
+{
+  union{
+    char    *fix;
     regex_t reg;
-  } exp;
+  };
   Pattern *next;
 };
 
-int Fflag, cflag, lflag, qflag;
-int nflag, sflag, vflag, xflag;
+int Fflag;
+int cflag;
+int lflag;
+int qflag;
+int nflag;
+int sflag;
+int vflag;
+int xflag;
 int flags;
 Pattern *c;
 
 void
-addpattern(char *s) {
+addpattern(char *s)
+{
   Pattern *new;
 
   new = malloc(sizeof(Pattern));
@@ -30,27 +38,28 @@ addpattern(char *s) {
 }
 
 void
-grep(FILE *in, char *s, int pname) {
+grep(FILE *in, char *s, int pname)
+{
   char *buf;
   int i, j;
   Pattern *r;
 
   j = 0;
-  for(i = 1; (buf = fgetln(in)); i++) {
+  for(i = 1; (buf = fgetln(in)); i++){
     for(r = c; r; r = r->next)
-      if((Fflag && ((xflag && !strcmp(buf, r->exp.fix)) ||
-        strstr(buf, r->exp.fix))) ||
-        !regexec(&r->exp.reg, buf, 0, nil, 0))
+      if((Fflag && ((xflag && !strcmp(buf, r->exp.fix))
+      || strstr(buf, r->exp.fix)))
+      || !regexec(&r->exp.reg, buf, 0, nil, 0))
         break;
     if((vflag && r) || (!vflag && !r))
       continue;
     if(rval == 0)
       rval = 1;
-    if(cflag) {
+    if(cflag){
       j++;
       continue;
     }
-    if(lflag) {
+    if(lflag){
       println(s);
       break;
     }
@@ -62,13 +71,13 @@ grep(FILE *in, char *s, int pname) {
       printf("%d:", i);
     println(buf);
   }
-  if(ferror(in)) {
+  if(ferror(in)){
     if(!sflag)
       alert("read %s: %m", s);
     rval = 2;
     return;
   }
-  if(cflag) {
+  if(cflag){
     if(pname)
       printf("%s:", s);
     printf("%d\n", j);
@@ -76,20 +85,22 @@ grep(FILE *in, char *s, int pname) {
 }
 
 void
-parsefile(char *path) {
+parsefile(char *path)
+{
   char *buf;
   FILE *f;
 
   f = fopen(path, "r");
   if(f == nil)
-    fatal(2, "can't open %s: %m", path);
+    fatal(2, "open %s: %m", path);
   while((buf = fgetln(f)))
     addpattern(buf);
   fclose(f);
 }
 
 void
-parselist(char *s) {
+parselist(char *s)
+{
   uint n;
   char *p;
 
@@ -98,7 +109,7 @@ parselist(char *s) {
   n = strlen(s);
   if(n > 0 && s[n-1] == '\n')
     s[n-1] = '\0';
-  while((p = strrchr(s, '\n'))) {
+  while((p = strrchr(s, '\n'))){
     *p++ = '\0';
     addpattern(p);
   }
@@ -106,17 +117,19 @@ parselist(char *s) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: grep [-E|-F] [-c|-l|-q] [-insvx] -e pattern_list\n"
-    "\t[-e pattern_list]... [-f pattern_file]... [file...]\n"
+    "  [-e pattern_list]... [-f pattern_file]... [file...]\n"
     "       grep [-E|-F] [-c|-l|-q] [-insvx] [-e pattern_list]...\n"
-    "\t-f pattern_file [-f pattern_file]... [file...]\n"
+    "  -f pattern_file [-f pattern_file]... [file...]\n"
     "       grep [-E|-F] [-c|-l|-q] [-insvx] pattern_list [file...]\n");
   exit(2);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -167,7 +180,7 @@ main(int argc, char *argv[]) {
 
   if(cflag+lflag+qflag > 1)
     usage();
-  if(c == nil) {
+  if(c == nil){
     if(argc < 1)
       usage();
     parselist(argv[0]);
@@ -175,9 +188,9 @@ main(int argc, char *argv[]) {
   }
   if(argc == 0)
     grep(stdin, "<stdin>", 0);
-  for(i = 0, rval = 0; i < argc; i++) {
+  for(i = 0, rval = 0; i < argc; i++){
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       if(!sflag)
         alert("open %s: %m", argv[i]);
       rval = 2;

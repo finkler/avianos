@@ -3,13 +3,15 @@
 #include <syslog.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: logger string...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *buf, *p;
   int i, len;
 
@@ -17,7 +19,7 @@ main(int argc, char *argv[]) {
   default:
     usage();
   }ARGEND
-  
+
   if(argc < 1)
     usage();
   len = 1;
@@ -25,7 +27,7 @@ main(int argc, char *argv[]) {
     len += strlen(argv[i])+1;
   buf = malloc(len);
   p = buf;
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     if(i > 0)
       *p++ = ' ';
     strcpy(p, argv[i]);

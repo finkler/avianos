@@ -7,15 +7,15 @@
 
 typedef uint16 rune;
 
-int fullrune(int);
-int runedec(rune *, char *);
-int runeenc(char *, rune);
-int runelen(rune);
-int runestart(int);
-uint utflen(char *);
-uint utfnlen(char *, uint);
-char *utfrune(char *, rune);
-char *utfrrune(char *, rune);
+int  fullrune(int);
+int  runedec(rune*, char*);
+int  runeenc(char*, rune);
+int  runelen(rune);
+int  runestart(int);
+uint utflen(char*);
+uint utfnlen(char*, uint);
+char *utfrune(char*, rune);
+char *utfrrune(char*, rune);
 #define utfutf strstr
 
 #endif /* _UTF8_H_ */

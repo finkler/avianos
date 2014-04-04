@@ -10,13 +10,15 @@
 #define ALL      0x1f
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: uname [-amnrsv]\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int mask, sp;
   struct utsname u;
 
@@ -42,33 +44,33 @@ main(int argc, char *argv[]) {
     break;
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc != 0)
     usage();
   if(uname(&u))
     fatal(1, "%m");
   sp = 0;
-  if(!mask || mask & SYSNAME) {
+  if(!mask || mask & SYSNAME){
     sp++;
     print(u.sysname);
   }
-  if(mask & NODENAME) {
+  if(mask & NODENAME){
     if(sp++)
       print(" ");
     print(u.nodename);
   }
-  if(mask & RELEASE) {
+  if(mask & RELEASE){
     if(sp++)
       print(" ");
     print(u.release);
   }
-  if(mask & VERSION) {
+  if(mask & VERSION){
     if(sp++)
       print(" ");
     print(u.version);
   }
-  if(mask & MACHINE) {
+  if(mask & MACHINE){
     if(sp++)
       print(" ");
     print(u.machine);

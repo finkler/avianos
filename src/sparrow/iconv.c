@@ -7,8 +7,9 @@
 #define OLEN 4096
 
 iconv_t cd;
-int cflag, sflag;
-char *charmaps[] = {
+int     cflag;
+int     sflag;
+char    *charmaps[] = {
   /* musl-libc */
   "ascii",
   "big5",
@@ -68,30 +69,32 @@ char *charmaps[] = {
 };
 
 void
-convert(FILE *in, char *s) {
+convert(FILE *in, char *s)
+{
   char bin[ILEN], bout[OLEN], *p, *q;
   uint n;
   int nr, nw;
 
-  while((nr = fread(bin, 1, ILEN, in)) > 0) {
+  while((nr = fread(bin, 1, ILEN, in)) > 0){
     nw = OLEN;
     p = bin;
     q = bout;
-    for(;;) {
-      n = iconv(cd, &p, (uint *)&nr, &q, (uint *)&nw);
-      if(nr == 0) {
+    for(;;){
+      n = iconv(cd, &p, (uint*)&nr, &q, (uint*)&nw);
+      if(nr == 0){
         n = OLEN - nw;
-        if(fwrite(bout, 1, n, stdout) != n) {
+        if(fwrite(bout, 1, n, stdout) != n){
           alert("write <stdout>: %m");
           return;
         }
         break;
       }
       if(n == (uint)-1)
-        switch(errno) {
+        switch(errno){
         case EILSEQ:
-          if(cflag) {
-            p++; nr--;
+          if(cflag){
+            p++;
+            nr--;
             continue;
           }
           if(sflag)
@@ -101,7 +104,7 @@ convert(FILE *in, char *s) {
           return;
         case E2BIG:
           n = OLEN - nw;
-          if(fwrite(bout, 1, n, stdout) != n) {
+          if(fwrite(bout, 1, n, stdout) != n){
             alert("write <stdout>: %m");
             return;
           }
@@ -119,23 +122,24 @@ convert(FILE *in, char *s) {
 }
 
 void
-list(void) {
+list(void)
+{
   uint n;
   char **p, *term;
   int w;
 
   n = 0;
   w = textwidth();
-  for(p = charmaps; *p; p++) {
+  for(p = charmaps; *p; p++){
     n += strlen(*p) + 2;
     term = nil;
     if(*(p+1) == nil)
       term = "\n";
-    if(n > w) {
+    if(n > w){
       if(term == nil)
         term = ",\n";
       n = 0;
-    } else if(term == nil)
+    }else if(term == nil)
       term = ", ";
     printf("%s%s", *p, term);
   }
@@ -143,7 +147,8 @@ list(void) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: iconv [-cs] -f frommap -t tomap [file...]\n"
     "       iconv -f fromcode [-cs] [-t tocode] [file...]\n"
     "       iconv -t tocode [-cs] [-f fromcode] [file...]\n"
@@ -152,7 +157,8 @@ usage(void) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *from, *to;
   FILE *f;
   int i;
@@ -180,7 +186,7 @@ main(int argc, char *argv[]) {
     usage();
   }ARGEND
 
-  if(lflag) {
+  if(lflag){
     if(argc != 0)
       usage();
     list();
@@ -192,11 +198,11 @@ main(int argc, char *argv[]) {
   if(argc == 0)
     convert(stdin, "<stdin>");
   for(i = 0; i < argc; i++)
-    if(!strcmp(argv[i], "-")) {
+    if(!strcmp(argv[i], "-"))
       convert(stdin, "<stdin>");
-    } else {
+    else{
       f = fopen(argv[i], "r");
-      if(f == nil) {
+      if(f == nil){
         alert("open %s: %m", argv[i]);
         continue;
       }

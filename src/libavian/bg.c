@@ -8,13 +8,14 @@
 
 static void __exitdaemon(void);
 
-static char *path;
+char *path;
 
 int
-bg(void) {
+bg(void)
+{
   int fd, pid;
 
-  if(getppid() == 1) {
+  if(getppid() == 1){
     errno = EALREADY;
     return -1;
   }
@@ -26,7 +27,7 @@ bg(void) {
     exit(0);
   path = stradd(RUNPATH"/", argv0, ".pid");
   fd = open(path, O_WRONLY|O_CREAT|O_EXCL, 0644);
-  if(fd < 0) {
+  if(fd < 0){
     if(errno == EEXIST)
       errno = EALREADY;
     return 1;
@@ -43,6 +44,7 @@ bg(void) {
 }
 
 void
-__exitdaemon(void) {
+__exitdaemon(void)
+{
   unlink(path);
 }

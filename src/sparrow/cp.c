@@ -5,16 +5,20 @@
 #include <libgen.h>
 #include <sys/stat.h>
 
-int ask(char *);
-void copydir(char *, char *);
-void copy(int, char *, int, char *);
-void cp(char *, char *, int);
+int  ask(char*);
+void copydir(char*, char*);
+void copy(int, char*, int, char*);
+void cp(char*, char*, int);
 
-int fflag, iflag, pflag, Rflag;
-int (*stat_r[2])(const char *, struct stat *);
+int fflag;
+int iflag;
+int pflag;
+int Rflag;
+int (*stat_r[2])(const char*, struct stat*);
 
 int
-ask(char *s) {
+ask(char *s)
+{
   char *ans;
 
   fprintf(stderr, "cp: overwrite %s?[n]: ", s);
@@ -25,18 +29,20 @@ ask(char *s) {
 }
 
 void
-copydir(char *src, char *dest) {
+copydir(char *src, char *dest)
+{
   DIR *d;
   struct dirent *ent;
   char *p1, *p2;
 
   d = opendir(src);
-  if(d == nil) {
+  if(d == nil){
     alert("opendir %s: %m", src);
     return;
   }
-  while((ent = readdir(d))) {
-    if(!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
+  while((ent = readdir(d))){
+    if(!strcmp(ent->d_name, ".")
+    || !strcmp(ent->d_name, ".."))
       continue;
     p1 = stradd(src, "/", ent->d_name);
     p2 = stradd(dest, "/", ent->d_name);
@@ -48,12 +54,13 @@ copydir(char *src, char *dest) {
 }
 
 void
-copy(int ifd, char *src, int ofd, char *dest) {
+copy(int ifd, char *src, int ofd, char *dest)
+{
   char buf[8192];
   int n;
 
   while((n = read(ifd, buf, sizeof buf)) > 0)
-    if(write(ofd, buf, n) != n) {
+    if(write(ofd, buf, n) != n){
       alert("write %s: %m", dest);
       return;
     }
@@ -62,47 +69,49 @@ copy(int ifd, char *src, int ofd, char *dest) {
 }
 
 void
-cp(char *src, char *dest, int op) {
+cp(char *src, char *dest, int op)
+{
   char buf[PATH_MAX+1];
   int flag, ifd, isthere, n, ofd;
   struct stat isb, osb;
   struct timespec times[2];
 
-  if(stat_r[op](src, &isb)) {
+  if(stat_r[op](src, &isb)){
     alert("stat %s: %m", src);
     return;
   }
   isthere = 1;
-  if(stat_r[op](dest, &osb)) {
-    if(errno != ENOENT) {
+  if(stat_r[op](dest, &osb)){
+    if(errno != ENOENT){
       alert("stat %s: %m", dest);
       return;
     }
     isthere = 0;
-  } else if(isb.st_dev == osb.st_dev && isb.st_ino == osb.st_ino) {
+  }else if(isb.st_dev == osb.st_dev
+  && isb.st_ino == osb.st_ino){
     alert("%s is %s", src, dest);
     return;
   }
   flag = 0;
-  switch(isb.st_mode&S_IFMT) {
+  switch(isb.st_mode&S_IFMT){
   case S_IFDIR:
-    if(!Rflag) {
+    if(!Rflag){
       alert("%s: is a directory", src);
       return;
     }
-    if(isthere) {
-      if(!S_ISDIR(osb.st_mode)) {
+    if(isthere){
+      if(!S_ISDIR(osb.st_mode)){
         alert("%s: not a directory", dest);
         return;
       }
-    } else if(mkdir(dest, isb.st_mode|S_IRWXU)) {
+    }else if(mkdir(dest, isb.st_mode|S_IRWXU)){
       alert("mkdir %s: %m", dest);
       return;
     }
     copydir(src, dest);
     break;
   case S_IFREG:
-    if(isthere) {
+    if(isthere){
       if(iflag && ask(dest))
         return;
       ofd = open(dest, O_WRONLY|O_TRUNC);
@@ -114,7 +123,7 @@ cp(char *src, char *dest, int op) {
     ofd = open(dest, O_WRONLY|O_CREAT|O_TRUNC, isb.st_mode);
   Opened:
     ifd = open(src, O_RDONLY);
-    if(ifd < 0 || ofd < 0) {
+    if(ifd < 0 || ofd < 0){
       alert("open %s: %m", ifd<0?src:dest);
       return;
     }
@@ -124,16 +133,16 @@ cp(char *src, char *dest, int op) {
     break;
   case S_IFBLK:
   case S_IFCHR:
-    if(Rflag) {
-      if(mknod(dest, isb.st_mode, isb.st_dev)) {
+    if(Rflag){
+      if(mknod(dest, isb.st_mode, isb.st_dev)){
         alert("mknod %s: %m", dest);
         return;
       }
       break;
     }
   case S_IFIFO:
-    if(Rflag) {
-      if(mkfifo(dest, isb.st_mode)) {
+    if(Rflag){
+      if(mkfifo(dest, isb.st_mode)){
         alert("mkfifo %s: %m", dest);
         return;
       }
@@ -141,14 +150,14 @@ cp(char *src, char *dest, int op) {
     }
   case S_IFLNK:
     flag = AT_SYMLINK_NOFOLLOW;
-    if(Rflag) {
+    if(Rflag){
       n = readlink(src, buf, PATH_MAX);
-      if(n < 0) {
+      if(n < 0){
         alert("readlink %s: %m", src);
         return;
       }
       buf[n] = '\0';
-      if(symlink(buf, dest)) {
+      if(symlink(buf, dest)){
         alert("symlink %s: %m", dest);
         return;
       }
@@ -158,7 +167,7 @@ cp(char *src, char *dest, int op) {
     alert("%s: invalid file type", src);
     return;
   }
-  if(pflag) {
+  if(pflag){
     times[0] = isb.st_atim;
     times[1] = isb.st_mtim;
     if(utimensat(AT_FDCWD, dest, times, flag))
@@ -170,7 +179,8 @@ cp(char *src, char *dest, int op) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: cp [-Pfip] source_file target_file\n"
     "       cp [-Pfip] source_file... target\n"
     "       cp -R [-H|-L|-P] [-fip] source_file... target\n");
@@ -178,7 +188,8 @@ usage(void) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i;
   char *p;
   struct stat sb;
@@ -215,7 +226,7 @@ main(int argc, char *argv[]) {
   if(argc < 2)
     usage();
   if(!stat_r[0](argv[argc-1], &sb) && S_ISDIR(sb.st_mode))
-    for(i = 0; i < argc-1; i++) {
+    for(i = 0; i < argc-1; i++){
       p = stradd(argv[argc-1], "/", basename(cleanname(argv[i])));
       cp(argv[i], p, 1);
       free(p);

@@ -3,11 +3,13 @@
 #include <bzlib.h>
 #include <sys/stat.h>
 
-int cflag, vflag;
+int cflag;
+int vflag;
 int level;
 
 void
-bzip2(FILE *in, char *s) {
+bzip2(FILE *in, char *s)
+{
   char buf[8192], *name, *p, *suffix;
   BZFILE *b;
   int err;
@@ -15,33 +17,33 @@ bzip2(FILE *in, char *s) {
   FILE *out;
 
   b = nil;
-  if(cflag) {
+  if(cflag){
     name = "<stdout>";
     out = stdout;
-  } else {
+  }else{
     suffix = ".bz2";
     p = strrchr(s, '.');
-    if(p && !strcmp(p, ".tar")) {
+    if(p && !strcmp(p, ".tar")){
       *p = '\0';
       suffix = ".tbz";
     }
     name = stradd(s, suffix);
     out = fopen(name, "w");
-    if(out == nil) {
+    if(out == nil){
       alert("open %s: %m", name);
       goto End;
     }
   }
   b = BZ2_bzWriteOpen(&err, out, level, 0, 0);
-  if(err != BZ_OK) {
+  if(err != BZ_OK){
     alert("open %s: %m", name);
     goto End;
   }
   if(vflag)
     fprintf(stderr, "compressing %s to %s\n", s, name);
-  while((n = fread(buf, 1, sizeof buf, in)) > 0) {
+  while((n = fread(buf, 1, sizeof buf, in)) > 0){
     BZ2_bzWrite(&err, b, buf, n);
-    if(err != BZ_OK) {
+    if(err != BZ_OK){
       alert("write %s: %m", name);
       goto End;
     }
@@ -52,21 +54,22 @@ End:
   BZ2_bzWriteClose(&err, b, 0, nil, nil);
   if(err != BZ_OK)
     alert("write %s: %m", name);
-  if(!cflag) {
+  if(!cflag){
     free(name);
     fclose(out);
   }
 }
 
 int
-chkfmt(char *s) {
+chkfmt(char *s)
+{
   struct stat sb;
 
-  if(stat(s, &sb)) {
+  if(stat(s, &sb)){
     alert("stat %s: %m", s);
     return -1;
   }
-  if(S_ISDIR(sb.st_mode)) {
+  if(S_ISDIR(sb.st_mode)){
     alert("can't compress a directory");
     return -1;
   }
@@ -74,7 +77,8 @@ chkfmt(char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -97,15 +101,15 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
 
-  if(argc == 0) {
+  if(argc == 0){
     cflag = 1;
     bzip2(stdin, "<stdin>");
   }
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     if(chkfmt(argv[i]))
       continue;
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

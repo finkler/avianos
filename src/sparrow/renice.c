@@ -5,13 +5,15 @@
 #include <sys/resource.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: renice [-g|-p|-u] -n increment ID...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int gflag, pflag, uflag;
   int i, n, which, who;
   struct passwd *pwd;
@@ -41,17 +43,16 @@ main(int argc, char *argv[]) {
 
   if(argc < 1 || gflag+pflag+uflag > 1 || n == 0)
     usage();
-  for(i = 0; i < argc; i++) {
-    if(uflag && !isdigit(argv[i][0])) {
+  for(i = 0; i < argc; i++){
+    if(uflag && !isdigit(argv[i][0])){
       pwd = getpwnam(argv[i]);
-      if(pwd == nil) {
+      if(pwd == nil){
         alert("unknown user %s", argv[i]);
         continue;
       }
       who = pwd->pw_uid;
-    } else {
+    }else
       who = atoi(argv[i]);
-    }
     errno = 0;
     n += getpriority(which, who);
     if(errno)

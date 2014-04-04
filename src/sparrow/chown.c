@@ -4,10 +4,12 @@
 #include <ftw.h>
 #include <pwd.h>
 
-int gid, uid;
+int gid;
+int uid;
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: chown [-h] owner[:group] file...\n"
     "       chown -R [-H|-L|-P] owner[:group] file...\n");
   exit(1);
@@ -15,14 +17,16 @@ usage(void) {
 
 int
 walk(const char *fpath, const struct stat *sb, int tflag,
-  struct FTW *ftwbuf) {
+     struct FTW *ftwbuf)
+{
   if(chown(fpath, uid, gid))
     alert("chown %s: %m", fpath);
   return 0;
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char buf[PATH_MAX], *p;
   int flags, i, Rflag, hflag;
   struct group *grp;
@@ -52,7 +56,7 @@ main(int argc, char *argv[]) {
     usage();
   gid = -1;
   p = strchr(argv[0], ':');
-  if(p != nil) {
+  if(p != nil){
     *p++ = '\0';
     if(isdigit(*p))
       grp = getgrgid(atoi(p));
@@ -67,13 +71,13 @@ main(int argc, char *argv[]) {
   else
     pwd = getpwnam(argv[0]);
   if(pwd == nil)
-      fatal(1, "unknown user %s", argv[0]);
+    fatal(1, "unknown user %s", argv[0]);
   uid = pwd->pw_uid;
   for(i = 1; i < argc; i++)
-    if(Rflag) {
+    if(Rflag){
       if(nftw(argv[i], walk, 20, flags) < 0)
         fatal(1, "nftw %s: %m", argv[i]);
-    } else {
+    }else{
       p = argv[i];
       if(!hflag && readlink(p, buf, PATH_MAX) > 0)
         p = buf;

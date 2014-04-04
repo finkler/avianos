@@ -3,18 +3,20 @@
 #include <libgen.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: dirname string\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   ARGBEGIN(""){
   default:
     usage();
-  }ARGEND 
-  
+  }ARGEND
+
   if(argc != 1)
     usage();
   println(dirname(argv[0]));

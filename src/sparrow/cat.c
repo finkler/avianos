@@ -2,12 +2,13 @@
 #include <avian.h>
 
 void
-cat(FILE *in, char *s) {
+cat(FILE *in, char *s)
+{
   char buf[8192];
   uint n;
 
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
-    if(fwrite(buf, 1, n, stdout) != n) {
+    if(fwrite(buf, 1, n, stdout) != n){
       alert("write <stdout>: %m");
       return;
     }
@@ -16,7 +17,8 @@ cat(FILE *in, char *s) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -32,11 +34,11 @@ main(int argc, char *argv[]) {
   if(argc == 0)
     cat(stdin, "<stdin>");
   for(i = 0; i < argc; i++)
-    if(!strcmp(argv[i], "-")) {
+    if(!strcmp(argv[i], "-"))
       cat(stdin, "<stdin>");
-    } else {
+    else{
       f = fopen(argv[i], "r");
-      if(f == nil) {
+      if(f == nil){
         alert("open %s: %m", argv[i]);
         continue;
       }

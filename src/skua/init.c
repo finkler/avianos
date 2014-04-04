@@ -17,14 +17,15 @@
 #define IUTF8 0040000
 #endif
 
-void rc(char *);
+void rc(char*);
 void shutdown(int);
 void spawntty(void);
 void usage(void);
 
 void
-rc(char *cmd) {
-  if(fork() == 0) {
+rc(char *cmd)
+{
+  if(fork() == 0){
     execlp(cmd, cmd, nil);
     alert("exec %s: %m", cmd);
     _exit(1);
@@ -33,7 +34,8 @@ rc(char *cmd) {
 }
 
 void
-shutdown(int signum) {
+shutdown(int signum)
+{
   sync();
   rc(RC_STOP);
   if(signum == SIGINT)
@@ -43,12 +45,13 @@ shutdown(int signum) {
 }
 
 void
-spawntty(void) {
+spawntty(void)
+{
   struct sigaction act;
   struct termios tc;
   int fd;
 
-  if(fork()) {
+  if(fork()){
     wait(nil);
     return;
   }
@@ -60,7 +63,7 @@ spawntty(void) {
   chown(TTY, 0, 0);
   chmod(TTY, 0600);
   fd = open(TTY, O_RDWR|O_TTY_INIT);
-  if(fd < 0) {
+  if(fd < 0){
     alert("open %s: %m", TTY);
     _exit(1);
   }
@@ -69,7 +72,7 @@ spawntty(void) {
   dup2(fd, 2);
   if(fd > 2)
     close(fd);
-  if(!tcgetattr(0, &tc)) {
+  if(!tcgetattr(0, &tc)){
     tc.c_iflag |= IUTF8;
     tcsetattr(0, TCSANOW, &tc);
   }
@@ -80,13 +83,15 @@ spawntty(void) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: init\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   struct sigaction act;
 
   ARGBEGIN(""){
@@ -107,7 +112,7 @@ main(int argc, char *argv[]) {
   reboot(RB_DISABLE_CAD);
   setenv("PATH", PATH, 1);
   rc(RC_START);
-  for(;;) {
+  for(;;){
     spawntty();
     sleep(3);
   }

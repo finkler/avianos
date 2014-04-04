@@ -8,12 +8,13 @@
 struct timespec times[2];
 
 void
-datetime(char *s) {
+datetime(char *s)
+{
   char *p;
   struct tm tm;
 
   p = strchr(s, ' ');
-  if(p != nil)
+  if(p)
     *p = 'T';
   p = strptime(s, "%Y-%m-%dT%H:%M", &tm);
   if(p == nil)
@@ -21,17 +22,18 @@ datetime(char *s) {
   if(*p == '.' || *p == ',')
     times[0].tv_nsec = times[1].tv_nsec =
       strtol(++p, &p, 10)%(long)10e9;
-  if(*p == 'Z') {
+  if(*p == 'Z'){
     p++;
     setenv("TZ", "UTC-0", 1);
   }
-  if(*p != '\0')
+  if(*p)
     fatal(1, "invalid date format %s", s);
   times[0].tv_sec = times[1].tv_sec = mktime(&tm);
 }
 
 void
-reftime(char *path) {
+reftime(char *path)
+{
   struct stat sb;
 
   if(stat(path, &sb))
@@ -41,14 +43,15 @@ reftime(char *path) {
 }
 
 void
-timetime(char *s) {
+timetime(char *s)
+{
   char *fmt;
   uint n;
   struct tm tm;
 
   fmt = nil;
   n = 0;
-  switch(strlen(s)) {
+  switch(strlen(s)){
   case 12:
     n = 10;
   case 15:
@@ -73,14 +76,16 @@ timetime(char *s) {
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: touch [-acm] "
-    "[-r ref_file|-t time|-d date_time] file...\n");
+         "[-r ref_file|-t time|-d date_time] file...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int aflag, cflag, mflag;
   int fd, i, timeset;
 
@@ -123,12 +128,12 @@ main(int argc, char *argv[]) {
   if(!mflag)
     times[1].tv_nsec = UTIME_OMIT;
   for(i = 0; i < argc; i++)
-    if(!access(argv[i], F_OK)) {
+    if(!access(argv[i], F_OK)){
       if(utimensat(AT_FDCWD, argv[i], times, 0))
-        alert("%s: %m", argv[i]);
-    } else if(!cflag) {
+        alert("utimensat %s: %m", argv[i]);
+    }else if(!cflag){
       fd = creat(argv[i], MODE);
-      if(fd < 0) {
+      if(fd < 0){
         alert("creat %s: %m", argv[i]);
         continue;
       }

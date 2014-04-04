@@ -5,24 +5,26 @@
 
 #define INCR 100
 
-int pflag, tflag;
+int pflag;
+int tflag;
 
 int
-getarg(char *buf, int len) {
+getarg(char *buf, int len)
+{
   int c, caret, n, quote;
 
   c = fgetc(stdin);
   while(isspace(c))
     c = fgetc(stdin);
   caret = n = quote = 0;
-  while(c != EOF && c != '\n') {
+  while(c != EOF && c != '\n'){
     if(!(caret+quote) && isblank(c))
       break;
-    if(!caret && c == '"') {
+    if(!caret && c == '"'){
       quote = quote ? 0 : 1;
       goto Loop;
     }
-    if(!quote && c == '\'') {
+    if(!quote && c == '\''){
       caret = caret ? 0 : 1;
       goto Loop;
     }
@@ -38,18 +40,19 @@ getarg(char *buf, int len) {
 }
 
 void
-run(char **cmd) {
+run(char **cmd)
+{
   char *ans, **p;
   int err, stat;
   FILE *tty;
 
   if(tflag)
-    for(p = cmd; *p; p++) {
+    for(p = cmd; *p; p++){
       if(p != cmd)
         fprint(stderr, " ");
       fprint(stderr, *p);
     }
-  if(pflag) {
+  if(pflag){
     fprint(stderr, "?...");
     tty = fopen("/dev/tty", "r+");
     if(tty == nil)
@@ -58,12 +61,12 @@ run(char **cmd) {
     fclose(tty);
     if(*ans != 'y' && *ans != 'Y')
       return;
-  } else if(tflag)
+  }else if(tflag)
     fprint(stderr, "\n");
-  if(fork() == 0) {
+  if(fork() == 0){
     execvp(*cmd, cmd);
     alert("exec %s: %m", *cmd);
-    _exit(errno==ENOENT?127:126);
+    _exit(errno==ENOENT ? 127 : 126);
   }
   wait(&stat);
   err = WEXITSTATUS(stat);
@@ -76,7 +79,8 @@ run(char **cmd) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   char *buf, **cmd, *eof;
   int cap, i, len, n, num, siz, total;
   int xflag;
@@ -113,33 +117,33 @@ main(int argc, char *argv[]) {
   }ARGEND
 
   cap = argc + INCR;
-  cmd = malloc(cap*sizeof(char *));
+  cmd = malloc(cap*sizeof(char*));
   len = argc;
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     cmd[i] = argv[i];
     siz -= strlen(argv[i]) + 1;
   }
   buf = malloc(siz);
   total = 0;
-  while((n = getarg(buf, siz)) > 0) {
+  while((n = getarg(buf, siz)) > 0){
     if(eof && !strcmp(buf, eof))
       break;
-    if(n == siz-1) {
+    if(n == siz-1){
       alert("argument too long");
       if(xflag)
         exit(1);
       continue;
     }
-    if(total+n > siz || (num > 0 && len-argc == num)) {
+    if(total+n > siz || (num > 0 && len-argc == num)){
       run(cmd);
       for(i = argc; i < len; i++)
         free(cmd[i]);
       len = argc;
       total = 0;
     }
-    if(cap-1 == len) {
+    if(cap-1 == len){
       cap += INCR;
-      cmd = realloc(cmd, cap*sizeof(char *));
+      cmd = realloc(cmd, cap*sizeof(char*));
     }
     cmd[len++] = strdup(buf);
     cmd[len] = nil;

@@ -3,13 +3,15 @@
 #include <sys/mount.h>
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: umount [-dfmL] mount_point\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int flags;
 
   flags = 0;

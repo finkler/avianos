@@ -5,13 +5,15 @@
 #include <libgen.h>
 #include <sys/stat.h>
 
-int fflag, iflag;
+int fflag;
+int iflag;
 
 int
-ask(const char *s) {
+ask(const char *s)
+{
   char *ans;
 
-  if(!fflag && ((access(s, W_OK) && isatty(0)) || iflag)) {
+  if(!fflag && ((access(s, W_OK) && isatty(0)) || iflag)){
     fprintf(stderr, "rm: remove %s?[n]: ", s);
     ans = fgetln(stdin);
     if(*ans != 'y' && *ans != 'Y')
@@ -22,25 +24,28 @@ ask(const char *s) {
 
 int
 rmtree(const char *fpath, const struct stat *sb, int tflag,
-  struct FTW *ftwbuf) {
-  switch (tflag) {
+       struct FTW *ftwbuf)
+{
+  switch(tflag){
   case FTW_DP:
-    return(ask(fpath) && rmdir(fpath));
+    return ask(fpath) && rmdir(fpath);
   case FTW_F:
   case FTW_SL:
-    return(ask(fpath) && unlink(fpath));
+    return ask(fpath) && unlink(fpath);
   }
   return 0;
 }
 
 void
-usage(void) {
+usage(void)
+{
   fprint(stderr, "usage: rm [-fiRr] file...\n");
   exit(1);
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   int i, rflag;
   char *p;
   struct stat sb;
@@ -65,27 +70,28 @@ main(int argc, char *argv[]) {
 
   if(argc < 1)
     usage();
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     p = basename(cleanname(argv[i]));
     if(!strcmp(p, ".") || !strcmp(p, ".."))
       goto Failed;
     if(lstat(argv[i], &sb))
       goto Failed;
-    if(S_ISDIR(sb.st_mode)) {
-      if(!rflag) {
+    if(S_ISDIR(sb.st_mode)){
+      if(!rflag){
         errno = EISDIR;
         goto Failed;
       }
       if(nftw(argv[i], rmtree, 20, FTW_DEPTH | FTW_PHYS))
         goto Failed;
-    } else if(ask(argv[i]) && unlink(argv[i]))
-        goto Failed;
+    }else if(ask(argv[i]) && unlink(argv[i]))
+      goto Failed;
     continue;
   Failed:
     if(!fflag)
-      alert(errno?"remove %s: %m":"remove %s", argv[i]);
-    rval = 1;
+      alert(errno ? "can't remove %s: %m"
+        : "can't remove %s", argv[i]);
     errno = 0;
+    rval = 1;
   }
   exit(rval);
 }

@@ -2,7 +2,8 @@
 #include <utf8.h>
 
 uint
-utflen(char *s) {
+utflen(char *s)
+{
   uint n;
   char *p;
 

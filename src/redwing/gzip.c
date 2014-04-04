@@ -3,18 +3,20 @@
 #include <sys/stat.h>
 #include <zlib.h>
 
-int cflag, vflag;
+int cflag;
+int vflag;
 int level;
 
 int
-chkfmt(char *s) {
+chkfmt(char *s)
+{
   struct stat sb;
 
-  if(stat(s, &sb)) {
+  if(stat(s, &sb)){
     alert("stat %s: %m", s);
     return -1;
   }
-  if(S_ISDIR(sb.st_mode)) {
+  if(S_ISDIR(sb.st_mode)){
     alert("can't compress a directory");
     return -1;
   }
@@ -22,25 +24,26 @@ chkfmt(char *s) {
 }
 
 void
-gzip(FILE *in, char *s) {
+gzip(FILE *in, char *s)
+{
   char buf[8192], *name, *p, *suffix;
   uint n;
   gzFile out;
 
-  if(cflag) {
+  if(cflag){
     name = "<stdout>";
     out = gzdopen(1, "wb");
-  } else {
+  }else{
     suffix = ".gz";
     p = strrchr(s, '.');
-    if(p && !strcmp(p, ".tar")) {
+    if(p && !strcmp(p, ".tar")){
       *p = '\0';
       suffix = ".tgz";
     }
     name = stradd(s, suffix);
     out = gzopen(name, "wb");
   }
-  if(out == nil) {
+  if(out == nil){
     alert("open %s: %m", name);
     goto End;
   }
@@ -48,7 +51,7 @@ gzip(FILE *in, char *s) {
   if(vflag)
     fprintf(stderr, "compressing %s to %s\n", s, name);
   while((n = fread(buf, 1, sizeof buf, in)) > 0)
-    if(gzwrite(out, buf, n) != n) {
+    if(gzwrite(out, buf, n) != n){
       alert("write %s: %m", name);
       goto End;
     }
@@ -61,7 +64,8 @@ End:
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
   FILE *f;
   int i;
 
@@ -84,15 +88,15 @@ main(int argc, char *argv[]) {
     exit(1);
   }ARGEND
 
-  if(argc == 0) {
+  if(argc == 0){
     cflag = 1;
     gzip(stdin, "<stdin>");
   }
-  for(i = 0; i < argc; i++) {
+  for(i = 0; i < argc; i++){
     if(chkfmt(argv[i]))
       continue;
     f = fopen(argv[i], "r");
-    if(f == nil) {
+    if(f == nil){
       alert("open %s: %m", argv[i]);
       continue;
     }

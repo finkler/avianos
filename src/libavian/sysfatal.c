@@ -2,10 +2,11 @@
 #include <avian.h>
 #include <syslog.h>
 
-static void __vsyslog(int, char *, va_list);
+static void __vsyslog(int, char*, va_list);
 
 void
-sysalert(char *fmt, ...) {
+sysalert(char *fmt, ...)
+{
   va_list ap;
 
   va_start(ap, fmt);
@@ -15,7 +16,8 @@ sysalert(char *fmt, ...) {
 }
 
 void
-sysfatal(int c, char *fmt, ...) {
+sysfatal(int c, char *fmt, ...)
+{
   va_list ap;
 
   va_start(ap, fmt);
@@ -25,7 +27,8 @@ sysfatal(int c, char *fmt, ...) {
 }
 
 void
-__vsyslog(int prio, char *fmt, va_list ap) {
+__vsyslog(int prio, char *fmt, va_list ap)
+{
   char buf[512];
   int n;
 

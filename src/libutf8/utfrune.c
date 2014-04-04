@@ -1,8 +1,9 @@
 #include <u.h>
 #include <utf8.h>
 
-char *
-utfrune(char *s, rune r) {
+char*
+utfrune(char *s, rune r)
+{
   char buf[UTF_MAX+1];
   int n;
 
