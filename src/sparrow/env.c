@@ -14,8 +14,7 @@ main(int argc, char *argv[])
     environ = calloc(1, sizeof(char*));
     break;
   default:
-    fprint(stderr,
-      "usage: env [-i] [name=value]... [utility [argument...]]\n");
+    fprint(stderr, "usage: env [-i] [name=value]... [utility [argument...]]\n");
     exit(1);
   }ARGEND
 

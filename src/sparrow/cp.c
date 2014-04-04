@@ -124,7 +124,7 @@ cp(char *src, char *dest, int op)
   Opened:
     ifd = open(src, O_RDONLY);
     if(ifd < 0 || ofd < 0){
-      alert("open %s: %m", ifd<0?src:dest);
+      alert("open %s: %m", ifd<0 ? src : dest);
       return;
     }
     copy(ifd, src, ofd, dest);

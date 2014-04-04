@@ -39,7 +39,7 @@ main(int argc, char *argv[])
       continue;
     }
     if(argc > 1)
-      printf("%c==> %s <==\n", i?'\n':0, argv[i]);
+      printf("%c==> %s <==\n", i ? '\n' : 0, argv[i]);
     head(f, argv[i], n);
     fclose(f);
   }

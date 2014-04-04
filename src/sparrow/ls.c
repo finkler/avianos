@@ -718,8 +718,7 @@ main(int argc, char *argv[])
     output = printone;
     break;
   default:
-    fprint(stderr,
-      "usage: ls [-ACFRSacdfiklmnpqrstux1] [-H|-L] [file...]\n");
+    fprint(stderr, "usage: ls [-ACFRSacdfiklmnpqrstux1] [-H|-L] [file...]\n");
     exit(1);
   }ARGEND
 

@@ -132,20 +132,21 @@ main(int argc, char *argv[])
   }
   if(uflag){
     if(nflag)
-      printf("%s\n", rflag?rusr:eusr);
+      printf("%s\n", rflag ? rusr : eusr);
     else
-      printf("%d\n", rflag?ruid:euid);
+      printf("%d\n", rflag ? ruid : euid);
     exit(0);
     /* not reached */
   }
   if(gflag){
     if(nflag){
-      grp = getgrgid(rflag?rgid:egid);
+      grp = getgrgid(rflag ? rgid : egid);
       if(grp == nil)
-        fatal(1, "unknown group id %d", rflag?rgid:egid);
+        fatal(1, "unknown group id %d",
+          rflag ? rgid : egid);
       printf("%s\n", grp->gr_name);
     }else
-      printf("%d\n", rflag?rgid:egid);
+      printf("%d\n", rflag ? rgid : egid);
     exit(0);
     /* not reached */
   }

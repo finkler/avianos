@@ -25,18 +25,16 @@ void
 cp(char *src, char *dst)
 {
   char cmd[10], *p;
+  int err;
 
-  strcpy(cmd, "cp -RPp");
-  if(fflag)
-    strcat(cmd, "f");
-  if(iflag)
-    strcat(cmd, "i");
+  strcpy(cmd, "cp -fRPp");
   p = stradd(cmd, " ", src, " ", dst);
-  system(p);
+  err = system(p);
   free(p);
-  p = stradd("rm -fr ", src);
-  system(p);
-  free(p);
+  if(err)
+    return;
+  if(unlink(src))
+    alert("unlink %s: %m", src);
 }
 
 void

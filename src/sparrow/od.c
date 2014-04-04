@@ -292,19 +292,15 @@ tappend(char *s)
       fatal(1, "invalid type %s", s);
     }
     break;
-  case 'd':
-  case 'o':
-  case 'u':
-  case 'x':
+  case 'd': case 'o':
+  case 'u': case 'x':
     dfmt[len].dump = dumpint;
     switch(siz){
     case '\0':
       siz = sizeof(int);
       break;
-    case '1':
-    case '2':
-    case '4':
-    case '8':
+    case '1': case '2':
+    case '4': case '8':
       siz -= '0';
       break;
     case 'C':
