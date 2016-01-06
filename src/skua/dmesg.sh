@@ -9,7 +9,7 @@ while getopts ":n:" flags
 do
   case $flags in
   n)
-    if [ $OPTARG -lt 7 ] || [ $OPTARG -gt 0 ]; then
+    if [ $OPTARG -lt 7 ] && [ $OPTARG -gt 0 ]; then
       echo $OPTARG > /proc/sys/kernel/printk
       exit 0
     fi
